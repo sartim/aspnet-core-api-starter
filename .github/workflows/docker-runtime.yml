@@ -13,7 +13,7 @@ jobs:
     name: Compose migration and health smoke test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Start services and run migrations
         run: docker compose up -d --build
       - name: Wait for API health endpoint
@@ -37,7 +37,7 @@ jobs:
     name: OTLP collector export smoke test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Start services with OTLP collector
         run: docker compose -f docker-compose.yaml -f docker-compose.otel.yaml up -d --build
       - name: Generate telemetry
