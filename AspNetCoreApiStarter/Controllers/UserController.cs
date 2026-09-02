@@ -22,6 +22,9 @@ namespace AspNetCoreApiStarter.Controllers
         [HttpPost]
         public override async Task<ActionResult<User>> Post(User user)
         {
+            if (!PasswordPolicy.IsValid(user.Password))
+                return BadRequest(new ProblemDetails { Title = "Invalid password", Detail = PasswordPolicy.Requirements() });
+
             user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
             return await base.Post(user);
         }

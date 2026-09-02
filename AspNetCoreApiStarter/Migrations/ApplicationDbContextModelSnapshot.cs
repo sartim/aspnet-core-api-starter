@@ -107,6 +107,32 @@ namespace AspNetCoreApiStarter.Migrations
                     b.ToTable("RolePermission");
                 });
 
+            modelBuilder.Entity("AspNetCoreApiStarter.Models.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id").ValueGeneratedOnAdd().HasColumnType("uuid");
+                    b.Property<DateTime>("CreatedAt").HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("ExpiresAt").HasColumnType("timestamp with time zone");
+                    b.Property<string>("ReplacedByTokenHash").HasColumnType("text");
+                    b.Property<DateTime?>("RevokedAt").HasColumnType("timestamp with time zone");
+                    b.Property<string>("TokenHash").IsRequired().HasColumnType("text");
+                    b.Property<Guid>("UserId").HasColumnType("uuid");
+                    b.HasKey("Id");
+                    b.HasIndex("TokenHash").IsUnique();
+                    b.HasIndex("UserId");
+                    b.ToTable("RefreshTokens");
+                });
+
+            modelBuilder.Entity("AspNetCoreApiStarter.Models.RevokedAccessToken", b =>
+                {
+                    b.Property<Guid>("Id").ValueGeneratedOnAdd().HasColumnType("uuid");
+                    b.Property<DateTime>("ExpiresAt").HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("RevokedAt").HasColumnType("timestamp with time zone");
+                    b.Property<string>("JwtId").IsRequired().HasColumnType("text");
+                    b.HasKey("Id");
+                    b.HasIndex("JwtId").IsUnique();
+                    b.ToTable("RevokedAccessTokens");
+                });
+
             modelBuilder.Entity("AspNetCoreApiStarter.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -123,6 +149,9 @@ namespace AspNetCoreApiStarter.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("FailedLoginAttempts")
+                        .HasColumnType("integer");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("text");
@@ -132,6 +161,9 @@ namespace AspNetCoreApiStarter.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastLoginAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -143,6 +175,9 @@ namespace AspNetCoreApiStarter.Migrations
 
                     b.Property<int>("Phone")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime?>("LockoutEnd")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -161,7 +196,7 @@ namespace AspNetCoreApiStarter.Migrations
                         .IsRequired();
 
                     b.HasOne("AspNetCoreApiStarter.Models.Role", "Role")
-                        .WithMany()
+                        .WithMany("RolePermissions")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -169,6 +204,21 @@ namespace AspNetCoreApiStarter.Migrations
                     b.Navigation("Permission");
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("AspNetCoreApiStarter.Models.Role", b =>
+                {
+                    b.Navigation("RolePermissions");
+                });
+
+            modelBuilder.Entity("AspNetCoreApiStarter.Models.RefreshToken", b =>
+                {
+                    b.HasOne("AspNetCoreApiStarter.Models.User", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

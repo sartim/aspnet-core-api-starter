@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P1-11:** Define password, token expiry, refresh, revocation, and account-lockout behavior explicitly.
+1. **P1-12:** Add pagination, filtering, validation, and stable response contracts to collection endpoints.
 
 ## Deployment scope
 
@@ -134,7 +134,7 @@ Status: **Planned**
 - [x] **P1-9:** Extract authentication, authorization, persistence, and API concerns
   into clearly documented extension points.
 - [x] **P1-10:** Add role and permission authorization policies to protected endpoints.
-- [ ] **P1-11:** Define password, token expiry, refresh, revocation, and account-lockout
+- [x] **P1-11:** Define password, token expiry, refresh, revocation, and account-lockout
   behavior explicitly.
 - [ ] **P1-12:** Add pagination, filtering, validation, and stable response contracts to
   collection endpoints.

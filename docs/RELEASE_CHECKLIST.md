@@ -34,7 +34,9 @@ branch policy.
 ## Secrets and configuration
 
 - [ ] Confirm production values exist for `PORT`, `DB_URL`,
-      `JWT_SECRET_KEY`, `JWT_ISSUER`, and `JWT_AUDIENCE`.
+      `JWT_SECRET_KEY`, `JWT_ISSUER`, `JWT_AUDIENCE`,
+      `JWT_EXPIRY`, `JWT_REFRESH_EXPIRY`, `AUTH_MAX_FAILED_ATTEMPTS`, and
+      `AUTH_LOCKOUT_MINUTES`.
 - [ ] Keep secrets in the deployment secret manager; never put them in Git,
       images, release notes, or logs.
 - [ ] Verify JWT key rotation, token expiry, Sentry DSN, and OTLP endpoint
