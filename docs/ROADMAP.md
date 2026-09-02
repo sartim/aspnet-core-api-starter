@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P1-10:** Add role and permission authorization policies to protected endpoints.
+1. **P1-11:** Define password, token expiry, refresh, revocation, and account-lockout behavior explicitly.
 
 ## Deployment scope
 
