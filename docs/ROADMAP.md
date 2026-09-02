@@ -53,6 +53,12 @@ Status: **Next**
   or JWT settings produce clear actionable errors in every profile.
 - [ ] **P0-9:** Decide and document the supported semantic-versioning and
   branching policy, including prereleases and breaking changes.
+- [ ] **P0-10:** Add fail-open Sentry error tracking: enable it only when
+  `SENTRY_DSN` is configured, and never prevent startup when it is absent or
+  invalid.
+- [ ] **P0-11:** Add baseline observability to both profiles: structured
+  logging, request correlation, distributed tracing, and low-cardinality
+  metrics for request count, latency, and errors.
 
 ### P1 — Next iteration
 
@@ -73,17 +79,20 @@ Status: **Planned**
 - [ ] **P1-7:** Add a release workflow that creates and pushes `vX.Y.Z` tags only
   after CI passes, then creates the GitHub Release and attaches the generated
   artifacts.
+- [ ] **P1-8:** Document observability configuration, including `SENTRY_DSN`,
+  environment-specific log levels, trace propagation, metrics scraping, and
+  privacy rules for personally identifiable information.
 
 ### P1 — Service foundation
 
-- [ ] **P1-8:** Extract authentication, authorization, persistence, and API concerns
+- [ ] **P1-9:** Extract authentication, authorization, persistence, and API concerns
   into clearly documented extension points.
-- [ ] **P1-9:** Add role and permission authorization policies to protected endpoints.
-- [ ] **P1-10:** Define password, token expiry, refresh, revocation, and account-lockout
+- [ ] **P1-10:** Add role and permission authorization policies to protected endpoints.
+- [ ] **P1-11:** Define password, token expiry, refresh, revocation, and account-lockout
   behavior explicitly.
-- [ ] **P1-11:** Add pagination, filtering, validation, and stable response contracts to
+- [ ] **P1-12:** Add pagination, filtering, validation, and stable response contracts to
   collection endpoints.
-- [ ] **P1-12:** Add database migration guidance for generated projects and production
+- [ ] **P1-13:** Add database migration guidance for generated projects and production
   deployments.
 
 ## Versioning decision
@@ -112,12 +121,22 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
 - [ ] **P2-1:** Add optional Redis caching without making it a minimal-profile
   dependency.
 - [ ] **P2-2:** Add health/readiness separation for deployments that require a database.
-- [ ] **P2-3:** Add observability integrations that remain disabled unless configured.
+- [ ] **P2-3:** Add optional observability exporters and dashboards that remain
+  disabled unless configured.
 - [ ] **P2-4:** Add optional email/password-reset and email-verification modules.
 - [ ] **P2-5:** Add optional gRPC or messaging adapters without changing the REST
   baseline.
 - [ ] **P2-6:** Publish versioned starter templates and a migration path between profile
   versions.
+
+## Observability contract
+
+Both generated profiles should provide a useful baseline without requiring a
+third-party account. Logging, tracing, and metrics must work with their default
+configuration. Sentry is an optional error-tracking sink: `SENTRY_DSN` enables
+it, while an unset DSN disables it without preventing startup or changing the
+request path. Telemetry must avoid passwords, tokens, database credentials,
+and unnecessary personal data.
 
 ## Definition of done
 

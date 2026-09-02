@@ -21,9 +21,13 @@ The default `user-service` profile includes the maintained Users/RBAC implementa
 Supported profiles:
 
 * `user-service` (default): Users, roles, permissions, JWT authentication, PostgreSQL, migrations, and tests
-* `minimal`: dependency-free ASP.NET Core API foundation with a health endpoint; no users, roles, permissions, EF Core, database, or authentication
+* `minimal`: dependency-free ASP.NET Core API foundation with a health endpoint and baseline logging/tracing/metrics; no users, roles, permissions, EF Core, database, or authentication
 
 The source repository itself is the complete `user-service` profile. The minimal profile lives in `templates/minimal` and is intentionally independent of the user-service implementation.
+
+Observability is part of the starter contract: logging, tracing, and metrics
+work by default, while Sentry error tracking is enabled only when
+`SENTRY_DSN` is configured and remains disabled without blocking startup.
 
 See the [project roadmap](docs/ROADMAP.md) for milestones and task priorities.
 
