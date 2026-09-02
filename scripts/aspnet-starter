@@ -39,7 +39,7 @@ else
   find "$destination" -type d \( -name .git -o -name bin -o -name obj \) -prune -exec rm -rf {} +
 fi
 
-identifier="$(printf '%s' "$project_name" | tr -d '[_-]')"
+identifier="$(printf '%s' "$project_name" | tr -d '_-')"
 [[ "$identifier" =~ ^[a-zA-Z] ]] || identifier="Api$identifier"
 find "$destination" -depth -name '*@PROJECT_NAME@*' -exec sh -c '
   for path do mv "$path" "${path//@PROJECT_NAME@/'"$project_name"'}"; done
