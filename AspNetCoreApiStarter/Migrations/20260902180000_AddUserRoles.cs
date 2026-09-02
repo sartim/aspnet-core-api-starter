@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AspNetCoreApiStarter.Migrations;
 
+[Migration("20260902180000_AddUserRoles")]
 public partial class AddUserRoles : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)
