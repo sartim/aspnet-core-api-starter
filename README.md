@@ -64,6 +64,9 @@ access control, and environment-specific sampling.
 See the [project roadmap](docs/ROADMAP.md) for milestones and task priorities.
 See the [release checklist](docs/RELEASE_CHECKLIST.md) before production
 deployments.
+See the [architecture and extension points](docs/ARCHITECTURE.md) when adapting
+the starter to another identity provider, database, API design, or telemetry
+backend.
 
 The Markdown documentation is published automatically to
 [GitHub Pages](https://sartim.github.io/aspnet-core-api-starter/) from the

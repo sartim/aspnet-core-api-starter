@@ -47,6 +47,8 @@ milestone is completed or the starter profiles change.
   production environment gate.
 - [x] Configured the production GitHub Environment with required reviewer
   approval, no administrator bypass, and a `main`-only deployment policy.
+- [x] Documented extension points for profile generation, API controllers,
+  authentication, persistence, observability, and startup configuration.
 - [x] Added a release checklist covering migrations, secrets, Docker images,
   semantic versioning, compatibility, deployment, and rollback.
 
@@ -120,7 +122,7 @@ Status: **Planned**
 
 ### P1 — Service foundation
 
-- [ ] **P1-9:** Extract authentication, authorization, persistence, and API concerns
+- [x] **P1-9:** Extract authentication, authorization, persistence, and API concerns
   into clearly documented extension points.
 - [ ] **P1-10:** Add role and permission authorization policies to protected endpoints.
 - [ ] **P1-11:** Define password, token expiry, refresh, revocation, and account-lockout
