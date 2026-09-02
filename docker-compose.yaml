@@ -37,6 +37,7 @@ services:
         dotnet tool install --global dotnet-ef --version 8.0.10 &&
         export PATH="$PATH:/root/.dotnet/tools" &&
         dotnet restore &&
+        dotnet ef migrations list &&
         dotnet ef database update
   
   api:
