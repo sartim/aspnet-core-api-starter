@@ -79,6 +79,9 @@ JWT_EXPIRY=300
 # Optional error tracking
 SENTRY_DSN=
 
+# Optional vendor-neutral APM export (OTLP)
+OTEL_EXPORTER_OTLP_ENDPOINT=
+
 # Database
 POSTGRES_USER=shopuser
 POSTGRES_PASSWORD=shoppassword

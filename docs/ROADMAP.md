@@ -53,12 +53,14 @@ Status: **Next**
   or JWT settings produce clear actionable errors in every profile.
 - [ ] **P0-9:** Decide and document the supported semantic-versioning and
   branching policy, including prereleases and breaking changes.
-- [ ] **P0-10:** Add fail-open Sentry error tracking: enable it only when
+- [x] **P0-10:** Add fail-open Sentry error tracking: enable it only when
   `SENTRY_DSN` is configured, and never prevent startup when it is absent or
   invalid.
-- [ ] **P0-11:** Add baseline observability to both profiles: structured
+- [x] **P0-11:** Add baseline observability to both profiles: structured
   logging, request correlation, distributed tracing, and low-cardinality
   metrics for request count, latency, and errors.
+- [ ] **P0-12:** Verify OTLP export against at least one collector and document
+  backend configuration for common APM providers.
 
 ### P1 — Next iteration
 

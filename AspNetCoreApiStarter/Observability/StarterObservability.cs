@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.Metrics;
 using System.Text;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
@@ -33,6 +34,11 @@ public sealed class SentryErrorReporter : IErrorReporter
 
 public sealed class StarterMetrics
 {
+    public const string MeterName = "AspNetCoreApiStarter";
+    private static readonly Meter Meter = new(MeterName);
+    private static readonly Counter<long> RequestCounter = Meter.CreateCounter<long>("aspnet_starter.requests");
+    private static readonly Counter<long> ErrorCounter = Meter.CreateCounter<long>("aspnet_starter.errors");
+    private static readonly Histogram<double> DurationHistogram = Meter.CreateHistogram<double>("aspnet_starter.request.duration", "ms");
     private long _requests;
     private long _errors;
     private long _durationMilliseconds;
@@ -42,6 +48,9 @@ public sealed class StarterMetrics
         Interlocked.Increment(ref _requests);
         if (failed) Interlocked.Increment(ref _errors);
         Interlocked.Add(ref _durationMilliseconds, (long)duration.TotalMilliseconds);
+        RequestCounter.Add(1);
+        if (failed) ErrorCounter.Add(1);
+        DurationHistogram.Record(duration.TotalMilliseconds);
     }
 
     public string ToPrometheus()
