@@ -4,6 +4,10 @@ Use this checklist for every production release. The release workflow creates a
 `vX.Y.Z` tag only after CI passes; deployment remains a deliberate operator
 action.
 
+The repository `production` GitHub Environment is configured with required
+reviewer approval, administrator bypass disabled, and a `main`-only deployment
+branch policy.
+
 ## Prepare
 
 - [ ] Confirm the change is on the intended release branch and the working tree
@@ -42,7 +46,7 @@ action.
 
 - [ ] Build the Docker image from the reviewed commit and tag it with the
       immutable Git SHA and release version.
-- [ ] Confirm the `production` GitHub Environment has required reviewers before
+- [x] Confirm the `production` GitHub Environment has required reviewers before
       the image-publishing job is allowed to run.
 - [ ] Scan the image and dependencies for vulnerabilities.
 - [ ] Record the published image digest and verify the SBOM/provenance
