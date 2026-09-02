@@ -5,6 +5,7 @@ using System.Text;
 using AspNetCoreApiStarter.Data;
 using AspNetCoreApiStarter.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +13,7 @@ namespace AspNetCoreApiStarter.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class AuthController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -48,6 +50,8 @@ namespace AspNetCoreApiStarter.Controllers
                 {
                     new Claim(ClaimTypes.Email, login.Email)
                 }),
+                Issuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
+                Audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE"),
                 Expires = DateTime.UtcNow.AddMinutes(
                     int.Parse(Environment.GetEnvironmentVariable("JWT_EXPIRY"))),
                 SigningCredentials = new SigningCredentials(
@@ -67,7 +71,7 @@ namespace AspNetCoreApiStarter.Controllers
                     Roles = roles
                 }
             })
-            { StatusCode = 401 };
+            { StatusCode = 200 };
         }
 
         private bool VerifyPassword(string password, string passwordHash)
@@ -86,4 +90,3 @@ namespace AspNetCoreApiStarter.Controllers
         }
     }
 }
-

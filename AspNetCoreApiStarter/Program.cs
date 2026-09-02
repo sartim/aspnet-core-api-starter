@@ -104,6 +104,7 @@ builder.Services.AddAuthentication(options =>
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret))
         };
     });
+builder.Services.AddAuthorization();
 
 //services.AddScoped(typeof(BaseController<>));
 //services.AddScoped<UserController>();
@@ -259,6 +260,7 @@ static string ReadPassword()
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 
 app.UseAuthorization();
 

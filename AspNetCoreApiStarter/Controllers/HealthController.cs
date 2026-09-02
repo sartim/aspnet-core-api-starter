@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using AspNetCoreApiStarter.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,6 +7,7 @@ namespace AspNetCoreApiStarter.Controllers
 {
     [Route("api/v1/health")]
     [ApiController]
+    [AllowAnonymous]
     public class HealthController : ControllerBase
     {
         private readonly ApplicationDbContext _dbContext;
