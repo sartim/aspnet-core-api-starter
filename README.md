@@ -36,6 +36,10 @@ work by default, while Sentry error tracking is enabled only when
 The `/metrics` endpoint exposes low-cardinality Prometheus-compatible counters,
 and responses include an `X-Trace-Id` correlation header.
 
+Errors use RFC 9457-style `application/problem+json` responses with `status`,
+`title`, `detail`, `instance`, and a `traceId` extension. Details are safe for
+clients while logs retain exceptions for diagnostics.
+
 ### Observability configuration
 
 The starter uses OpenTelemetry Protocol (OTLP) for vendor-neutral trace and

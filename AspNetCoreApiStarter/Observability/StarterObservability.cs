@@ -12,6 +12,28 @@ public interface IErrorReporter
     void Capture(Exception exception, HttpContext context);
 }
 
+public static class StarterProblemDetails
+{
+    public static string GetTraceId(HttpContext context)
+        => Activity.Current?.TraceId.ToString() ?? context.TraceIdentifier;
+
+    public static async Task WriteAsync(HttpContext context, int statusCode,
+        string title, string detail, CancellationToken cancellationToken = default)
+    {
+        context.Response.StatusCode = statusCode;
+        context.Response.ContentType = "application/problem+json";
+        var problem = new ProblemDetails
+        {
+            Status = statusCode,
+            Title = title,
+            Detail = detail,
+            Instance = context.Request.Path
+        };
+        problem.Extensions["traceId"] = GetTraceId(context);
+        await context.Response.WriteAsJsonAsync(problem, cancellationToken);
+    }
+}
+
 public sealed class LoggingErrorReporter(ILogger<LoggingErrorReporter> logger) : IErrorReporter
 {
     public void Capture(Exception exception, HttpContext context)
@@ -79,21 +101,18 @@ public sealed class StarterExceptionHandler(
         CancellationToken cancellationToken)
     {
         errorReporter.Capture(exception, httpContext);
-        logger.LogError(exception, "Request failed with an unhandled exception");
+        var traceId = StarterProblemDetails.GetTraceId(httpContext);
+        logger.LogError(exception, "Unhandled request exception for {Method} {Path} with trace ID {TraceId}",
+            httpContext.Request.Method, httpContext.Request.Path, traceId);
 
         if (httpContext.Response.HasStarted)
             return false;
 
-        httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-        var problem = new ProblemDetails
-        {
-            Status = StatusCodes.Status500InternalServerError,
-            Title = "An unexpected error occurred.",
-            Instance = httpContext.Request.Path
-        };
-        problem.Extensions["traceId"] = Activity.Current?.TraceId.ToString()
-            ?? httpContext.TraceIdentifier;
-        await httpContext.Response.WriteAsJsonAsync(problem, cancellationToken);
+        await StarterProblemDetails.WriteAsync(httpContext,
+            StatusCodes.Status500InternalServerError,
+            "Internal Server Error",
+            "An unexpected error occurred. Use the traceId when contacting support.",
+            cancellationToken);
         return true;
     }
 }
@@ -107,8 +126,9 @@ public sealed class StarterObservabilityMiddleware(
     {
         var started = Stopwatch.GetTimestamp();
         var failed = false;
+        var traceId = StarterProblemDetails.GetTraceId(context);
         context.Response.Headers.TryAdd("X-Trace-Id",
-            Activity.Current?.TraceId.ToString() ?? context.TraceIdentifier);
+            traceId);
 
         try
         {
@@ -124,9 +144,9 @@ public sealed class StarterObservabilityMiddleware(
         {
             var duration = Stopwatch.GetElapsedTime(started);
             metrics.RecordRequest(duration, failed);
-            logger.LogInformation("HTTP {Method} {Path} completed with {StatusCode} in {DurationMs}ms",
+            logger.LogInformation("HTTP {Method} {Path} completed with {StatusCode} in {DurationMs}ms with trace ID {TraceId}",
                 context.Request.Method, context.Request.Path, context.Response.StatusCode,
-                duration.TotalMilliseconds);
+                duration.TotalMilliseconds, traceId);
         }
     }
 }
