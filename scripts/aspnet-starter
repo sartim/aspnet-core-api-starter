@@ -36,7 +36,7 @@ else
   # Copy the maintained full profile, including local changes, so generation
   # also works before the repository changes have been committed.
   cp -R "$source_root/." "$destination/"
-  rm -rf "$destination/.git" "$destination/bin" "$destination/obj"
+  find "$destination" -type d \( -name .git -o -name bin -o -name obj \) -prune -exec rm -rf {} +
 fi
 
 identifier="$(printf '%s' "$project_name" | tr -d '[_-]')"
@@ -44,7 +44,10 @@ identifier="$(printf '%s' "$project_name" | tr -d '[_-]')"
 find "$destination" -depth -name '*@PROJECT_NAME@*' -exec sh -c '
   for path do mv "$path" "${path//@PROJECT_NAME@/'"$project_name"'}"; done
 ' sh {} +
-find "$destination" -type f -not -path '*/.git/*' -exec sed -i.bak \
+find "$destination" -type f \
+  \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.json' \
+  -o -name '*.md' -o -name '*.yml' -o -name '*.yaml' -o -name '*.sh' -o -name 'Dockerfile*' \
+  \) -exec sed -i.bak \
   -e "s/@PROJECT_NAME@/$project_name/g" \
   -e "s/AspNetCoreApiStarter/$identifier/g" \
   -e "s/aspnet-core-api-starter/$project_name/g" {} +

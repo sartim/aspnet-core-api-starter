@@ -22,6 +22,7 @@ milestone is completed or the starter profiles change.
   substitution.
 - [x] Documented profile selection and generated-project usage.
 - [x] Added this roadmap and linked it from the project README.
+- [x] Added generator smoke tests for both profiles and wired them into CI.
 
 ## Active priorities
 
@@ -31,12 +32,11 @@ priority incomplete task first.
 ## What’s next
 
 1. **P0-1/P0-3:** Get the hosted CI build and complete test suite green.
-2. **P0-2:** Automate generator smoke tests for both profiles.
-3. **P0-4:** Verify Docker Compose, migrations, and health checks from a clean
+2. **P0-4:** Verify Docker Compose, migrations, and health checks from a clean
    checkout.
-4. **P0-6:** Complete the remaining security gates, including secret and
+3. **P0-6:** Complete the remaining security gates, including secret and
    container scanning.
-5. **P0-12:** Verify OTLP export against a collector and document APM backend
+4. **P0-12:** Verify OTLP export against a collector and document APM backend
    configuration.
 
 ### P0 — Release blockers
@@ -45,7 +45,7 @@ Status: **Next**
 
 - [ ] **P0-1:** Restore and build both profiles in a clean .NET 8 CI
   environment.
-- [ ] **P0-2:** Add generator smoke tests that verify both generated projects
+- [x] **P0-2:** Add generator smoke tests that verify both generated projects
   build and that the minimal profile contains no user-service source or
   dependencies.
 - [ ] **P0-3:** Run the full Users/RBAC test suite in CI, including a

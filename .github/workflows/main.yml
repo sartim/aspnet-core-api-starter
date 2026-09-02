@@ -26,6 +26,8 @@ jobs:
           dotnet-version: 8.0.x
       - name: Restore dependencies
         run: dotnet restore AspNetCoreApiStarter.sln
+      - name: Validate generated starter profiles
+        run: ./scripts/test-starter.sh
       - name: Check formatting
         run: dotnet format AspNetCoreApiStarter.sln --no-restore --verify-no-changes
       - name: Build with analyzers
