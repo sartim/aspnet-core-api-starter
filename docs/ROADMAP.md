@@ -27,6 +27,8 @@ milestone is completed or the starter profiles change.
   package vulnerability checks, and coverage test execution in CI.
 - [x] Added a root `.env.example`, optional Compose environment override, and
   a CI validation step for the Docker Compose configuration.
+- [x] Added dedicated secret-history and container-image security workflows;
+  hosted results remain a release gate until the first scan completes.
 
 ## Active priorities
 
@@ -38,8 +40,7 @@ priority incomplete task first.
 1. **P0-3:** Add database-backed integration coverage for Users/RBAC.
 2. **P0-4:** Verify Docker Compose, migrations, and health checks from a clean
    checkout.
-3. **P0-6:** Complete the remaining security gates, including secret and
-   container scanning.
+3. **P0-6:** Confirm the new secret and container security scans are green.
 4. **P0-12:** Verify OTLP export against a collector and document APM backend
    configuration.
 
