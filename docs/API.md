@@ -55,6 +55,30 @@ Successful response:
 
 Invalid credentials return `401 Unauthorized`.
 
+Access tokens expire after `JWT_EXPIRY` seconds (300 by default). Login also
+returns a one-time refresh token valid for `JWT_REFRESH_EXPIRY` seconds (7 days
+by default). Refresh tokens are stored as hashes and rotated on every refresh;
+reusing a rotated or revoked token returns `401 Unauthorized`.
+
+```bash
+curl --fail "$API_URL/api/v1/auth/refresh" \
+  -H 'Content-Type: application/json' \
+  -d '{"refreshToken":"REFRESH_TOKEN"}'
+```
+
+Revoke the current access token and all refresh tokens for its account:
+
+```bash
+curl --fail -X POST "$API_URL/api/v1/auth/revoke" \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+Passwords must be at least 12 characters and contain uppercase, lowercase,
+numeric, and special characters. After `AUTH_MAX_FAILED_ATTEMPTS` failed
+logins (5 by default), the account is locked for `AUTH_LOCKOUT_MINUTES` (15 by
+default). Failed-login responses intentionally do not reveal whether an email
+exists or whether an account is locked.
+
 Use the token for protected requests:
 
 ```bash

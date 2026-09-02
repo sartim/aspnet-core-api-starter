@@ -136,6 +136,7 @@ app.UseHttpsRedirection();
 // Skips auth check
 app.UseWhen(context =>
     !context.Request.Path.StartsWithSegments("/api/v1/auth/generate-jwt") &&
+    !context.Request.Path.StartsWithSegments("/api/v1/auth/refresh") &&
     !context.Request.Path.StartsWithSegments("/api/v1/health") &&
     !context.Request.Path.StartsWithSegments("/metrics"),
 appBuilder =>
@@ -158,6 +159,8 @@ if (args.Contains("--create-admin"))
 
     if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
         throw new InvalidOperationException("--create-admin requires --admin-email and --admin-password, or ADMIN_EMAIL and ADMIN_PASSWORD.");
+    if (!PasswordPolicy.IsValid(password))
+        throw new InvalidOperationException(PasswordPolicy.Requirements());
     if (!int.TryParse(phoneValue, out var phone))
         throw new InvalidOperationException("ADMIN_PHONE or --admin-phone must be a valid integer.");
 

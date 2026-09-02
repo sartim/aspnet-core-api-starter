@@ -31,7 +31,7 @@ namespace AspNetCoreApiStarter.Tests.Controllers
                 LastName = "Doe",
                 Email = "johndoe@test.com",
                 Phone = 12345678,
-                Password = "password123",
+                Password = "Strong-password1",
                 IsActive = true
             };
 

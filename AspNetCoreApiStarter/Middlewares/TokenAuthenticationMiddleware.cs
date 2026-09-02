@@ -4,6 +4,8 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AspNetCoreApiStarter.Observability;
+using AspNetCoreApiStarter.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 
@@ -16,12 +18,19 @@ public class TokenAuthenticationMiddleware
         _next = next;
     }
 
-    public async Task InvokeAsync(HttpContext context)
+    public async Task InvokeAsync(HttpContext context, ApplicationDbContext dbContext)
     {
         if (context.Request.Headers.ContainsKey("Authorization"))
         {
             string token = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-            bool isTokenValid = ValidateToken(token);
+            var principal = ValidateToken(token);
+            bool isTokenValid = principal is not null;
+            if (isTokenValid)
+            {
+                var jwtId = principal!.FindFirstValue(JwtRegisteredClaimNames.Jti);
+                isTokenValid = string.IsNullOrWhiteSpace(jwtId) ||
+                    !await dbContext.RevokedAccessTokens.AnyAsync(revoked => revoked.JwtId == jwtId && revoked.ExpiresAt > DateTime.UtcNow);
+            }
 
             if (!isTokenValid)
             {
@@ -40,7 +49,7 @@ public class TokenAuthenticationMiddleware
         await _next(context);
     }
 
-    private bool ValidateToken(string token)
+    private ClaimsPrincipal? ValidateToken(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var validationParameters = new TokenValidationParameters
@@ -48,19 +57,23 @@ public class TokenAuthenticationMiddleware
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(
                 Environment.GetEnvironmentVariable("JWT_SECRET_KEY"))),
-            ValidateIssuer = false,
-            ValidateAudience = false
+            ValidateIssuer = true,
+            ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
+            ValidateAudience = true,
+            ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE"),
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.FromSeconds(30)
         };
 
         try
         {
             ClaimsPrincipal claimsPrincipal = tokenHandler.ValidateToken(
                 token, validationParameters, out SecurityToken validatedToken);
-            return true;
+            return claimsPrincipal;
         }
         catch (Exception)
         {
-            return false;
+            return null;
         }
     }
 }
