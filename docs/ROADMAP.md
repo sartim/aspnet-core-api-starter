@@ -33,6 +33,10 @@ milestone is completed or the starter profiles change.
   migrations and the API health endpoint.
 - [x] Extended the hosted runtime test to verify the migrated Users/RBAC schema
   directly in PostgreSQL.
+- [x] Verified the Users/RBAC database-backed integration path in hosted CI,
+  including migration, health, and schema assertions.
+- [x] Added an optional OTLP Collector overlay and hosted export smoke test;
+  backend-specific exporters remain configurable through the same OTLP endpoint.
 
 ## Active priorities
 
@@ -41,8 +45,8 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P0-12:** Verify OTLP export against a collector and document APM backend
-   configuration.
+1. **P0-12:** Confirm the OTLP collector export smoke test passes, then expand
+   observability documentation with provider-specific endpoint examples.
 
 ### P0 — Release blockers
 
@@ -53,7 +57,7 @@ Status: **Next**
 - [x] **P0-2:** Add generator smoke tests that verify both generated projects
   build and that the minimal profile contains no user-service source or
   dependencies.
-- [ ] **P0-3:** Run the full Users/RBAC test suite in CI, including a
+- [x] **P0-3:** Run the full Users/RBAC test suite in CI, including a
   database-backed integration test path.
 - [x] **P0-4:** Verify Docker Compose from a clean checkout, including
   migrations and health checks.

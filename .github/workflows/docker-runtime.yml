@@ -32,3 +32,26 @@ jobs:
       - name: Stop services
         if: always()
         run: docker compose down --volumes
+
+  otlp:
+    name: OTLP collector export smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start services with OTLP collector
+        run: docker compose -f docker-compose.yaml -f docker-compose.otel.yaml up -d --build
+      - name: Generate telemetry
+        run: curl --fail --retry 30 --retry-all-errors --retry-delay 3 --retry-connrefused http://localhost:5070/api/v1/health
+      - name: Verify collector received telemetry
+        run: |
+          for attempt in $(seq 1 20); do
+            if docker compose -f docker-compose.yaml -f docker-compose.otel.yaml logs otel-collector 2>&1 | grep -q 'Span #'; then
+              exit 0
+            fi
+            sleep 3
+          done
+          docker compose -f docker-compose.yaml -f docker-compose.otel.yaml logs --no-color
+          exit 1
+      - name: Stop services
+        if: always()
+        run: docker compose -f docker-compose.yaml -f docker-compose.otel.yaml down --volumes
