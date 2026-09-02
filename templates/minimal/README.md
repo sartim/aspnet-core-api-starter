@@ -15,3 +15,7 @@ Health check:
 ```bash
 curl --fail http://localhost:5070/api/v1/health
 ```
+
+Metrics are available at `/metrics`, and every response includes an
+`X-Trace-Id` correlation header. Sentry and other exporters can be added later
+without changing the application endpoints.

@@ -4,12 +4,31 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AspNetCoreApiStarter.Models;
+using AspNetCoreApiStarter.Observability;
+using Sentry;
 using dotenv.net;
 
 // Load .env
 DotEnv.Load();
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.AddJsonConsole();
+var sentryDsn = Environment.GetEnvironmentVariable("SENTRY_DSN");
+if (!string.IsNullOrWhiteSpace(sentryDsn) &&
+    Uri.TryCreate(sentryDsn, UriKind.Absolute, out var parsedSentryDsn) &&
+    (parsedSentryDsn.Scheme == Uri.UriSchemeHttps || parsedSentryDsn.Scheme == Uri.UriSchemeHttp))
+{
+    builder.WebHost.UseSentry(options =>
+    {
+        options.Dsn = sentryDsn;
+        options.SendDefaultPii = false;
+    });
+}
+else if (!string.IsNullOrWhiteSpace(sentryDsn))
+{
+    Console.Error.WriteLine("SENTRY_DSN is invalid; Sentry error tracking is disabled.");
+    sentryDsn = null;
+}
 
 // Set port for web server
 int port = Convert.ToInt32(Environment.GetEnvironmentVariable("PORT"));
@@ -20,6 +39,7 @@ builder.WebHost.ConfigureKestrel(options =>
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddStarterObservability(sentryDsn);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -66,6 +86,8 @@ builder.Services.AddAuthentication(options =>
 //services.AddScoped<UserController>();
 
 var app = builder.Build();
+app.UseExceptionHandler();
+app.UseStarterObservability();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -79,7 +101,8 @@ app.UseHttpsRedirection();
 // Skips auth check
 app.UseWhen(context => 
     !context.Request.Path.StartsWithSegments("/api/v1/auth/generate-jwt") &&
-    !context.Request.Path.StartsWithSegments("/api/v1/health"),
+    !context.Request.Path.StartsWithSegments("/api/v1/health") &&
+    !context.Request.Path.StartsWithSegments("/metrics"),
 appBuilder =>
 {
     appBuilder.UseMiddleware<TokenAuthenticationMiddleware>();
@@ -169,6 +192,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapStarterMetrics();
 
 app.Run();
-

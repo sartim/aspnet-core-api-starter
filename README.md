@@ -29,6 +29,9 @@ Observability is part of the starter contract: logging, tracing, and metrics
 work by default, while Sentry error tracking is enabled only when
 `SENTRY_DSN` is configured and remains disabled without blocking startup.
 
+The `/metrics` endpoint exposes low-cardinality Prometheus-compatible counters,
+and responses include an `X-Trace-Id` correlation header.
+
 See the [project roadmap](docs/ROADMAP.md) for milestones and task priorities.
 
 ---
@@ -72,6 +75,9 @@ JWT_SECRET_KEY=CHANGE_ME_TO_A_SECURE_32_BYTE_MIN_SECRET
 JWT_ISSUER=asp-shop-api
 JWT_AUDIENCE=asp-shop-client
 JWT_EXPIRY=300
+
+# Optional error tracking
+SENTRY_DSN=
 
 # Database
 POSTGRES_USER=shopuser

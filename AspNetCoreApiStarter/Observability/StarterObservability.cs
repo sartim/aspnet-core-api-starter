@@ -1,0 +1,149 @@
+using System.Diagnostics;
+using System.Text;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using Sentry;
+
+namespace AspNetCoreApiStarter.Observability;
+
+public interface IErrorReporter
+{
+    void Capture(Exception exception, HttpContext context);
+}
+
+public sealed class LoggingErrorReporter(ILogger<LoggingErrorReporter> logger) : IErrorReporter
+{
+    public void Capture(Exception exception, HttpContext context)
+    {
+        logger.LogError(exception, "Unhandled request exception for {Method} {Path}",
+            context.Request.Method, context.Request.Path);
+    }
+}
+
+public sealed class SentryErrorReporter : IErrorReporter
+{
+    public void Capture(Exception exception, HttpContext context)
+    {
+        SentrySdk.WithScope(scope =>
+        {
+            scope.SetTag("trace_id", Activity.Current?.TraceId.ToString() ?? context.TraceIdentifier);
+            SentrySdk.CaptureException(exception);
+        });
+    }
+}
+
+public sealed class StarterMetrics
+{
+    private long _requests;
+    private long _errors;
+    private long _durationMilliseconds;
+
+    public void RecordRequest(TimeSpan duration, bool failed)
+    {
+        Interlocked.Increment(ref _requests);
+        if (failed) Interlocked.Increment(ref _errors);
+        Interlocked.Add(ref _durationMilliseconds, (long)duration.TotalMilliseconds);
+    }
+
+    public string ToPrometheus()
+    {
+        var requests = Interlocked.Read(ref _requests);
+        var errors = Interlocked.Read(ref _errors);
+        var duration = Interlocked.Read(ref _durationMilliseconds);
+        var builder = new StringBuilder();
+        builder.AppendLine("# TYPE aspnet_starter_requests_total counter");
+        builder.AppendLine($"aspnet_starter_requests_total {requests}");
+        builder.AppendLine("# TYPE aspnet_starter_errors_total counter");
+        builder.AppendLine($"aspnet_starter_errors_total {errors}");
+        builder.AppendLine("# TYPE aspnet_starter_request_duration_milliseconds_total counter");
+        builder.AppendLine($"aspnet_starter_request_duration_milliseconds_total {duration}");
+        return builder.ToString();
+    }
+}
+
+public sealed class StarterExceptionHandler(
+    ILogger<StarterExceptionHandler> logger,
+    IErrorReporter errorReporter) : IExceptionHandler
+{
+    public async ValueTask<bool> TryHandleAsync(
+        HttpContext httpContext,
+        Exception exception,
+        CancellationToken cancellationToken)
+    {
+        errorReporter.Capture(exception, httpContext);
+        logger.LogError(exception, "Request failed with an unhandled exception");
+
+        if (httpContext.Response.HasStarted)
+            return false;
+
+        httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        var problem = new ProblemDetails
+        {
+            Status = StatusCodes.Status500InternalServerError,
+            Title = "An unexpected error occurred.",
+            Instance = httpContext.Request.Path
+        };
+        problem.Extensions["traceId"] = Activity.Current?.TraceId.ToString()
+            ?? httpContext.TraceIdentifier;
+        await httpContext.Response.WriteAsJsonAsync(problem, cancellationToken);
+        return true;
+    }
+}
+
+public sealed class StarterObservabilityMiddleware(
+    RequestDelegate next,
+    StarterMetrics metrics,
+    ILogger<StarterObservabilityMiddleware> logger)
+{
+    public async Task InvokeAsync(HttpContext context)
+    {
+        var started = Stopwatch.GetTimestamp();
+        var failed = false;
+        context.Response.Headers.TryAdd("X-Trace-Id",
+            Activity.Current?.TraceId.ToString() ?? context.TraceIdentifier);
+
+        try
+        {
+            await next(context);
+            failed = context.Response.StatusCode >= 500;
+        }
+        catch
+        {
+            failed = true;
+            throw;
+        }
+        finally
+        {
+            var duration = Stopwatch.GetElapsedTime(started);
+            metrics.RecordRequest(duration, failed);
+            logger.LogInformation("HTTP {Method} {Path} completed with {StatusCode} in {DurationMs}ms",
+                context.Request.Method, context.Request.Path, context.Response.StatusCode,
+                duration.TotalMilliseconds);
+        }
+    }
+}
+
+public static class ObservabilityExtensions
+{
+    public static IServiceCollection AddStarterObservability(this IServiceCollection services, string? sentryDsn = null)
+    {
+        services.AddSingleton<StarterMetrics>();
+        if (string.IsNullOrWhiteSpace(sentryDsn))
+            services.AddSingleton<IErrorReporter, LoggingErrorReporter>();
+        else
+            services.AddSingleton<IErrorReporter, SentryErrorReporter>();
+        services.AddExceptionHandler<StarterExceptionHandler>();
+        services.AddProblemDetails();
+        return services;
+    }
+
+    public static IApplicationBuilder UseStarterObservability(this IApplicationBuilder app)
+        => app.UseMiddleware<StarterObservabilityMiddleware>();
+
+    public static IEndpointRouteBuilder MapStarterMetrics(this IEndpointRouteBuilder endpoints)
+    {
+        endpoints.MapGet("/metrics", (StarterMetrics metrics) =>
+            Results.Text(metrics.ToPrometheus(), "text/plain; version=0.0.4"));
+        return endpoints;
+    }
+}
