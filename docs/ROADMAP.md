@@ -45,6 +45,8 @@ milestone is completed or the starter profiles change.
 - [x] Added tagged-release CD that publishes immutable GHCR images with
   version/SHA tags, SBOM/provenance, image metadata artifacts, and a protected
   production environment gate.
+- [x] Configured the production GitHub Environment with required reviewer
+  approval, no administrator bypass, and a `main`-only deployment policy.
 - [x] Added a release checklist covering migrations, secrets, Docker images,
   semantic versioning, compatibility, deployment, and rollback.
 
