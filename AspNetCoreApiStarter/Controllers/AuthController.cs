@@ -112,7 +112,10 @@ public class AuthController : ControllerBase
         var accessToken = CreateAccessToken(user, now);
         _context.RefreshTokens.Add(new RefreshToken
         {
-            UserId = user.Id, User = user, TokenHash = HashToken(refreshToken), CreatedAt = now,
+            UserId = user.Id,
+            User = user,
+            TokenHash = HashToken(refreshToken),
+            CreatedAt = now,
             ExpiresAt = now.AddSeconds(_security.RefreshTokenLifetimeSeconds)
         });
         return new TokenResponse(accessToken.Token, refreshToken, accessToken.ExpiresAt);
@@ -144,11 +147,13 @@ public class AuthController : ControllerBase
 
     private ObjectResult UnauthorizedResponse() => new(new ProblemDetails
     {
-        Status = StatusCodes.Status401Unauthorized, Title = "Unauthorized",
+        Status = StatusCodes.Status401Unauthorized,
+        Title = "Unauthorized",
         Detail = "The supplied credentials are invalid or the account is temporarily unavailable.",
         Instance = HttpContext.Request.Path,
         Extensions = { ["traceId"] = StarterProblemDetails.GetTraceId(HttpContext) }
-    }) { StatusCode = StatusCodes.Status401Unauthorized, ContentTypes = { "application/problem+json" } };
+    })
+    { StatusCode = StatusCodes.Status401Unauthorized, ContentTypes = { "application/problem+json" } };
 
     private sealed record AccessToken(string Token, DateTime ExpiresAt);
     private sealed record TokenResponse(string Token, string RefreshToken, DateTime ExpiresAt);
