@@ -2,10 +2,10 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /source
 
-# Copy csproj and restore
-COPY *.sln .
+# Copy csproj and restore the application only. Tests are restored by CI,
+# but are intentionally excluded from the production image build.
 COPY AspNetCoreApiStarter/*.csproj ./AspNetCoreApiStarter/
-RUN dotnet restore
+RUN dotnet restore AspNetCoreApiStarter/AspNetCoreApiStarter.csproj
 
 # Copy source and build
 COPY AspNetCoreApiStarter/. ./AspNetCoreApiStarter/

@@ -28,6 +28,8 @@ jobs:
         run: dotnet restore AspNetCoreApiStarter.sln
       - name: Validate generated starter profiles
         run: ./scripts/test-starter.sh
+      - name: Validate Docker Compose configuration
+        run: docker compose config --quiet
       - name: Check formatting
         run: dotnet format AspNetCoreApiStarter.sln --no-restore --severity error --verify-no-changes
       - name: Build with analyzers

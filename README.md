@@ -62,9 +62,9 @@ dotnet ef --version
 
 ### 2. Environment Variables
 
-Create a `.env` file using the example below.
+Create a `.env` file by copying `.env.example` from the repository root.
 
-#### `.env.example`
+#### `.env.example` contents
 
 ```env
 ENV=Development

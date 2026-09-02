@@ -23,6 +23,10 @@ milestone is completed or the starter profiles change.
 - [x] Documented profile selection and generated-project usage.
 - [x] Added this roadmap and linked it from the project README.
 - [x] Added generator smoke tests for both profiles and wired them into CI.
+- [x] Verified hosted .NET restore, formatting, build, profile smoke tests,
+  package vulnerability checks, and coverage test execution in CI.
+- [x] Added a root `.env.example`, optional Compose environment override, and
+  a CI validation step for the Docker Compose configuration.
 
 ## Active priorities
 
@@ -31,7 +35,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P0-1/P0-3:** Get the hosted CI build and complete test suite green.
+1. **P0-3:** Add database-backed integration coverage for Users/RBAC.
 2. **P0-4:** Verify Docker Compose, migrations, and health checks from a clean
    checkout.
 3. **P0-6:** Complete the remaining security gates, including secret and
@@ -43,7 +47,7 @@ priority incomplete task first.
 
 Status: **Next**
 
-- [ ] **P0-1:** Restore and build both profiles in a clean .NET 8 CI
+- [x] **P0-1:** Restore and build both profiles in a clean .NET 8 CI
   environment.
 - [x] **P0-2:** Add generator smoke tests that verify both generated projects
   build and that the minimal profile contains no user-service source or
@@ -77,8 +81,8 @@ Status: **Next**
 
 Status: **Planned**
 
-- [ ] **P1-1:** Add a checked-in `.env.example` at the repository root and ensure the
-  generated user-service profile receives a safe copy.
+- [x] **P1-1:** Add a checked-in `.env.example` at the repository root and ensure
+  the generated user-service profile receives a safe copy.
 - [ ] **P1-2:** Add a non-interactive command for creating the first administrator,
   suitable for local setup and deployment scripts.
 - [ ] **P1-3:** Provide consistent API documentation and example requests for health,
