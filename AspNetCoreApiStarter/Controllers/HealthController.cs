@@ -9,7 +9,7 @@ namespace AspNetCoreApiStarter.Controllers
     public class HealthController : ControllerBase
     {
         private readonly ShopDbContext _dbContext;
-        
+
         public HealthController(ShopDbContext dbContext)
         {
             _dbContext = dbContext;

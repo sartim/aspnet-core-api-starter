@@ -30,8 +30,11 @@ namespace AspNetCoreApiStarter.Controllers
             // check if user exists and password matches
             if (user == null || !VerifyPassword(login.Password, user.Password))
             {
-                return new JsonResult(new {
-                    error = "Invalid credentials" }) { StatusCode = 401 };
+                return new JsonResult(new
+                {
+                    error = "Invalid credentials"
+                })
+                { StatusCode = 401 };
 
             }
 

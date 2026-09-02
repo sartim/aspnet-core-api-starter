@@ -83,7 +83,7 @@ namespace AspNetCoreApiStarter.Controllers
             {
                 return BadRequest();
             }
-            
+
             // Convert all DateTime properties to UTC before saving
             var dateTimeProps = entity.GetType()
                 .GetProperties()
@@ -99,7 +99,7 @@ namespace AspNetCoreApiStarter.Controllers
             }
 
             _dbContext.Entry(entity).State = EntityState.Modified;
-            
+
             try
             {
                 await _dbContext.SaveChangesAsync();

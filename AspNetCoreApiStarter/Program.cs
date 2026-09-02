@@ -79,11 +79,11 @@ builder.Services.AddDbContext<ShopDbContext>(options => options.UseNpgsql(connec
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 // JWT authentication setup
-var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET_KEY") 
+var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET_KEY")
                 ?? throw new Exception("JWT_SECRET_KEY not set.");
-var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER") 
+var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER")
                 ?? throw new Exception("JWT_ISSUER not set.");
-var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") 
+var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE")
                   ?? throw new Exception("JWT_AUDIENCE not set.");
 
 builder.Services.AddAuthentication(options =>
@@ -122,7 +122,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // Skips auth check
-app.UseWhen(context => 
+app.UseWhen(context =>
     !context.Request.Path.StartsWithSegments("/api/v1/auth/generate-jwt") &&
     !context.Request.Path.StartsWithSegments("/api/v1/health") &&
     !context.Request.Path.StartsWithSegments("/metrics"),
