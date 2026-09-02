@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using AspNetCoreApiStarter.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AspNetCoreApiStarter.Models;
 using AspNetCoreApiStarter.Observability;
+using AspNetCoreApiStarter.Authorization;
 using Sentry;
 using dotenv.net;
 using OpenTelemetry.Resources;
@@ -104,7 +106,16 @@ builder.Services.AddAuthentication(options =>
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret))
         };
     });
-builder.Services.AddAuthorization();
+builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(AuthorizationPolicies.Administrator, policy =>
+        policy.RequireAuthenticatedUser().RequireRole("Administrator"));
+    AddPermissionPolicy(options, AuthorizationPolicies.UsersManage);
+    AddPermissionPolicy(options, AuthorizationPolicies.RolesManage);
+    AddPermissionPolicy(options, AuthorizationPolicies.PermissionsManage);
+    AddPermissionPolicy(options, AuthorizationPolicies.RolePermissionsManage);
+});
 
 //services.AddScoped(typeof(BaseController<>));
 //services.AddScoped<UserController>();
@@ -300,6 +311,12 @@ static string ReadPassword()
 
     Console.WriteLine();
     return password;
+}
+
+static void AddPermissionPolicy(AuthorizationOptions options, string permission)
+{
+    options.AddPolicy(permission, policy =>
+        policy.RequireAuthenticatedUser().AddRequirements(new PermissionRequirement(permission)));
 }
 
 app.UseHttpsRedirection();

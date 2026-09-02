@@ -39,10 +39,12 @@ Bearer token. Replace the middleware or JWT configuration when integrating an
 external identity provider, while preserving `HttpContext.User` claims for
 downstream authorization.
 
-Authorization is configured in `Program.cs`. Add named policies with
-`AddAuthorization`, then apply `[Authorize(Policy = "your-policy")]` to endpoints. The
-current starter includes the administrator role boundary; fine-grained
-role-permission policies are the next service-foundation milestone.
+Authorization is configured in `Program.cs`. The full profile includes named
+resource policies for users, roles, permissions, and role-permission links.
+`PermissionAuthorizationHandler` evaluates permission claims issued from the
+user's assigned roles, while the `Administrator` role remains a superuser.
+Add a policy and apply `[Authorize(Policy = "your-policy")]` when introducing a
+new protected resource.
 
 ## Persistence
 
