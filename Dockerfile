@@ -4,12 +4,12 @@ WORKDIR /source
 
 # Copy csproj and restore
 COPY *.sln .
-COPY ASPShopAPI/*.csproj ./ASPShopAPI/
+COPY AspNetCoreApiStarter/*.csproj ./AspNetCoreApiStarter/
 RUN dotnet restore
 
 # Copy source and build
-COPY ASPShopAPI/. ./ASPShopAPI/
-WORKDIR /source/ASPShopAPI
+COPY AspNetCoreApiStarter/. ./AspNetCoreApiStarter/
+WORKDIR /source/AspNetCoreApiStarter
 RUN dotnet build -c Release -o /app
 
 # Runtime stage
@@ -21,4 +21,4 @@ COPY --from=build /app ./
 
 EXPOSE 5070
 
-ENTRYPOINT ["dotnet", "ASPShopAPI.dll"]
+ENTRYPOINT ["dotnet", "AspNetCoreApiStarter.dll"]

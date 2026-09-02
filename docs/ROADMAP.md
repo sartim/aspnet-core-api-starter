@@ -1,0 +1,127 @@
+# ASP.NET Core API Starter Roadmap
+
+This roadmap tracks the work required to make `aspnet-core-api-starter` a
+reliable, reusable starting point. Priorities are reviewed whenever a
+milestone is completed or the starter profiles change.
+
+## Priority guide
+
+- **P0 — release blocker:** required for a usable, trustworthy starter
+- **P1 — next:** important for the next iteration or developer experience
+- **P2 — later:** valuable improvements that do not block adoption
+
+## Completed
+
+- [x] Renamed the solution, application, test project, namespaces, and Docker
+  references to `AspNetCoreApiStarter`.
+- [x] Kept the complete Users/RBAC implementation as the default
+  `user-service` profile.
+- [x] Added the `minimal` profile without user-service, EF Core, authentication,
+  database, or third-party package dependencies.
+- [x] Added `scripts/aspnet-starter init` with profile selection and project-name
+  substitution.
+- [x] Documented profile selection and generated-project usage.
+- [x] Added this roadmap and linked it from the project README.
+
+## Active priorities
+
+Tasks are ordered by priority within each milestone. Work from the highest
+priority incomplete task first.
+
+### P0 — Release blockers
+
+Status: **Next**
+
+- [ ] **P0-1:** Restore and build both profiles in a clean .NET 8 CI
+  environment.
+- [ ] **P0-2:** Add generator smoke tests that verify both generated projects
+  build and that the minimal profile contains no user-service source or
+  dependencies.
+- [ ] **P0-3:** Run the full Users/RBAC test suite in CI, including a
+  database-backed integration test path.
+- [ ] **P0-4:** Verify Docker Compose from a clean checkout, including
+  migrations and health checks.
+- [ ] **P0-5:** Add the complete pull-request CI pipeline: restore, build,
+  test, `dotnet format --verify-no-changes`, analyzers, and coverage output.
+- [ ] **P0-6:** Add security gates for NuGet vulnerabilities, dependency review,
+  CodeQL, secret scanning, and container-image scanning.
+- [ ] **P0-7:** Add `.github/dependabot.yml` for NuGet, GitHub Actions, and
+  Docker updates, with grouped non-breaking updates and a controlled update
+  cadence. GitHub requires this configuration under `.github` for automated
+  version-update pull requests.
+- [ ] **P0-8:** Fix the application startup contract so missing `PORT`, database,
+  or JWT settings produce clear actionable errors in every profile.
+- [ ] **P0-9:** Decide and document the supported semantic-versioning and
+  branching policy, including prereleases and breaking changes.
+
+### P1 — Next iteration
+
+Status: **Planned**
+
+- [ ] **P1-1:** Add a checked-in `.env.example` at the repository root and ensure the
+  generated user-service profile receives a safe copy.
+- [ ] **P1-2:** Add a non-interactive command for creating the first administrator,
+  suitable for local setup and deployment scripts.
+- [ ] **P1-3:** Provide consistent API documentation and example requests for health,
+  authentication, users, roles, permissions, and role-permission endpoints.
+- [ ] **P1-4:** Add structured logging, request IDs, and consistent error responses.
+- [ ] **P1-5:** Add a release checklist covering migrations, secrets, Docker images, and
+  backwards-compatible API changes.
+- [ ] **P1-6:** Add CD for tagged releases: build an immutable versioned Docker
+  image, publish release artifacts, generate release notes, and deploy only
+  through protected environments with approvals and rollback guidance.
+- [ ] **P1-7:** Add a release workflow that creates and pushes `vX.Y.Z` tags only
+  after CI passes, then creates the GitHub Release and attaches the generated
+  artifacts.
+
+### P1 — Service foundation
+
+- [ ] **P1-8:** Extract authentication, authorization, persistence, and API concerns
+  into clearly documented extension points.
+- [ ] **P1-9:** Add role and permission authorization policies to protected endpoints.
+- [ ] **P1-10:** Define password, token expiry, refresh, revocation, and account-lockout
+  behavior explicitly.
+- [ ] **P1-11:** Add pagination, filtering, validation, and stable response contracts to
+  collection endpoints.
+- [ ] **P1-12:** Add database migration guidance for generated projects and production
+  deployments.
+
+## Versioning decision
+
+The preferred first candidates are:
+
+- **[Nerdbank.GitVersioning](https://github.com/dotnet/Nerdbank.GitVersioning):**
+  a .NET/MSBuild-integrated option driven by `version.json`, producing
+  SemVer-compatible versions and commit-based build metadata.
+- **[MinVer](https://github.com/adamralph/minver):** a smaller tag-first option
+  that derives the assembly and package versions directly from Git tags.
+
+Evaluate both against the desired workflow, then standardize on one. The
+selected tool must provide the version consistently to assemblies, Docker
+image tags, release artifacts, and GitHub Releases. Tag creation and release
+publishing should remain explicit CI/CD steps, with no release triggered from
+an unreviewed pull request.
+
+The Dependabot configuration should follow [GitHub's Dependabot
+documentation](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file),
+and the source security workflow should use [GitHub
+CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-code-scanning).
+
+### P2 — Optional capabilities
+
+- [ ] **P2-1:** Add optional Redis caching without making it a minimal-profile
+  dependency.
+- [ ] **P2-2:** Add health/readiness separation for deployments that require a database.
+- [ ] **P2-3:** Add observability integrations that remain disabled unless configured.
+- [ ] **P2-4:** Add optional email/password-reset and email-verification modules.
+- [ ] **P2-5:** Add optional gRPC or messaging adapters without changing the REST
+  baseline.
+- [ ] **P2-6:** Publish versioned starter templates and a migration path between profile
+  versions.
+
+## Definition of done
+
+A roadmap item is complete when the implementation, tests, documentation, and
+CI behavior are updated together. A milestone can move to complete only when
+all P0 items in that milestone are resolved and the generated output has been
+verified from a clean destination.

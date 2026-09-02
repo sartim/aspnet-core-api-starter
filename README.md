@@ -1,6 +1,31 @@
-# ASPShopAPI
+# ASP.NET API starter
 
-A RESTful Web API built with **ASP.NET Core** and **Entity Framework Core**, using **PostgreSQL** as the database and **JWT-based authentication**.
+A production-oriented ASP.NET Core API starter with PostgreSQL, Entity Framework Core, JWT authentication, and a Users/RBAC service profile.
+
+This repository is named `aspnet-core-api-starter` and follows the same generated-profile model as the Drogon API starter.
+
+## Generate a fresh API
+
+Use the generator when starting a new project. The destination must be new or empty:
+
+```bash
+./scripts/aspnet-starter init shop-api ../shop-api
+```
+
+The default `user-service` profile includes the maintained Users/RBAC implementation, JWT authentication, EF Core migrations, Docker support, and tests. For a clean ASP.NET foundation without user-service:
+
+```bash
+./scripts/aspnet-starter init shop-api ../shop-api --profile minimal
+```
+
+Supported profiles:
+
+* `user-service` (default): Users, roles, permissions, JWT authentication, PostgreSQL, migrations, and tests
+* `minimal`: dependency-free ASP.NET Core API foundation with a health endpoint; no users, roles, permissions, EF Core, database, or authentication
+
+The source repository itself is the complete `user-service` profile. The minimal profile lives in `templates/minimal` and is intentionally independent of the user-service implementation.
+
+See the [project roadmap](docs/ROADMAP.md) for milestones and task priorities.
 
 ---
 
