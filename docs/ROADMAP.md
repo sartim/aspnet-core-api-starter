@@ -40,6 +40,8 @@ milestone is completed or the starter profiles change.
 - [x] Verified OTLP traces and metrics are received by the hosted collector.
 - [x] Added colored MkDocs Material Markdown documentation publishing to GitHub
   Pages through GitHub Actions, including light/dark mode and callouts.
+- [x] Added a versioned API reference with example requests for health,
+  authentication, users, roles, permissions, and role-permission endpoints.
 - [x] Standardized client errors as problem details and included trace IDs in
   error responses and structured request logs.
 - [x] Added tagged-release CD that publishes immutable GHCR images with
@@ -59,8 +61,15 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P1-3:** Provide consistent API documentation and example requests for
-   health, authentication, users, roles, permissions, and role-permission endpoints.
+1. **P1-10:** Add role and permission authorization policies to protected endpoints.
+
+## Deployment scope
+
+Docker Compose is the supported deployment baseline included in this repository.
+Kubernetes manifests and Helm charts are intentionally out of scope. They remain
+an adopter choice, allowing each team to use its preferred platform, chart
+conventions, and operational policies without coupling the starter to one
+deployment target.
 
 ### P0 — Release blockers
 
@@ -105,8 +114,8 @@ Status: **Planned**
   the generated user-service profile receives a safe copy.
 - [x] **P1-2:** Add a non-interactive command for creating the first administrator,
   suitable for local setup and deployment scripts.
-- [ ] **P1-3:** Provide consistent API documentation and example requests for health,
-  authentication, users, roles, permissions, and role-permission endpoints.
+- [x] **P1-3:** Provide consistent API documentation and example requests for
+  health, authentication, users, roles, permissions, and role-permission endpoints.
 - [x] **P1-4:** Add structured logging, request IDs, and consistent error responses.
 - [x] **P1-5:** Add a release checklist covering migrations, secrets, Docker
   images, and backwards-compatible API changes.
@@ -157,7 +166,8 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
 
 - [ ] **P2-1:** Add optional Redis caching without making it a minimal-profile
   dependency.
-- [ ] **P2-2:** Add health/readiness separation for deployments that require a database.
+- [ ] **P2-2:** Add platform-neutral health/readiness separation for deployments
+  that require a database.
 - [ ] **P2-3:** Add optional observability exporters and dashboards that remain
   disabled unless configured.
 - [ ] **P2-4:** Add optional email/password-reset and email-verification modules.
