@@ -1,8 +1,9 @@
 # API reference
 
 The full `user-service` profile exposes the following versioned endpoints.
-Protected endpoints require an administrator JWT. The minimal profile exposes
-only the health and metrics endpoints.
+Protected endpoints require a JWT with the relevant role or permission. The
+`Administrator` role is a superuser for the included management policies. The
+minimal profile exposes only the health and metrics endpoints.
 
 Set a shell variable for the examples:
 
@@ -62,9 +63,25 @@ curl --fail "$API_URL/api/v1/users" \
   -H "Authorization: Bearer $TOKEN"
 ```
 
+## Authorization policies
+
+The full profile issues permission claims from a user's assigned roles and
+evaluates these policies at the controller boundary:
+
+| Policy | Required permission | Protected resource |
+| --- | --- | --- |
+| `users.manage` | `users.manage` | `/api/v1/users` |
+| `roles.manage` | `roles.manage` | `/api/v1/roles` |
+| `permissions.manage` | `permissions.manage` | `/api/v1/permissions` |
+| `role-permissions.manage` | `role-permissions.manage` | `/api/v1/role-permissions` |
+
+Create the permission records and role-permission links through the included
+RBAC endpoints, then issue a new JWT for the changes to take effect. Existing
+tokens do not change until they expire or are reissued.
+
 ## Users
 
-All user endpoints require the `Administrator` role.
+All user endpoints require the `users.manage` policy.
 
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
@@ -90,7 +107,7 @@ curl --fail "$API_URL/api/v1/users" \
 
 ## Roles
 
-All role endpoints require the `Administrator` role.
+All role endpoints require the `roles.manage` policy.
 
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
@@ -108,7 +125,7 @@ curl --fail "$API_URL/api/v1/roles" \
 
 ## Permissions
 
-All permission endpoints require the `Administrator` role.
+All permission endpoints require the `permissions.manage` policy.
 
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
@@ -126,7 +143,7 @@ curl --fail "$API_URL/api/v1/permissions" \
 
 ## Role permissions
 
-All role-permission endpoints require the `Administrator` role. `roleId` and
+All role-permission endpoints require the `role-permissions.manage` policy. `roleId` and
 `permissionId` are GUIDs returned by the roles and permissions endpoints.
 
 | Method | Endpoint | Purpose |

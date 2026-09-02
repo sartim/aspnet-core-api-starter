@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
 using AspNetCoreApiStarter.Observability;
+using AspNetCoreApiStarter.Authorization;
 
 namespace AspNetCoreApiStarter.Controllers
 {
@@ -29,6 +30,7 @@ namespace AspNetCoreApiStarter.Controllers
         {
             // find user by email
             var user = _context.Users.Include(u => u.UserRoles).ThenInclude(userRole => userRole.Role)
+                .ThenInclude(role => role.RolePermissions).ThenInclude(rolePermission => rolePermission.Permission)
                 .FirstOrDefault(u => u.Email == login.Email && u.IsActive);
 
             // check if user exists and password matches
@@ -58,7 +60,10 @@ namespace AspNetCoreApiStarter.Controllers
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                 new Claim(ClaimTypes.Email, login.Email)
-            }.Concat(user.UserRoles.Select(userRole => new Claim(ClaimTypes.Role, userRole.Role.Name)))
+                }
+                .Concat(user.UserRoles.Select(userRole => new Claim(ClaimTypes.Role, userRole.Role.Name)))
+                .Concat(user.UserRoles.SelectMany(userRole => userRole.Role.RolePermissions)
+                    .Select(rolePermission => new Claim(AuthorizationPolicies.PermissionClaimType, rolePermission.Permission.Name)))
                 ),
                 Issuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
                 Audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE"),
