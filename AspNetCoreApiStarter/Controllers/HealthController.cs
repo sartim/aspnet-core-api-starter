@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using AspNetCoreApiStarter.Data;
 using Microsoft.EntityFrameworkCore;
+using AspNetCoreApiStarter.Observability;
 
 namespace AspNetCoreApiStarter.Controllers
 {
@@ -27,7 +28,15 @@ namespace AspNetCoreApiStarter.Controllers
             }
             catch
             {
-                return StatusCode(500, new { status = "Unhealthy", db = "Failed", timestamp = DateTime.UtcNow });
+                var problem = new ProblemDetails
+                {
+                    Status = StatusCodes.Status503ServiceUnavailable,
+                    Title = "Service Unavailable",
+                    Detail = "The database health check failed.",
+                    Instance = HttpContext.Request.Path
+                };
+                problem.Extensions["traceId"] = StarterProblemDetails.GetTraceId(HttpContext);
+                return StatusCode(StatusCodes.Status503ServiceUnavailable, problem);
             }
         }
     }

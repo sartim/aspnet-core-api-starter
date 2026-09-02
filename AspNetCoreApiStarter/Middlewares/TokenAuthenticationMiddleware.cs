@@ -2,8 +2,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
+using AspNetCoreApiStarter.Observability;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 
@@ -25,17 +25,15 @@ public class TokenAuthenticationMiddleware
 
             if (!isTokenValid)
             {
-                context.Response.StatusCode = 401;
-                context.Response.ContentType = "application/json";
-                await context.Response.WriteAsync(JsonSerializer.Serialize(new { error = "Invalid token" }));
+                await StarterProblemDetails.WriteAsync(context, StatusCodes.Status401Unauthorized,
+                    "Unauthorized", "The access token is invalid or expired.");
                 return;
             }
         }
         else
         {
-            context.Response.StatusCode = 401;
-            context.Response.ContentType = "application/json";
-            await context.Response.WriteAsync(JsonSerializer.Serialize(new { error = "Authorization header is missing" }));
+            await StarterProblemDetails.WriteAsync(context, StatusCodes.Status401Unauthorized,
+                "Unauthorized", "Provide a valid Bearer token in the Authorization header.");
             return;
         }
 

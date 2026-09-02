@@ -36,6 +36,10 @@ work by default, while Sentry error tracking is enabled only when
 The `/metrics` endpoint exposes low-cardinality Prometheus-compatible counters,
 and responses include an `X-Trace-Id` correlation header.
 
+Errors use RFC 9457-style `application/problem+json` responses with `status`,
+`title`, `detail`, `instance`, and a `traceId` extension. Details are safe for
+clients while logs retain exceptions for diagnostics.
+
 ### Observability configuration
 
 The starter uses OpenTelemetry Protocol (OTLP) for vendor-neutral trace and
@@ -58,6 +62,8 @@ low-cardinality, and configure the collector or backend to enforce retention,
 access control, and environment-specific sampling.
 
 See the [project roadmap](docs/ROADMAP.md) for milestones and task priorities.
+See the [release checklist](docs/RELEASE_CHECKLIST.md) before production
+deployments.
 
 The Markdown documentation is published automatically to
 [GitHub Pages](https://sartim.github.io/aspnet-core-api-starter/) from the
