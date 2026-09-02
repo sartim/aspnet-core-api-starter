@@ -28,7 +28,7 @@ milestone is completed or the starter profiles change.
 - [x] Added a root `.env.example`, optional Compose environment override, and
   a CI validation step for the Docker Compose configuration.
 - [x] Added dedicated secret-history and container-image security workflows;
-  hosted results remain a release gate until the first scan completes.
+  hosted results are green on the current PR.
 
 ## Active priorities
 
@@ -40,8 +40,7 @@ priority incomplete task first.
 1. **P0-3:** Add database-backed integration coverage for Users/RBAC.
 2. **P0-4:** Verify Docker Compose, migrations, and health checks from a clean
    checkout.
-3. **P0-6:** Confirm the new secret and container security scans are green.
-4. **P0-12:** Verify OTLP export against a collector and document APM backend
+3. **P0-12:** Verify OTLP export against a collector and document APM backend
    configuration.
 
 ### P0 — Release blockers
@@ -59,8 +58,10 @@ Status: **Next**
   migrations and health checks.
 - [x] **P0-5:** Add the complete pull-request CI pipeline: restore, build,
   test, `dotnet format --verify-no-changes`, analyzers, and coverage output.
-- [ ] **P0-6:** Add security gates for NuGet vulnerabilities, dependency review,
+- [x] **P0-6:** Add security gates for NuGet vulnerabilities, dependency review,
   CodeQL, secret scanning, and container-image scanning.
+- [ ] **P0-13:** Pass the hosted Docker Compose runtime smoke test for migrations
+  and the API health endpoint.
 - [x] **P0-7:** Add `.github/dependabot.yml` for NuGet, GitHub Actions, and
   Docker updates, with grouped non-breaking updates and a controlled update
   cadence. GitHub requires this configuration under `.github` for automated
