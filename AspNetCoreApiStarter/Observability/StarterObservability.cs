@@ -24,10 +24,9 @@ public sealed class SentryErrorReporter : IErrorReporter
 {
     public void Capture(Exception exception, HttpContext context)
     {
-        SentrySdk.WithScope(scope =>
+        SentrySdk.CaptureException(exception, scope =>
         {
             scope.SetTag("trace_id", Activity.Current?.TraceId.ToString() ?? context.TraceIdentifier);
-            SentrySdk.CaptureException(exception);
         });
     }
 }
