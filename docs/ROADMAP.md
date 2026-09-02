@@ -37,6 +37,7 @@ milestone is completed or the starter profiles change.
   including migration, health, and schema assertions.
 - [x] Added an optional OTLP Collector overlay and hosted export smoke test;
   backend-specific exporters remain configurable through the same OTLP endpoint.
+- [x] Verified OTLP traces and metrics are received by the hosted collector.
 
 ## Active priorities
 
@@ -79,7 +80,7 @@ Status: **Next**
 - [x] **P0-11:** Add baseline observability to both profiles: structured
   logging, request correlation, distributed tracing, and low-cardinality
   metrics for request count, latency, and errors.
-- [ ] **P0-12:** Verify OTLP export against at least one collector and document
+- [x] **P0-12:** Verify OTLP export against at least one collector and document
   backend configuration for common APM providers.
 
 ### P1 — Next iteration
@@ -101,7 +102,7 @@ Status: **Planned**
 - [ ] **P1-7:** Add a release workflow that creates and pushes `vX.Y.Z` tags only
   after CI passes, then creates the GitHub Release and attaches the generated
   artifacts.
-- [ ] **P1-8:** Document observability configuration, including `SENTRY_DSN`,
+- [x] **P1-8:** Document observability configuration, including `SENTRY_DSN`,
   environment-specific log levels, trace propagation, metrics scraping, and
   privacy rules for personally identifiable information.
 

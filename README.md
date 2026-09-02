@@ -32,6 +32,27 @@ work by default, while Sentry error tracking is enabled only when
 The `/metrics` endpoint exposes low-cardinality Prometheus-compatible counters,
 and responses include an `X-Trace-Id` correlation header.
 
+### Observability configuration
+
+The starter uses OpenTelemetry Protocol (OTLP) for vendor-neutral trace and
+metric export. Set `OTEL_EXPORTER_OTLP_ENDPOINT` to an OTLP-compatible
+collector or APM gateway, for example `http://localhost:4317`. The included
+`docker-compose.otel.yaml` overlay starts a local collector for verification:
+
+```bash
+docker compose -f docker-compose.yaml -f docker-compose.otel.yaml up -d --build
+```
+
+Sentry is an optional error-tracking adapter. Set `SENTRY_DSN` to enable it;
+an unset or invalid value falls back to the standard logging reporter without
+blocking startup. The `IErrorReporter` abstraction can be replaced by another
+error tracker or APM adapter without changing request error handling.
+
+Telemetry must not include passwords, JWTs, database credentials, or
+unnecessary personal data. Keep route labels and metric dimensions
+low-cardinality, and configure the collector or backend to enforce retention,
+access control, and environment-specific sampling.
+
 See the [project roadmap](docs/ROADMAP.md) for milestones and task priorities.
 
 ---
