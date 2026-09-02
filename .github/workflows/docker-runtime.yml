@@ -45,7 +45,9 @@ jobs:
       - name: Verify collector received telemetry
         run: |
           for attempt in $(seq 1 20); do
-            if docker compose -f docker-compose.yaml -f docker-compose.otel.yaml logs otel-collector 2>&1 | grep -q 'Span #'; then
+            collector_logs="$(docker compose -f docker-compose.yaml -f docker-compose.otel.yaml logs otel-collector 2>&1)"
+            if printf '%s\n' "$collector_logs" | grep -q 'otelcol.signal.*traces' && \
+              printf '%s\n' "$collector_logs" | grep -q 'otelcol.signal.*metrics'; then
               exit 0
             fi
             sleep 3
