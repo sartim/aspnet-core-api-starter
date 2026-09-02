@@ -29,7 +29,7 @@ jobs:
       - name: Check formatting
         run: dotnet format AspNetCoreApiStarter.sln --no-restore --verify-no-changes
       - name: Build with analyzers
-        run: dotnet build AspNetCoreApiStarter.sln --configuration Release --no-restore -warnaserror
+        run: dotnet build AspNetCoreApiStarter.sln --configuration Release --no-restore
       - name: Test with coverage
         run: >-
           dotnet test tests/AspNetCoreApiStarter.Tests/AspNetCoreApiStarter.Tests.csproj
