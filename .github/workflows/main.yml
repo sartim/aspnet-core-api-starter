@@ -1,4 +1,4 @@
-name: build
+name: CI
 
 on:
   push:
@@ -6,20 +6,43 @@ on:
   pull_request:
     branches: ["main"]
 
+permissions:
+  contents: read
+  pull-requests: read
+  security-events: write
+
 jobs:
-  build:
+  quality:
 
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test tests/ASPShopAPI.Tests/ASPShopAPI.Tests.csproj --verbosity normal
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        run: dotnet restore AspNetCoreApiStarter.sln
+      - name: Validate generated starter profiles
+        run: ./scripts/test-starter.sh
+      - name: Validate Docker Compose configuration
+        run: docker compose config --quiet
+      - name: Check formatting
+        run: dotnet format AspNetCoreApiStarter.sln --no-restore --severity error --verify-no-changes
+      - name: Build with analyzers
+        run: dotnet build AspNetCoreApiStarter.sln --configuration Release --no-restore
+      - name: Test with coverage
+        run: >-
+          dotnet test tests/AspNetCoreApiStarter.Tests/AspNetCoreApiStarter.Tests.csproj
+          --configuration Release --no-restore --verbosity normal
+          --collect:"XPlat Code Coverage"
+      - name: Check vulnerable packages
+        run: >-
+          dotnet list AspNetCoreApiStarter.sln package
+          --vulnerable --include-transitive --source https://api.nuget.org/v3/index.json
+      - name: Dependency review
+        if: github.event_name == 'pull_request'
+        uses: actions/dependency-review-action@v4

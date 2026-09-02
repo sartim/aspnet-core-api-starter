@@ -2,14 +2,14 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /source
 
-# Copy csproj and restore
-COPY *.sln .
-COPY ASPShopAPI/*.csproj ./ASPShopAPI/
-RUN dotnet restore
+# Copy csproj and restore the application only. Tests are restored by CI,
+# but are intentionally excluded from the production image build.
+COPY AspNetCoreApiStarter/*.csproj ./AspNetCoreApiStarter/
+RUN dotnet restore AspNetCoreApiStarter/AspNetCoreApiStarter.csproj
 
 # Copy source and build
-COPY ASPShopAPI/. ./ASPShopAPI/
-WORKDIR /source/ASPShopAPI
+COPY AspNetCoreApiStarter/. ./AspNetCoreApiStarter/
+WORKDIR /source/AspNetCoreApiStarter
 RUN dotnet build -c Release -o /app
 
 # Runtime stage
@@ -21,4 +21,4 @@ COPY --from=build /app ./
 
 EXPOSE 5070
 
-ENTRYPOINT ["dotnet", "ASPShopAPI.dll"]
+ENTRYPOINT ["dotnet", "AspNetCoreApiStarter.dll"]

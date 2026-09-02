@@ -1,0 +1,41 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Install versioning tool
+        run: dotnet tool install --global nbgv --version 3.10.70
+      - name: Resolve version
+        id: version
+        run: echo "version=$(nbgv get-version -v SemVer2)" >> "$GITHUB_OUTPUT"
+      - name: Restore and test
+        run: dotnet test AspNetCoreApiStarter.sln --configuration Release
+      - name: Tag and publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          tag="v${RELEASE_VERSION}"
+          if git ls-remote --exit-code --tags origin "refs/tags/${tag}" >/dev/null 2>&1; then
+            echo "Release ${tag} already exists."
+            exit 0
+          fi
+          git tag --annotate "$tag" --message "Release $tag"
+          git push origin "$tag"
+          gh release create "$tag" --generate-notes --title "$tag"

@@ -1,6 +1,67 @@
-# ASPShopAPI
+# ASP.NET API starter
 
-A RESTful Web API built with **ASP.NET Core** and **Entity Framework Core**, using **PostgreSQL** as the database and **JWT-based authentication**.
+A production-oriented ASP.NET Core API starter with PostgreSQL, Entity Framework Core, JWT authentication, and a Users/RBAC service profile.
+
+This repository is named `aspnet-core-api-starter` and follows the same generated-profile model as the Drogon API starter.
+
+## Generate a fresh API
+
+Use the generator when starting a new project. The destination must be new or empty:
+
+```bash
+./scripts/aspnet-starter init shop-api ../shop-api
+```
+
+The default `user-service` profile includes the maintained Users/RBAC implementation, JWT authentication, EF Core migrations, Docker support, and tests. For a clean ASP.NET foundation without user-service:
+
+```bash
+./scripts/aspnet-starter init shop-api ../shop-api --profile minimal
+```
+
+Supported profiles:
+
+* `user-service` (default): Users, roles, permissions, JWT authentication, PostgreSQL, migrations, and tests
+* `minimal`: dependency-free ASP.NET Core API foundation with a health endpoint and baseline logging/tracing/metrics; no users, roles, permissions, EF Core, database, or authentication
+
+The source repository itself is the complete `user-service` profile. The minimal profile lives in `templates/minimal` and is intentionally independent of the user-service implementation.
+
+Both profiles require `PORT` at startup and report the exact missing or invalid
+setting. The `user-service` profile additionally requires `DB_URL`,
+`JWT_SECRET_KEY` (at least 32 bytes), `JWT_ISSUER`, and `JWT_AUDIENCE`.
+
+Observability is part of the starter contract: logging, tracing, and metrics
+work by default, while Sentry error tracking is enabled only when
+`SENTRY_DSN` is configured and remains disabled without blocking startup.
+
+The `/metrics` endpoint exposes low-cardinality Prometheus-compatible counters,
+and responses include an `X-Trace-Id` correlation header.
+
+### Observability configuration
+
+The starter uses OpenTelemetry Protocol (OTLP) for vendor-neutral trace and
+metric export. Set `OTEL_EXPORTER_OTLP_ENDPOINT` to an OTLP-compatible
+collector or APM gateway, for example `http://localhost:4317`. The included
+`docker-compose.otel.yaml` overlay starts a local collector for verification:
+
+```bash
+docker compose -f docker-compose.yaml -f docker-compose.otel.yaml up -d --build
+```
+
+Sentry is an optional error-tracking adapter. Set `SENTRY_DSN` to enable it;
+an unset or invalid value falls back to the standard logging reporter without
+blocking startup. The `IErrorReporter` abstraction can be replaced by another
+error tracker or APM adapter without changing request error handling.
+
+Telemetry must not include passwords, JWTs, database credentials, or
+unnecessary personal data. Keep route labels and metric dimensions
+low-cardinality, and configure the collector or backend to enforce retention,
+access control, and environment-specific sampling.
+
+See the [project roadmap](docs/ROADMAP.md) for milestones and task priorities.
+
+The Markdown documentation is published automatically to
+[GitHub Pages](https://sartim.github.io/aspnet-core-api-starter/) from the
+`main` branch with MkDocs Material by GitHub Actions.
 
 ---
 
@@ -30,9 +91,9 @@ dotnet ef --version
 
 ### 2. Environment Variables
 
-Create a `.env` file using the example below.
+Create a `.env` file by copying `.env.example` from the repository root.
 
-#### `.env.example`
+#### `.env.example` contents
 
 ```env
 ENV=Development
@@ -43,6 +104,12 @@ JWT_SECRET_KEY=CHANGE_ME_TO_A_SECURE_32_BYTE_MIN_SECRET
 JWT_ISSUER=asp-shop-api
 JWT_AUDIENCE=asp-shop-client
 JWT_EXPIRY=300
+
+# Optional error tracking
+SENTRY_DSN=
+
+# Optional vendor-neutral APM export (OTLP)
+OTEL_EXPORTER_OTLP_ENDPOINT=
 
 # Database
 POSTGRES_USER=shopuser
@@ -148,6 +215,22 @@ docker compose down
 ```http
 Authorization: Bearer <JWT_TOKEN>
 ```
+
+### Non-interactive administrator creation
+
+After the database is available, create the initial administrator without a
+prompt. The command applies pending migrations, is safe to rerun, and accepts
+flags or environment variables for deployment automation:
+
+```bash
+ADMIN_EMAIL=admin@example.com \
+ADMIN_PASSWORD='change-this-in-a-secret-manager' \
+dotnet run -- --create-admin
+```
+
+Optional values are `ADMIN_FIRST_NAME`, `ADMIN_LAST_NAME`, and `ADMIN_PHONE`.
+The equivalent flags are `--admin-email`, `--admin-password`,
+`--admin-first-name`, `--admin-last-name`, and `--admin-phone`.
 
 ---
 
