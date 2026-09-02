@@ -14,12 +14,14 @@ full="$test_root/full"
 test -f "$minimal/catalog-api.csproj"
 test -f "$full/AspNetCoreApiStarter/AspNetCoreApiStarter.csproj"
 
-if rg -n 'User|Role|Permission|EntityFramework|JWT|Sentry' "$minimal" --glob '*.cs' --glob '*.csproj' --glob '*.json'; then
+if grep -R -n -E 'User|Role|Permission|EntityFramework|JWT|Sentry' "$minimal" \
+  --include='*.cs' --include='*.csproj' --include='*.json'; then
   echo "Minimal profile contains user-service or vendor-specific source." >&2
   exit 1
 fi
 
-rg -q 'UserController|RoleController|PermissionController' "$full/AspNetCoreApiStarter" --glob '*.cs'
+grep -R -q -E 'UserController|RoleController|PermissionController' \
+  "$full/AspNetCoreApiStarter" --include='*.cs'
 
 dotnet restore "$minimal/catalog-api.csproj"
 dotnet build "$minimal/catalog-api.csproj" --configuration Release --no-restore
