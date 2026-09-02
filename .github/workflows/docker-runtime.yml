@@ -18,6 +18,11 @@ jobs:
         run: docker compose up -d --build
       - name: Wait for API health endpoint
         run: curl --fail --retry 30 --retry-all-errors --retry-delay 3 --retry-connrefused http://localhost:5070/api/v1/health
+      - name: Verify Users and RBAC schema
+        run: >-
+          test "$(docker compose exec -T postgres psql -U shopuser -d shopdb
+          -tAc "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public'
+          AND table_name IN ('Users', 'Roles', 'Permissions', 'RolePermission');" | tr -d '[:space:]')" = "4"
       - name: Show service status
         if: always()
         run: docker compose ps
