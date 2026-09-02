@@ -38,8 +38,8 @@ milestone is completed or the starter profiles change.
 - [x] Added an optional OTLP Collector overlay and hosted export smoke test;
   backend-specific exporters remain configurable through the same OTLP endpoint.
 - [x] Verified OTLP traces and metrics are received by the hosted collector.
-- [x] Added dependency-free Markdown documentation publishing to GitHub Pages
-  through GitHub Actions.
+- [x] Added colored MkDocs Material Markdown documentation publishing to GitHub
+  Pages through GitHub Actions, including light/dark mode and callouts.
 
 ## Active priorities
 
@@ -48,8 +48,8 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P0-12:** Confirm the OTLP collector export smoke test passes, then expand
-   observability documentation with provider-specific endpoint examples.
+1. **P0-8:** Fix the application startup contract so missing `PORT`, database,
+   or JWT settings produce clear actionable errors in every profile.
 
 ### P0 — Release blockers
 

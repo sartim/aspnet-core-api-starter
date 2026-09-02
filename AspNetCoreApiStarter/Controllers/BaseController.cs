@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AspNetCoreApiStarter.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Administrator")]
     public class BaseController<TEntity> : ControllerBase where TEntity : class
     {
         private readonly ApplicationDbContext _dbContext;

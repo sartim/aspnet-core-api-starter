@@ -150,9 +150,29 @@ if (args.Contains("--create-admin"))
     if (!int.TryParse(phoneValue, out var phone))
         throw new InvalidOperationException("ADMIN_PHONE or --admin-phone must be a valid integer.");
 
-    if (await db.Users.AnyAsync(u => u.Email == email))
+    var administratorRole = await db.Roles.SingleOrDefaultAsync(role => role.Name == "Administrator");
+    if (administratorRole is null)
+    {
+        administratorRole = new Role
+        {
+            Name = "Administrator",
+            Description = "Full access to the starter API",
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+        db.Roles.Add(administratorRole);
+        await db.SaveChangesAsync();
+    }
+
+    var existingUser = await db.Users.Include(user => user.UserRoles).SingleOrDefaultAsync(u => u.Email == email);
+    if (existingUser is not null)
     {
         Console.WriteLine($"Administrator already exists: {email}");
+        if (!existingUser.UserRoles.Any(userRole => userRole.RoleId == administratorRole.Id))
+        {
+            db.UserRoles.Add(new UserRole { User = existingUser, Role = administratorRole });
+            await db.SaveChangesAsync();
+        }
     }
     else
     {
@@ -167,6 +187,9 @@ if (args.Contains("--create-admin"))
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         });
+        await db.SaveChangesAsync();
+        var createdUser = await db.Users.SingleAsync(user => user.Email == email);
+        db.UserRoles.Add(new UserRole { User = createdUser, Role = administratorRole });
         await db.SaveChangesAsync();
         Console.WriteLine($"Administrator created: {email}");
     }

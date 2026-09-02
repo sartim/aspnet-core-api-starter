@@ -27,7 +27,8 @@ namespace AspNetCoreApiStarter.Controllers
         public JsonResult GenerateToken(Login login)
         {
             // find user by email
-            var user = _context.Users.FirstOrDefault(u => u.Email == login.Email);
+            var user = _context.Users.Include(u => u.UserRoles).ThenInclude(userRole => userRole.Role)
+                .FirstOrDefault(u => u.Email == login.Email && u.IsActive);
 
             // check if user exists and password matches
             if (user == null || !VerifyPassword(login.Password, user.Password))
@@ -48,8 +49,9 @@ namespace AspNetCoreApiStarter.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Email, login.Email)
-                }),
+                new Claim(ClaimTypes.Email, login.Email)
+            }.Concat(user.UserRoles.Select(userRole => new Claim(ClaimTypes.Role, userRole.Role.Name)))
+                ),
                 Issuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
                 Audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE"),
                 Expires = DateTime.UtcNow.AddMinutes(
@@ -59,7 +61,7 @@ namespace AspNetCoreApiStarter.Controllers
                     SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            var roles = Array.Empty<string>();
+            var roles = user.UserRoles.Select(userRole => userRole.Role.Name).ToArray();
 
             return new JsonResult(new
             {

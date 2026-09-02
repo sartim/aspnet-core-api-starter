@@ -1,8 +1,3 @@
----
-layout: default
-title: ASP.NET Core API Starter
----
-
 # ASP.NET Core API Starter
 
 Production-oriented ASP.NET Core API starter with two generated profiles:
@@ -22,8 +17,17 @@ Production-oriented ASP.NET Core API starter with two generated profiles:
 ## Documentation
 
 - [Project README](https://github.com/sartim/aspnet-core-api-starter#readme)
-- [Roadmap and priorities](ROADMAP.html)
+- [Roadmap and priorities](ROADMAP.md)
 - [Source repository](https://github.com/sartim/aspnet-core-api-starter)
 
-The documentation site is built from Markdown by GitHub Actions and published
-to GitHub Pages.
+!!! tip "Choose a profile"
+
+    Use the default `user-service` profile when you need Users, RBAC, JWT
+    authentication, and PostgreSQL. Use `--profile minimal` for a clean API
+    foundation without the user-service dependencies.
+
+!!! info "Documentation publishing"
+
+    This site is generated from Markdown with MkDocs Material by GitHub Actions
+    and published to GitHub Pages. The local repository does not need Python or
+    MkDocs installed.

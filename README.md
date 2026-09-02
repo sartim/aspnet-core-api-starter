@@ -57,7 +57,7 @@ See the [project roadmap](docs/ROADMAP.md) for milestones and task priorities.
 
 The Markdown documentation is published automatically to
 [GitHub Pages](https://sartim.github.io/aspnet-core-api-starter/) from the
-`main` branch by GitHub Actions.
+`main` branch with MkDocs Material by GitHub Actions.
 
 ---
 
