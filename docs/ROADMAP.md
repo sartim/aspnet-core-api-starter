@@ -38,6 +38,8 @@ milestone is completed or the starter profiles change.
 - [x] Added an optional OTLP Collector overlay and hosted export smoke test;
   backend-specific exporters remain configurable through the same OTLP endpoint.
 - [x] Verified OTLP traces and metrics are received by the hosted collector.
+- [x] Added dependency-free Markdown documentation publishing to GitHub Pages
+  through GitHub Actions.
 
 ## Active priorities
 
