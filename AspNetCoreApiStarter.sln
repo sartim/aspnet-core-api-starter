@@ -11,6 +11,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		docker-compose.yaml = docker-compose.yaml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C5896B23-44B4-402C-B56F-0CF517F2F73F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetCoreApiStarter.Tests", "tests\AspNetCoreApiStarter.Tests\AspNetCoreApiStarter.Tests.csproj", "{A80F93FA-14C8-45F6-B689-C9D9A1716B34}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,11 +25,18 @@ Global
 		{5C62B34A-F3E6-4FF3-A518-BD84D873E864}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C62B34A-F3E6-4FF3-A518-BD84D873E864}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C62B34A-F3E6-4FF3-A518-BD84D873E864}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A80F93FA-14C8-45F6-B689-C9D9A1716B34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A80F93FA-14C8-45F6-B689-C9D9A1716B34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A80F93FA-14C8-45F6-B689-C9D9A1716B34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A80F93FA-14C8-45F6-B689-C9D9A1716B34}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BF22B165-0961-47FE-B4F8-CCB45BE5ACCE}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A80F93FA-14C8-45F6-B689-C9D9A1716B34} = {C5896B23-44B4-402C-B56F-0CF517F2F73F}
 	EndGlobalSection
 EndGlobal
