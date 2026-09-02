@@ -42,6 +42,17 @@ milestone is completed or the starter profiles change.
   Pages through GitHub Actions, including light/dark mode and callouts.
 - [x] Added a versioned API reference with example requests for health,
   authentication, users, roles, permissions, and role-permission endpoints.
+- [x] Standardized client errors as problem details and included trace IDs in
+  error responses and structured request logs.
+- [x] Added tagged-release CD that publishes immutable GHCR images with
+  version/SHA tags, SBOM/provenance, image metadata artifacts, and a protected
+  production environment gate.
+- [x] Configured the production GitHub Environment with required reviewer
+  approval, no administrator bypass, and a `main`-only deployment policy.
+- [x] Documented extension points for profile generation, API controllers,
+  authentication, persistence, observability, and startup configuration.
+- [x] Added a release checklist covering migrations, secrets, Docker images,
+  semantic versioning, compatibility, deployment, and rollback.
 
 ## Active priorities
 
@@ -50,8 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P1-3:** Provide consistent API documentation and example requests for
-   health, authentication, users, roles, permissions, and role-permission endpoints.
+1. **P1-10:** Add role and permission authorization policies to protected endpoints.
 
 ## Deployment scope
 
@@ -106,13 +116,13 @@ Status: **Planned**
   suitable for local setup and deployment scripts.
 - [x] **P1-3:** Provide consistent API documentation and example requests for
   health, authentication, users, roles, permissions, and role-permission endpoints.
-- [ ] **P1-4:** Add structured logging, request IDs, and consistent error responses.
-- [ ] **P1-5:** Add a release checklist covering migrations, secrets, Docker images, and
-  backwards-compatible API changes.
-- [ ] **P1-6:** Add CD for tagged releases: build an immutable versioned Docker
+- [x] **P1-4:** Add structured logging, request IDs, and consistent error responses.
+- [x] **P1-5:** Add a release checklist covering migrations, secrets, Docker
+  images, and backwards-compatible API changes.
+- [x] **P1-6:** Add CD for tagged releases: build an immutable versioned Docker
   image, publish release artifacts, generate release notes, and deploy only
   through protected environments with approvals and rollback guidance.
-- [ ] **P1-7:** Add a release workflow that creates and pushes `vX.Y.Z` tags only
+- [x] **P1-7:** Add a release workflow that creates and pushes `vX.Y.Z` tags only
   after CI passes, then creates the GitHub Release and attaches the generated
   artifacts.
 - [x] **P1-8:** Document observability configuration, including `SENTRY_DSN`,
@@ -121,7 +131,7 @@ Status: **Planned**
 
 ### P1 — Service foundation
 
-- [ ] **P1-9:** Extract authentication, authorization, persistence, and API concerns
+- [x] **P1-9:** Extract authentication, authorization, persistence, and API concerns
   into clearly documented extension points.
 - [ ] **P1-10:** Add role and permission authorization policies to protected endpoints.
 - [ ] **P1-11:** Define password, token expiry, refresh, revocation, and account-lockout

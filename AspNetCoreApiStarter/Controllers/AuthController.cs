@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
+using AspNetCoreApiStarter.Observability;
 
 namespace AspNetCoreApiStarter.Controllers
 {
@@ -24,7 +25,7 @@ namespace AspNetCoreApiStarter.Controllers
         }
 
         [HttpPost("generate-jwt")]
-        public JsonResult GenerateToken(Login login)
+        public IActionResult GenerateToken(Login login)
         {
             // find user by email
             var user = _context.Users.Include(u => u.UserRoles).ThenInclude(userRole => userRole.Role)
@@ -33,11 +34,18 @@ namespace AspNetCoreApiStarter.Controllers
             // check if user exists and password matches
             if (user == null || !VerifyPassword(login.Password, user.Password))
             {
-                return new JsonResult(new
+                return new ObjectResult(new ProblemDetails
                 {
-                    error = "Invalid credentials"
+                    Status = StatusCodes.Status401Unauthorized,
+                    Title = "Unauthorized",
+                    Detail = "The supplied email or password is incorrect.",
+                    Instance = HttpContext.Request.Path,
+                    Extensions = { ["traceId"] = StarterProblemDetails.GetTraceId(HttpContext) }
                 })
-                { StatusCode = 401 };
+                {
+                    StatusCode = StatusCodes.Status401Unauthorized,
+                    ContentTypes = { "application/problem+json" }
+                };
 
             }
 
