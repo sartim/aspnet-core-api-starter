@@ -1,9 +1,12 @@
 using Microsoft.EntityFrameworkCore.Migrations;
+using AspNetCoreApiStarter.Data;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 #nullable disable
 
 namespace AspNetCoreApiStarter.Migrations;
 
+[DbContext(typeof(ApplicationDbContext))]
 [Migration("20260902180000_AddUserRoles")]
 public partial class AddUserRoles : Migration
 {
