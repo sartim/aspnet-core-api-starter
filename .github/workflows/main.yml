@@ -29,7 +29,7 @@ jobs:
       - name: Validate generated starter profiles
         run: ./scripts/test-starter.sh
       - name: Check formatting
-        run: dotnet format AspNetCoreApiStarter.sln --no-restore --verify-no-changes
+        run: dotnet format AspNetCoreApiStarter.sln --no-restore --severity error --verify-no-changes
       - name: Build with analyzers
         run: dotnet build AspNetCoreApiStarter.sln --configuration Release --no-restore
       - name: Test with coverage
