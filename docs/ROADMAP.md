@@ -42,6 +42,9 @@ milestone is completed or the starter profiles change.
   Pages through GitHub Actions, including light/dark mode and callouts.
 - [x] Standardized client errors as problem details and included trace IDs in
   error responses and structured request logs.
+- [x] Added tagged-release CD that publishes immutable GHCR images with
+  version/SHA tags, SBOM/provenance, image metadata artifacts, and a protected
+  production environment gate.
 - [x] Added a release checklist covering migrations, secrets, Docker images,
   semantic versioning, compatibility, deployment, and rollback.
 
@@ -103,10 +106,10 @@ Status: **Planned**
 - [x] **P1-4:** Add structured logging, request IDs, and consistent error responses.
 - [x] **P1-5:** Add a release checklist covering migrations, secrets, Docker
   images, and backwards-compatible API changes.
-- [ ] **P1-6:** Add CD for tagged releases: build an immutable versioned Docker
+- [x] **P1-6:** Add CD for tagged releases: build an immutable versioned Docker
   image, publish release artifacts, generate release notes, and deploy only
   through protected environments with approvals and rollback guidance.
-- [ ] **P1-7:** Add a release workflow that creates and pushes `vX.Y.Z` tags only
+- [x] **P1-7:** Add a release workflow that creates and pushes `vX.Y.Z` tags only
   after CI passes, then creates the GitHub Release and attaches the generated
   artifacts.
 - [x] **P1-8:** Document observability configuration, including `SENTRY_DSN`,

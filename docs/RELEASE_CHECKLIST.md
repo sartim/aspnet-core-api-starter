@@ -42,10 +42,15 @@ action.
 
 - [ ] Build the Docker image from the reviewed commit and tag it with the
       immutable Git SHA and release version.
+- [ ] Confirm the `production` GitHub Environment has required reviewers before
+      the image-publishing job is allowed to run.
 - [ ] Scan the image and dependencies for vulnerabilities.
+- [ ] Record the published image digest and verify the SBOM/provenance
+      attestations.
 - [ ] Verify the image starts with the production configuration and passes the
       health endpoint check.
 - [ ] Confirm the GitHub Release contains the correct `vX.Y.Z` tag and notes.
+- [ ] Confirm the image metadata artifact is attached to the GitHub Release.
 
 ## Compatibility and deployment
 
