@@ -25,7 +25,7 @@ namespace AspNetCoreApiStarter.Controllers
         }
 
         [HttpPost("generate-jwt")]
-        public JsonResult GenerateToken(Login login)
+        public IActionResult GenerateToken(Login login)
         {
             // find user by email
             var user = _context.Users.Include(u => u.UserRoles).ThenInclude(userRole => userRole.Role)
