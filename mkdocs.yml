@@ -43,4 +43,5 @@ extra_css:
 
 nav:
   - Home: index.md
+  - Release checklist: RELEASE_CHECKLIST.md
   - Roadmap: ROADMAP.md

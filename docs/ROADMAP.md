@@ -42,6 +42,8 @@ milestone is completed or the starter profiles change.
   Pages through GitHub Actions, including light/dark mode and callouts.
 - [x] Standardized client errors as problem details and included trace IDs in
   error responses and structured request logs.
+- [x] Added a release checklist covering migrations, secrets, Docker images,
+  semantic versioning, compatibility, deployment, and rollback.
 
 ## Active priorities
 
@@ -99,8 +101,8 @@ Status: **Planned**
 - [ ] **P1-3:** Provide consistent API documentation and example requests for health,
   authentication, users, roles, permissions, and role-permission endpoints.
 - [x] **P1-4:** Add structured logging, request IDs, and consistent error responses.
-- [ ] **P1-5:** Add a release checklist covering migrations, secrets, Docker images, and
-  backwards-compatible API changes.
+- [x] **P1-5:** Add a release checklist covering migrations, secrets, Docker
+  images, and backwards-compatible API changes.
 - [ ] **P1-6:** Add CD for tagged releases: build an immutable versioned Docker
   image, publish release artifacts, generate release notes, and deploy only
   through protected environments with approvals and rollback guidance.

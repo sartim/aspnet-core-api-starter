@@ -62,6 +62,8 @@ low-cardinality, and configure the collector or backend to enforce retention,
 access control, and environment-specific sampling.
 
 See the [project roadmap](docs/ROADMAP.md) for milestones and task priorities.
+See the [release checklist](docs/RELEASE_CHECKLIST.md) before production
+deployments.
 
 The Markdown documentation is published automatically to
 [GitHub Pages](https://sartim.github.io/aspnet-core-api-starter/) from the
