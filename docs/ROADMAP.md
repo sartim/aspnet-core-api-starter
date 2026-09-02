@@ -28,6 +28,17 @@ milestone is completed or the starter profiles change.
 Tasks are ordered by priority within each milestone. Work from the highest
 priority incomplete task first.
 
+## What’s next
+
+1. **P0-1/P0-3:** Get the hosted CI build and complete test suite green.
+2. **P0-2:** Automate generator smoke tests for both profiles.
+3. **P0-4:** Verify Docker Compose, migrations, and health checks from a clean
+   checkout.
+4. **P0-6:** Complete the remaining security gates, including secret and
+   container scanning.
+5. **P0-12:** Verify OTLP export against a collector and document APM backend
+   configuration.
+
 ### P0 — Release blockers
 
 Status: **Next**
@@ -41,17 +52,17 @@ Status: **Next**
   database-backed integration test path.
 - [ ] **P0-4:** Verify Docker Compose from a clean checkout, including
   migrations and health checks.
-- [ ] **P0-5:** Add the complete pull-request CI pipeline: restore, build,
+- [x] **P0-5:** Add the complete pull-request CI pipeline: restore, build,
   test, `dotnet format --verify-no-changes`, analyzers, and coverage output.
 - [ ] **P0-6:** Add security gates for NuGet vulnerabilities, dependency review,
   CodeQL, secret scanning, and container-image scanning.
-- [ ] **P0-7:** Add `.github/dependabot.yml` for NuGet, GitHub Actions, and
+- [x] **P0-7:** Add `.github/dependabot.yml` for NuGet, GitHub Actions, and
   Docker updates, with grouped non-breaking updates and a controlled update
   cadence. GitHub requires this configuration under `.github` for automated
   version-update pull requests.
 - [ ] **P0-8:** Fix the application startup contract so missing `PORT`, database,
   or JWT settings produce clear actionable errors in every profile.
-- [ ] **P0-9:** Decide and document the supported semantic-versioning and
+- [x] **P0-9:** Decide and document the supported semantic-versioning and
   branching policy, including prereleases and breaking changes.
 - [x] **P0-10:** Add fail-open Sentry error tracking: enable it only when
   `SENTRY_DSN` is configured, and never prevent startup when it is absent or
