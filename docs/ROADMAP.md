@@ -51,6 +51,14 @@ priority incomplete task first.
 1. **P1-3:** Provide consistent API documentation and example requests for
    health, authentication, users, roles, permissions, and role-permission endpoints.
 
+## Deployment scope
+
+Docker Compose is the supported deployment baseline included in this repository.
+Kubernetes manifests and Helm charts are intentionally out of scope. They remain
+an adopter choice, allowing each team to use its preferred platform, chart
+conventions, and operational policies without coupling the starter to one
+deployment target.
+
 ### P0 — Release blockers
 
 Status: **Next**
@@ -146,7 +154,8 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
 
 - [ ] **P2-1:** Add optional Redis caching without making it a minimal-profile
   dependency.
-- [ ] **P2-2:** Add health/readiness separation for deployments that require a database.
+- [ ] **P2-2:** Add platform-neutral health/readiness separation for deployments
+  that require a database.
 - [ ] **P2-3:** Add optional observability exporters and dashboards that remain
   disabled unless configured.
 - [ ] **P2-4:** Add optional email/password-reset and email-verification modules.

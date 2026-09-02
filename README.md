@@ -63,6 +63,11 @@ The Markdown documentation is published automatically to
 [GitHub Pages](https://sartim.github.io/aspnet-core-api-starter/) from the
 `main` branch with MkDocs Material by GitHub Actions.
 
+Docker Compose is the included deployment baseline. Kubernetes manifests and
+Helm charts are intentionally not maintained by this starter; teams can choose
+their preferred orchestration platform and create those deployment assets for
+their environment.
+
 ---
 
 ## Requirements
