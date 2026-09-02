@@ -35,8 +35,9 @@ else if (!string.IsNullOrWhiteSpace(sentryDsn))
     sentryDsn = null;
 }
 
-// Set port for web server
-int port = Convert.ToInt32(Environment.GetEnvironmentVariable("PORT"));
+// Validate required runtime configuration before wiring services so deployment
+// failures identify the missing setting instead of surfacing as a vague error.
+int port = GetRequiredPort();
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(port);
@@ -70,8 +71,8 @@ builder.Services.AddSwaggerGen();
 
 // Db connection here
 var connectionString = Environment.GetEnvironmentVariable("DB_URL");
-if (string.IsNullOrEmpty(connectionString))
-    throw new Exception("DB_URL environment variable is not set.");
+if (string.IsNullOrWhiteSpace(connectionString))
+    throw new InvalidOperationException("Required configuration 'DB_URL' is missing. Set DB_URL to a PostgreSQL connection string before starting the user-service profile.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
 
@@ -79,12 +80,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 // JWT authentication setup
-var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET_KEY")
-                ?? throw new Exception("JWT_SECRET_KEY not set.");
-var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER")
-                ?? throw new Exception("JWT_ISSUER not set.");
-var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE")
-                  ?? throw new Exception("JWT_AUDIENCE not set.");
+var jwtSecret = GetRequiredSetting("JWT_SECRET_KEY");
+if (Encoding.UTF8.GetByteCount(jwtSecret) < 32)
+    throw new InvalidOperationException("Configuration 'JWT_SECRET_KEY' must be at least 32 bytes for HMAC-SHA256 signing. Generate one with 'openssl rand -base64 32'.");
+var jwtIssuer = GetRequiredSetting("JWT_ISSUER");
+var jwtAudience = GetRequiredSetting("JWT_AUDIENCE");
 
 builder.Services.AddAuthentication(options =>
     {
@@ -256,6 +256,26 @@ static string? GetOption(string[] arguments, string option)
 {
     var index = Array.IndexOf(arguments, option);
     return index >= 0 && index + 1 < arguments.Length ? arguments[index + 1] : null;
+}
+
+static string GetRequiredSetting(string name)
+{
+    var value = Environment.GetEnvironmentVariable(name);
+    if (string.IsNullOrWhiteSpace(value))
+        throw new InvalidOperationException($"Required configuration '{name}' is missing. Set {name} before starting the user-service profile.");
+
+    return value;
+}
+
+static int GetRequiredPort()
+{
+    var rawPort = Environment.GetEnvironmentVariable("PORT");
+    if (string.IsNullOrWhiteSpace(rawPort))
+        throw new InvalidOperationException("Required configuration 'PORT' is missing. Set PORT to a value between 1 and 65535 before starting the API.");
+    if (!int.TryParse(rawPort, out var port) || port is < 1 or > 65535)
+        throw new InvalidOperationException($"Configuration 'PORT' must be a whole number between 1 and 65535. Received '{rawPort}'.");
+
+    return port;
 }
 
 static string ReadPassword()

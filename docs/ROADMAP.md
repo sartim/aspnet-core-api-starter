@@ -48,8 +48,8 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P0-8:** Fix the application startup contract so missing `PORT`, database,
-   or JWT settings produce clear actionable errors in every profile.
+1. **P1-3:** Provide consistent API documentation and example requests for
+   health, authentication, users, roles, permissions, and role-permission endpoints.
 
 ### P0 — Release blockers
 
@@ -72,8 +72,9 @@ Status: **Next**
   Docker updates, with grouped non-breaking updates and a controlled update
   cadence. GitHub requires this configuration under `.github` for automated
   version-update pull requests.
-- [ ] **P0-8:** Fix the application startup contract so missing `PORT`, database,
-  or JWT settings produce clear actionable errors in every profile.
+- [x] **P0-8:** Validate required startup configuration with actionable errors;
+  the full profile requires `PORT`, `DB_URL`, and JWT settings, while minimal
+  requires only `PORT` by design.
 - [x] **P0-9:** Decide and document the supported semantic-versioning and
   branching policy, including prereleases and breaking changes.
 - [x] **P0-10:** Add fail-open Sentry error tracking: enable it only when

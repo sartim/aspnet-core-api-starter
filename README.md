@@ -25,6 +25,10 @@ Supported profiles:
 
 The source repository itself is the complete `user-service` profile. The minimal profile lives in `templates/minimal` and is intentionally independent of the user-service implementation.
 
+Both profiles require `PORT` at startup and report the exact missing or invalid
+setting. The `user-service` profile additionally requires `DB_URL`,
+`JWT_SECRET_KEY` (at least 32 bytes), `JWT_ISSUER`, and `JWT_AUDIENCE`.
+
 Observability is part of the starter contract: logging, tracing, and metrics
 work by default, while Sentry error tracking is enabled only when
 `SENTRY_DSN` is configured and remains disabled without blocking startup.

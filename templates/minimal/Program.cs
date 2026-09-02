@@ -2,9 +2,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Logging.AddJsonConsole();
 builder.Services.AddSingleton<StarterMetrics>();
 
+var rawPort = Environment.GetEnvironmentVariable("PORT");
+if (string.IsNullOrWhiteSpace(rawPort))
+    throw new InvalidOperationException("Required configuration 'PORT' is missing. Set PORT to a value between 1 and 65535 before starting the minimal profile.");
+if (!int.TryParse(rawPort, out var port) || port is < 1 or > 65535)
+    throw new InvalidOperationException($"Configuration 'PORT' must be a whole number between 1 and 65535. Received '{rawPort}'.");
+
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.ListenAnyIP(int.TryParse(Environment.GetEnvironmentVariable("PORT"), out var port) ? port : 5070);
+    options.ListenAnyIP(port);
 });
 
 var app = builder.Build();
