@@ -5,13 +5,13 @@ namespace AspNetCoreApiStarter.Tests.TestHelpers
 {
     public static class DbContextHelper
     {
-        public static ShopDbContext GetInMemoryDbContext(string dbName)
+        public static ApplicationDbContext GetInMemoryDbContext(string dbName)
         {
-            var options = new DbContextOptionsBuilder<ShopDbContext>()
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(databaseName: dbName)
                 .Options;
 
-            return new ShopDbContext(options);
+            return new ApplicationDbContext(options);
         }
     }
 }

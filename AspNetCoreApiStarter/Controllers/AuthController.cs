@@ -14,9 +14,9 @@ namespace AspNetCoreApiStarter.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly ShopDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public AuthController(ShopDbContext context)
+        public AuthController(ApplicationDbContext context)
         {
             _context = context;
         }

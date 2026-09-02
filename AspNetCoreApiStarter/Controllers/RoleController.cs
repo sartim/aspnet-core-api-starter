@@ -10,7 +10,7 @@ namespace AspNetCoreApiStarter.Controllers
     [ApiController]
     public class RoleController : BaseController<Role>
     {
-        public RoleController(ShopDbContext dbContext) : base(dbContext)
+        public RoleController(ApplicationDbContext dbContext) : base(dbContext)
         {
         }
     }

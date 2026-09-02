@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace AspNetCoreApiStarter.Migrations
 {
-    [DbContext(typeof(ShopDbContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20240605090552_field-validation")]
     partial class fieldvalidation
     {

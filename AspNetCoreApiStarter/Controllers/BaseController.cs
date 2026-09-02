@@ -9,9 +9,9 @@ namespace AspNetCoreApiStarter.Controllers
 {
     public class BaseController<TEntity> : ControllerBase where TEntity : class
     {
-        private readonly ShopDbContext _dbContext;
+        private readonly ApplicationDbContext _dbContext;
 
-        public BaseController(ShopDbContext dbContext)
+        public BaseController(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }

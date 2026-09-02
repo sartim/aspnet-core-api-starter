@@ -9,7 +9,7 @@ namespace AspNetCoreApiStarter.Controllers
     [ApiController]
     public class RolePermissionController : BaseController<RolePermission>
     {
-        public RolePermissionController(ShopDbContext dbContext) : base(dbContext)
+        public RolePermissionController(ApplicationDbContext dbContext) : base(dbContext)
         {
         }
     }

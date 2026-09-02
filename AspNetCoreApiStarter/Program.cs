@@ -73,7 +73,7 @@ var connectionString = Environment.GetEnvironmentVariable("DB_URL");
 if (string.IsNullOrEmpty(connectionString))
     throw new Exception("DB_URL environment variable is not set.");
 
-builder.Services.AddDbContext<ShopDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
 
 // Convert url structure to lower case
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
@@ -131,10 +131,52 @@ appBuilder =>
     appBuilder.UseMiddleware<TokenAuthenticationMiddleware>();
 });
 
+if (args.Contains("--create-admin"))
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+    await db.Database.MigrateAsync();
+
+    var email = GetOption(args, "--admin-email") ?? Environment.GetEnvironmentVariable("ADMIN_EMAIL");
+    var password = GetOption(args, "--admin-password") ?? Environment.GetEnvironmentVariable("ADMIN_PASSWORD");
+    var firstName = GetOption(args, "--admin-first-name") ?? Environment.GetEnvironmentVariable("ADMIN_FIRST_NAME") ?? "Administrator";
+    var lastName = GetOption(args, "--admin-last-name") ?? Environment.GetEnvironmentVariable("ADMIN_LAST_NAME") ?? "User";
+    var phoneValue = GetOption(args, "--admin-phone") ?? Environment.GetEnvironmentVariable("ADMIN_PHONE") ?? "0";
+
+    if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+        throw new InvalidOperationException("--create-admin requires --admin-email and --admin-password, or ADMIN_EMAIL and ADMIN_PASSWORD.");
+    if (!int.TryParse(phoneValue, out var phone))
+        throw new InvalidOperationException("ADMIN_PHONE or --admin-phone must be a valid integer.");
+
+    if (await db.Users.AnyAsync(u => u.Email == email))
+    {
+        Console.WriteLine($"Administrator already exists: {email}");
+    }
+    else
+    {
+        db.Users.Add(new User
+        {
+            FirstName = firstName,
+            LastName = lastName,
+            Email = email,
+            Phone = phone,
+            Password = BCrypt.Net.BCrypt.HashPassword(password),
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        });
+        await db.SaveChangesAsync();
+        Console.WriteLine($"Administrator created: {email}");
+    }
+
+    return;
+}
+
 if (args.Contains("--create-user"))
 {
     using var scope = app.Services.CreateScope();
-    var db = scope.ServiceProvider.GetRequiredService<ShopDbContext>();
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
     Console.WriteLine("=== Create Default User ===");
 
@@ -186,6 +228,12 @@ if (args.Contains("--create-user"))
 }
 
 // Helper: Hide password input
+static string? GetOption(string[] arguments, string option)
+{
+    var index = Array.IndexOf(arguments, option);
+    return index >= 0 && index + 1 < arguments.Length ? arguments[index + 1] : null;
+}
+
 static string ReadPassword()
 {
     string password = "";

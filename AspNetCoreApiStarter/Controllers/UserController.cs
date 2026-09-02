@@ -11,7 +11,7 @@ namespace AspNetCoreApiStarter.Controllers
     public class UserController : BaseController<User>
     {
 
-        public UserController(ShopDbContext dbContext) : base(dbContext)
+        public UserController(ApplicationDbContext dbContext) : base(dbContext)
         {
         }
 

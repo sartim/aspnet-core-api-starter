@@ -208,6 +208,22 @@ docker compose down
 Authorization: Bearer <JWT_TOKEN>
 ```
 
+### Non-interactive administrator creation
+
+After the database is available, create the initial administrator without a
+prompt. The command applies pending migrations, is safe to rerun, and accepts
+flags or environment variables for deployment automation:
+
+```bash
+ADMIN_EMAIL=admin@example.com \
+ADMIN_PASSWORD='change-this-in-a-secret-manager' \
+dotnet run -- --create-admin
+```
+
+Optional values are `ADMIN_FIRST_NAME`, `ADMIN_LAST_NAME`, and `ADMIN_PHONE`.
+The equivalent flags are `--admin-email`, `--admin-password`,
+`--admin-first-name`, `--admin-last-name`, and `--admin-phone`.
+
 ---
 
 ## Development Notes

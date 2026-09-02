@@ -89,7 +89,7 @@ Status: **Planned**
 
 - [x] **P1-1:** Add a checked-in `.env.example` at the repository root and ensure
   the generated user-service profile receives a safe copy.
-- [ ] **P1-2:** Add a non-interactive command for creating the first administrator,
+- [x] **P1-2:** Add a non-interactive command for creating the first administrator,
   suitable for local setup and deployment scripts.
 - [ ] **P1-3:** Provide consistent API documentation and example requests for health,
   authentication, users, roles, permissions, and role-permission endpoints.

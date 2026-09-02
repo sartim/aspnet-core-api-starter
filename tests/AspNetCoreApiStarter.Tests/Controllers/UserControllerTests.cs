@@ -10,12 +10,12 @@ namespace AspNetCoreApiStarter.Tests.Controllers
 {
     public class UserControllerTests
     {
-        private ShopDbContext GetInMemoryDbContext()
+        private ApplicationDbContext GetInMemoryDbContext()
         {
-            var options = new DbContextOptionsBuilder<ShopDbContext>()
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(databaseName: "TestDb")
                 .Options;
-            return new ShopDbContext(options);
+            return new ApplicationDbContext(options);
         }
 
         [Fact]
