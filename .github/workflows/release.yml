@@ -20,10 +20,10 @@ jobs:
         with:
           dotnet-version: 8.0.x
       - name: Install versioning tool
-        run: dotnet tool install --global nbgv --version 3.10.70
+        run: dotnet tool install --tool-path "$RUNNER_TEMP/nbgv" --version 3.10.70 nbgv
       - name: Resolve version
         id: version
-        run: echo "version=$(nbgv get-version -v SemVer2)" >> "$GITHUB_OUTPUT"
+        run: echo "version=$($RUNNER_TEMP/nbgv/nbgv get-version -v SemVer2)" >> "$GITHUB_OUTPUT"
       - name: Restore and test
         run: dotnet test AspNetCoreApiStarter.sln --configuration Release
       - name: Tag and publish GitHub Release
