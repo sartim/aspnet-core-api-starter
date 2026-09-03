@@ -67,6 +67,8 @@ deployments.
 See the [architecture and extension points](docs/ARCHITECTURE.md) when adapting
 the starter to another identity provider, database, API design, or telemetry
 backend.
+See the [observability guide](docs/OBSERVABILITY.md) for optional OTLP export,
+the replaceable error reporter, and the importable Grafana dashboard.
 See the [database migration runbook](docs/DATABASE_MIGRATIONS.md) for generated
 projects and production deployment sequencing.
 

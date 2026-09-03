@@ -21,8 +21,7 @@ DotEnv.Load();
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.AddJsonConsole();
 var sentryDsn = Environment.GetEnvironmentVariable("SENTRY_DSN");
-var otlpEndpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT");
-var hasOtlpEndpoint = Uri.TryCreate(otlpEndpoint, UriKind.Absolute, out var parsedOtlpEndpoint);
+var telemetry = StarterTelemetryOptions.FromEnvironment(builder.Configuration);
 if (!string.IsNullOrWhiteSpace(sentryDsn) &&
     Uri.TryCreate(sentryDsn, UriKind.Absolute, out var parsedSentryDsn) &&
     (parsedSentryDsn.Scheme == Uri.UriSchemeHttps || parsedSentryDsn.Scheme == Uri.UriSchemeHttp))
@@ -51,22 +50,23 @@ builder.WebHost.ConfigureKestrel(options =>
 builder.Services.AddControllers();
 builder.Services.AddStarterObservability(sentryDsn);
 builder.Services.AddOpenTelemetry()
-    .ConfigureResource(resource => resource.AddService("aspnet-core-api-starter"))
+    .ConfigureResource(resource => resource.AddService(telemetry.ServiceName))
     .WithTracing(tracing =>
     {
         tracing.AddAspNetCoreInstrumentation();
-        if (hasOtlpEndpoint)
-            tracing.AddOtlpExporter(options => options.Endpoint = parsedOtlpEndpoint!);
+        if (telemetry.OtlpEndpoint is not null)
+            tracing.AddOtlpExporter(options => options.Endpoint = telemetry.OtlpEndpoint);
     })
     .WithMetrics(metrics =>
     {
         metrics.AddAspNetCoreInstrumentation();
         metrics.AddRuntimeInstrumentation();
         metrics.AddMeter(StarterMetrics.MeterName);
-        if (hasOtlpEndpoint)
-            metrics.AddOtlpExporter(options => options.Endpoint = parsedOtlpEndpoint!);
+        if (telemetry.OtlpEndpoint is not null)
+            metrics.AddOtlpExporter(options => options.Endpoint = telemetry.OtlpEndpoint);
     });
-if (!string.IsNullOrWhiteSpace(otlpEndpoint) && !hasOtlpEndpoint)
+var otlpEndpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT");
+if (!string.IsNullOrWhiteSpace(otlpEndpoint) && telemetry.OtlpEndpoint is null)
     Console.Error.WriteLine("OTEL_EXPORTER_OTLP_ENDPOINT is invalid; OTLP export is disabled.");
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
