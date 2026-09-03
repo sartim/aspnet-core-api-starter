@@ -17,5 +17,7 @@ var app = builder.Build();
 app.UseMiddleware<ObservabilityMiddleware>();
 
 app.MapGet("/api/v1/health", () => Results.Ok(new { status = "Healthy", timestamp = DateTime.UtcNow }));
+app.MapGet("/health/live", () => Results.Ok(new { status = "Healthy", check = "live", timestamp = DateTime.UtcNow }));
+app.MapGet("/health/ready", () => Results.Ok(new { status = "Healthy", check = "ready", timestamp = DateTime.UtcNow }));
 app.MapGet("/metrics", (StarterMetrics metrics) => Results.Text(metrics.ToPrometheus(), "text/plain; version=0.0.4"));
 app.Run();

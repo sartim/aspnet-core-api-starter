@@ -17,7 +17,7 @@ jobs:
       - name: Start services and run migrations
         run: docker compose up -d --build
       - name: Wait for API health endpoint
-        run: curl --fail --retry 30 --retry-all-errors --retry-delay 3 --retry-connrefused http://localhost:5070/api/v1/health
+        run: curl --fail --retry 30 --retry-all-errors --retry-delay 3 --retry-connrefused http://localhost:5070/health/ready
       - name: Verify Users and RBAC schema
         run: >-
           test "$(docker compose exec -T postgres psql -U shopuser -d shopdb
@@ -41,7 +41,7 @@ jobs:
       - name: Start services with OTLP collector
         run: docker compose -f docker-compose.yaml -f docker-compose.otel.yaml up -d --build
       - name: Generate telemetry
-        run: curl --fail --retry 30 --retry-all-errors --retry-delay 3 --retry-connrefused http://localhost:5070/api/v1/health
+        run: curl --fail --retry 30 --retry-all-errors --retry-delay 3 --retry-connrefused http://localhost:5070/health/ready
       - name: Verify collector received telemetry
         run: |
           for attempt in $(seq 1 20); do

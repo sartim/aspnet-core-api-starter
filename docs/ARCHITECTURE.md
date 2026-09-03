@@ -60,6 +60,12 @@ Optional distributed caching is registered through `IDistributedCache` in the
 full profile. It falls back to memory when `REDIS_CONNECTION` is unset and
 fails open when Redis is unavailable. See the [caching guide](CACHING.md).
 
+Health probes are platform-neutral: `/health/live` is process-only and
+`/health/ready` includes the database check in the full profile. The minimal
+profile exposes both probes without external dependencies. Keep orchestration
+configuration outside the application and map these endpoints to the target
+platform's liveness and readiness concepts.
+
 ## Observability and errors
 
 `AddStarterObservability` registers request metrics, the exception handler,

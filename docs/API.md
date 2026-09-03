@@ -16,6 +16,11 @@ export API_URL=http://localhost:5070
 `GET /api/v1/health` is anonymous and checks database connectivity in the full
 profile.
 
+Deployment probes are also available: `GET /health/live` checks that the
+process can serve requests without dependencies, while `GET /health/ready`
+checks database connectivity and returns `503` until the full profile is ready.
+The legacy `/api/v1/health` endpoint remains available for clients.
+
 ```bash
 curl --fail "$API_URL/api/v1/health"
 ```

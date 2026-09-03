@@ -70,7 +70,8 @@ branch policy.
       sequencing before deployment.
 - [ ] Deploy through the protected environment and monitor error rate,
       latency, logs, traces, and metrics.
-- [ ] Confirm `/api/v1/health` and `/metrics` after deployment.
+- [ ] Confirm `/health/live`, `/health/ready`, the compatibility
+      `/api/v1/health`, and `/metrics` after deployment.
 
 ## Rollback and closeout
 
