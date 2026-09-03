@@ -50,5 +50,6 @@ nav:
   - Observability: OBSERVABILITY.md
   - Email actions: EMAIL_ACTIONS.md
   - Messaging: MESSAGING.md
+  - Template versioning: TEMPLATE_VERSIONING.md
   - Release checklist: RELEASE_CHECKLIST.md
   - Roadmap: ROADMAP.md
