@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P1-12:** Add pagination, filtering, validation, and stable response contracts to collection endpoints.
+1. **P1-13:** Add database migration guidance for generated projects and production deployments.
 
 ## Deployment scope
 
@@ -136,7 +136,7 @@ Status: **Planned**
 - [x] **P1-10:** Add role and permission authorization policies to protected endpoints.
 - [x] **P1-11:** Define password, token expiry, refresh, revocation, and account-lockout
   behavior explicitly.
-- [ ] **P1-12:** Add pagination, filtering, validation, and stable response contracts to
+- [x] **P1-12:** Add pagination, filtering, validation, and stable response contracts to
   collection endpoints.
 - [ ] **P1-13:** Add database migration guidance for generated projects and production
   deployments.
