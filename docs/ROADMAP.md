@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P2-6:** Publish versioned starter templates and a migration path between profile versions.
+1. **P3-1:** Add optional background job scheduling and durable outbox processing.
 
 ## Deployment scope
 
@@ -173,7 +173,7 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
 - [x] **P2-4:** Add optional email/password-reset and email-verification modules.
 - [x] **P2-5:** Add optional gRPC or messaging adapters without changing the REST
   baseline.
-- [ ] **P2-6:** Publish versioned starter templates and a migration path between profile
+- [x] **P2-6:** Publish versioned starter templates and a migration path between profile
   versions.
 
 ## Observability contract

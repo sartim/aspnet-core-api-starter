@@ -3,10 +3,23 @@ set -euo pipefail
 
 usage() {
   echo "Usage: $0 init <project-name> <empty-directory> [--profile user-service|minimal]" >&2
+  echo "       $0 check <generated-directory>" >&2
   exit 2
 }
 
-[[ ${1:-} == "init" ]] || usage
+command=${1:-}
+if [[ "$command" == "check" ]]; then
+  metadata=${2:-}/.aspnet-starter.json
+  [[ -f "$metadata" ]] || { echo "Starter metadata not found: $metadata" >&2; exit 1; }
+  if ! grep -q '"templateVersion"' "$metadata"; then
+    echo "Unsupported starter metadata: $metadata" >&2
+    exit 1
+  fi
+  echo "Starter metadata:"
+  sed -n 's/[{}]//g; s/[",]//g; s/^ */  /p' "$metadata"
+  exit 0
+fi
+[[ "$command" == "init" ]] || usage
 project_name=${2:-}
 destination=${3:-}
 profile=user-service
@@ -57,7 +70,16 @@ find "$destination" -type f \
   -e "s/aspnet-core-api-starter/$project_name/g" {} +
 find "$destination" -name '*.bak' -delete
 
+cat > "$destination/.aspnet-starter.json" <<EOF
+{
+  "templateVersion": "1.0.0",
+  "profile": "$profile",
+  "sourceCommit": "$(git -C "$source_root" rev-parse --short HEAD 2>/dev/null || echo unknown)"
+}
+EOF
+
 echo "Generated $profile ASP.NET API: $destination"
+echo "Template version: 1.0.0"
 echo "Next steps:"
 echo "  cd $destination"
 echo "  dotnet restore"

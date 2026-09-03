@@ -13,6 +13,10 @@ full="$test_root/full"
 
 test -f "$minimal/catalog-api.csproj"
 test -f "$full/AspNetCoreApiStarter/AspNetCoreApiStarter.csproj"
+test -f "$minimal/.aspnet-starter.json"
+test -f "$full/.aspnet-starter.json"
+"$source_root/scripts/aspnet-starter" check "$minimal" | grep -q 'templateVersion'
+"$source_root/scripts/aspnet-starter" check "$full" | grep -q 'profile'
 
 if grep -R -n -E 'User|Role|Permission|EntityFramework|JWT|Sentry' "$minimal" \
   --include='*.cs' --include='*.csproj' --include='*.json'; then
