@@ -20,6 +20,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<RevokedAccessToken> RevokedAccessTokens { get; set; }
     public DbSet<EmailActionToken> EmailActionTokens { get; set; }
+    public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -38,5 +39,7 @@ public class ApplicationDbContext : DbContext
             .IsUnique();
         modelBuilder.Entity<EmailActionToken>()
             .HasIndex(token => new { token.UserId, token.Purpose, token.UsedAt });
+        modelBuilder.Entity<OutboxMessage>()
+            .HasIndex(message => new { message.ProcessedAt, message.OccurredAt });
     }
 }

@@ -51,5 +51,6 @@ nav:
   - Email actions: EMAIL_ACTIONS.md
   - Messaging: MESSAGING.md
   - Template versioning: TEMPLATE_VERSIONING.md
+  - Background jobs and outbox: OUTBOX.md
   - Release checklist: RELEASE_CHECKLIST.md
   - Roadmap: ROADMAP.md
