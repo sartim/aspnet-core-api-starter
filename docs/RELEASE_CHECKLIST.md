@@ -30,6 +30,8 @@ branch policy.
       plus the expected Users/RBAC schema afterward.
 - [ ] Record the migration state and a rollback plan. Do not blindly roll back
       a migration that changed or deleted production data.
+- [ ] Generate and review the idempotent migration SQL script, then apply it as
+      a protected one-shot deployment step before starting the new API image.
 
 ## Secrets and configuration
 

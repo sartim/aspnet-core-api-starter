@@ -67,6 +67,8 @@ deployments.
 See the [architecture and extension points](docs/ARCHITECTURE.md) when adapting
 the starter to another identity provider, database, API design, or telemetry
 backend.
+See the [database migration runbook](docs/DATABASE_MIGRATIONS.md) for generated
+projects and production deployment sequencing.
 
 The Markdown documentation is published automatically to
 [GitHub Pages](https://sartim.github.io/aspnet-core-api-starter/) from the

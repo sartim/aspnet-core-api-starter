@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P1-13:** Add database migration guidance for generated projects and production deployments.
+1. **P2-1:** Add optional Redis caching without making it a minimal-profile dependency.
 
 ## Deployment scope
 
@@ -138,7 +138,7 @@ Status: **Planned**
   behavior explicitly.
 - [x] **P1-12:** Add pagination, filtering, validation, and stable response contracts to
   collection endpoints.
-- [ ] **P1-13:** Add database migration guidance for generated projects and production
+- [x] **P1-13:** Add database migration guidance for generated projects and production
   deployments.
 
 ## Versioning decision
