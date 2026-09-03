@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P2-2:** Add platform-neutral health/readiness separation for deployments that require a database.
+1. **P2-3:** Add optional observability exporters and dashboards that remain disabled unless configured.
 
 ## Deployment scope
 
