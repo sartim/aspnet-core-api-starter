@@ -8,6 +8,7 @@ using AspNetCoreApiStarter.Models;
 using AspNetCoreApiStarter.Observability;
 using AspNetCoreApiStarter.Authorization;
 using AspNetCoreApiStarter.Health;
+using AspNetCoreApiStarter.Email;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Sentry;
 using dotenv.net;
@@ -79,6 +80,8 @@ if (string.IsNullOrWhiteSpace(connectionString))
     throw new InvalidOperationException("Required configuration 'DB_URL' is missing. Set DB_URL to a PostgreSQL connection string before starting the user-service profile.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddScoped<EmailActionService>();
+builder.Services.AddSingleton<IEmailSender, NullEmailSender>();
 builder.Services.AddHealthChecks()
     .AddCheck<DatabaseHealthCheck>("database", tags: ["ready"]);
 

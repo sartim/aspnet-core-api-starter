@@ -149,6 +149,9 @@ namespace AspNetCoreApiStarter.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime?>("EmailVerifiedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int>("FailedLoginAttempts")
                         .HasColumnType("integer");
 
@@ -187,6 +190,28 @@ namespace AspNetCoreApiStarter.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("AspNetCoreApiStarter.Models.EmailActionToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt").HasColumnType("timestamp with time zone");
+                    b.Property<DateTime?>("DeletedAt").HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("ExpiresAt").HasColumnType("timestamp with time zone");
+                    b.Property<bool>("IsDeleted").HasColumnType("boolean");
+                    b.Property<string>("Purpose").IsRequired().HasColumnType("text");
+                    b.Property<string>("TokenHash").IsRequired().HasColumnType("text");
+                    b.Property<DateTime>("UpdatedAt").HasColumnType("timestamp with time zone");
+                    b.Property<DateTime?>("UsedAt").HasColumnType("timestamp with time zone");
+                    b.Property<Guid>("UserId").HasColumnType("uuid");
+                    b.HasKey("Id");
+                    b.HasIndex("TokenHash").IsUnique();
+                    b.HasIndex("UserId", "Purpose", "UsedAt");
+                    b.HasIndex("UserId");
+                    b.ToTable("EmailActionTokens");
+                });
+
             modelBuilder.Entity("AspNetCoreApiStarter.Models.RolePermission", b =>
                 {
                     b.HasOne("AspNetCoreApiStarter.Models.Permission", "Permission")
@@ -215,6 +240,16 @@ namespace AspNetCoreApiStarter.Migrations
                 {
                     b.HasOne("AspNetCoreApiStarter.Models.User", "User")
                         .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("AspNetCoreApiStarter.Models.EmailActionToken", b =>
+                {
+                    b.HasOne("AspNetCoreApiStarter.Models.User", "User")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

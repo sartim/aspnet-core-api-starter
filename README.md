@@ -69,6 +69,8 @@ the starter to another identity provider, database, API design, or telemetry
 backend.
 See the [observability guide](docs/OBSERVABILITY.md) for optional OTLP export,
 the replaceable error reporter, and the importable Grafana dashboard.
+See the [email actions guide](docs/EMAIL_ACTIONS.md) for optional password-reset
+and email-verification flows with a provider-neutral sender boundary.
 See the [database migration runbook](docs/DATABASE_MIGRATIONS.md) for generated
 projects and production deployment sequencing.
 

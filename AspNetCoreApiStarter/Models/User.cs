@@ -12,6 +12,7 @@ namespace AspNetCoreApiStarter.Models
         public int FailedLoginAttempts { get; set; }
         public DateTime? LockoutEnd { get; set; }
         public DateTime? LastLoginAt { get; set; }
+        public DateTime? EmailVerifiedAt { get; set; }
         public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
         public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     }
