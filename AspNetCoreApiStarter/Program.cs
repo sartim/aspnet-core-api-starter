@@ -10,6 +10,7 @@ using AspNetCoreApiStarter.Authorization;
 using AspNetCoreApiStarter.Health;
 using AspNetCoreApiStarter.Email;
 using AspNetCoreApiStarter.Messaging;
+using AspNetCoreApiStarter.Jobs;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Sentry;
 using dotenv.net;
@@ -83,7 +84,16 @@ if (string.IsNullOrWhiteSpace(connectionString))
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddScoped<EmailActionService>();
 builder.Services.AddSingleton<IEmailSender, NullEmailSender>();
-builder.Services.AddSingleton<IEventPublisher, NullEventPublisher>();
+if (bool.TryParse(Environment.GetEnvironmentVariable("OUTBOX_ENABLED"), out var outboxEnabled) && outboxEnabled)
+{
+    builder.Services.AddScoped<IEventPublisher, OutboxEventPublisher>();
+    builder.Services.AddScoped<IOutboxMessageHandler, NullOutboxMessageHandler>();
+    builder.Services.AddHostedService<OutboxProcessor>();
+}
+else
+{
+    builder.Services.AddSingleton<IEventPublisher, NullEventPublisher>();
+}
 builder.Services.AddHealthChecks()
     .AddCheck<DatabaseHealthCheck>("database", tags: ["ready"]);
 

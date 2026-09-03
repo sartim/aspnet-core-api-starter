@@ -212,6 +212,24 @@ namespace AspNetCoreApiStarter.Migrations
                     b.ToTable("EmailActionTokens");
                 });
 
+            modelBuilder.Entity("AspNetCoreApiStarter.Models.OutboxMessage", b =>
+                {
+                    b.Property<Guid>("Id").ValueGeneratedOnAdd().HasColumnType("uuid");
+                    b.Property<int>("Attempts").HasColumnType("integer");
+                    b.Property<DateTime>("CreatedAt").HasColumnType("timestamp with time zone");
+                    b.Property<DateTime?>("DeletedAt").HasColumnType("timestamp with time zone");
+                    b.Property<string>("EventType").IsRequired().HasColumnType("text");
+                    b.Property<bool>("IsDeleted").HasColumnType("boolean");
+                    b.Property<string>("LastError").HasColumnType("text");
+                    b.Property<string>("Payload").IsRequired().HasColumnType("text");
+                    b.Property<DateTime>("OccurredAt").HasColumnType("timestamp with time zone");
+                    b.Property<DateTime?>("ProcessedAt").HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("UpdatedAt").HasColumnType("timestamp with time zone");
+                    b.HasKey("Id");
+                    b.HasIndex("ProcessedAt", "OccurredAt");
+                    b.ToTable("OutboxMessages");
+                });
+
             modelBuilder.Entity("AspNetCoreApiStarter.Models.RolePermission", b =>
                 {
                     b.HasOne("AspNetCoreApiStarter.Models.Permission", "Permission")

@@ -75,6 +75,8 @@ See the [messaging guide](docs/MESSAGING.md) for optional broker adapters and
 resource-change events without adding broker dependencies.
 See [template versioning](docs/TEMPLATE_VERSIONING.md) for generated metadata
 and the migration path between starter releases.
+See [background jobs and outbox](docs/OUTBOX.md) for the opt-in durable event
+processor.
 See the [database migration runbook](docs/DATABASE_MIGRATIONS.md) for generated
 projects and production deployment sequencing.
 

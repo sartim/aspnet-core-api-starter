@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P3-1:** Add optional background job scheduling and durable outbox processing.
+1. **P3-2:** Add contract tests and reference adapters for external integrations.
 
 ## Deployment scope
 
@@ -175,6 +175,12 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
   baseline.
 - [x] **P2-6:** Publish versioned starter templates and a migration path between profile
   versions.
+
+### P3 — Operational extensions
+
+- [x] **P3-1:** Add optional background job scheduling and durable outbox
+  processing.
+- [ ] **P3-2:** Add contract tests and reference adapters for external integrations.
 
 ## Observability contract
 
