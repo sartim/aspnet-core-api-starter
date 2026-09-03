@@ -19,6 +19,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<RevokedAccessToken> RevokedAccessTokens { get; set; }
+    public DbSet<EmailActionToken> EmailActionTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -32,5 +33,10 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<RevokedAccessToken>()
             .HasIndex(token => token.JwtId)
             .IsUnique();
+        modelBuilder.Entity<EmailActionToken>()
+            .HasIndex(token => token.TokenHash)
+            .IsUnique();
+        modelBuilder.Entity<EmailActionToken>()
+            .HasIndex(token => new { token.UserId, token.Purpose, token.UsedAt });
     }
 }

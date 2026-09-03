@@ -6,6 +6,7 @@ using AspNetCoreApiStarter.Authorization;
 using AspNetCoreApiStarter.Data;
 using AspNetCoreApiStarter.Models;
 using AspNetCoreApiStarter.Observability;
+using AspNetCoreApiStarter.Email;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,9 +19,58 @@ namespace AspNetCoreApiStarter.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
+    private readonly EmailActionService _emailActions;
     private readonly AuthSecurityOptions _security = AuthSecurityOptions.FromEnvironment();
 
-    public AuthController(ApplicationDbContext context) => _context = context;
+    public AuthController(ApplicationDbContext context, EmailActionService emailActions)
+    {
+        _context = context;
+        _emailActions = emailActions;
+    }
+
+    [HttpPost("password-reset/request")]
+    [AllowAnonymous]
+    public async Task<IActionResult> RequestPasswordReset(EmailActionRequest request, CancellationToken cancellationToken)
+    {
+        await _emailActions.RequestAsync(request.Email, EmailActionPurpose.PasswordReset, cancellationToken);
+        return Accepted();
+    }
+
+    [HttpPost("password-reset/confirm")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ConfirmPasswordReset(PasswordResetConfirmation request, CancellationToken cancellationToken)
+    {
+        if (!PasswordPolicy.IsValid(request.NewPassword))
+            return BadRequest(new { error = PasswordPolicy.Requirements() });
+        var user = await _emailActions.ConsumeAsync(request.Token, EmailActionPurpose.PasswordReset, cancellationToken);
+        if (user is null)
+            return BadRequest(new { error = "The reset token is invalid or expired." });
+        user.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+        await _emailActions.SaveAsync(cancellationToken);
+        return NoContent();
+    }
+
+    [HttpPost("email-verification/request")]
+    [Authorize]
+    public async Task<IActionResult> RequestEmailVerification(CancellationToken cancellationToken)
+    {
+        var email = User.FindFirstValue(ClaimTypes.Email);
+        if (!string.IsNullOrWhiteSpace(email))
+            await _emailActions.RequestAsync(email, EmailActionPurpose.EmailVerification, cancellationToken);
+        return Accepted();
+    }
+
+    [HttpPost("email-verification/confirm")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ConfirmEmailVerification(EmailTokenRequest request, CancellationToken cancellationToken)
+    {
+        var user = await _emailActions.ConsumeAsync(request.Token, EmailActionPurpose.EmailVerification, cancellationToken);
+        if (user is null)
+            return BadRequest(new { error = "The verification token is invalid or expired." });
+        user.EmailVerifiedAt = DateTime.UtcNow;
+        await _emailActions.SaveAsync(cancellationToken);
+        return NoContent();
+    }
 
     [HttpPost("generate-jwt")]
     [AllowAnonymous]
@@ -157,4 +207,7 @@ public class AuthController : ControllerBase
 
     private sealed record AccessToken(string Token, DateTime ExpiresAt);
     private sealed record TokenResponse(string Token, string RefreshToken, DateTime ExpiresAt);
+    public sealed record EmailActionRequest(string Email);
+    public sealed record EmailTokenRequest(string Token);
+    public sealed record PasswordResetConfirmation(string Token, string NewPassword);
 }

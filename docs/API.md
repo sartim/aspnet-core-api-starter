@@ -78,6 +78,22 @@ curl --fail -X POST "$API_URL/api/v1/auth/revoke" \
   -H "Authorization: Bearer $TOKEN"
 ```
 
+Optional email actions are available in the full profile. Password reset
+requests return `202 Accepted` without revealing whether an account exists:
+
+```bash
+curl --fail -X POST "$API_URL/api/v1/auth/password-reset/request" \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"user@example.com"}'
+```
+
+Confirm with `{ "token": "...", "newPassword": "..." }` at
+`/api/v1/auth/password-reset/confirm`. Authenticated users can request email
+verification at `/api/v1/auth/email-verification/request`; confirm with
+`{ "token": "..." }` at `/api/v1/auth/email-verification/confirm`.
+Tokens are one-time, hashed at rest, and only delivered when an
+`IEmailSender` implementation and `EMAIL_ACTION_BASE_URL` are configured.
+
 Passwords must be at least 12 characters and contain uppercase, lowercase,
 numeric, and special characters. After `AUTH_MAX_FAILED_ATTEMPTS` failed
 logins (5 by default), the account is locked for `AUTH_LOCKOUT_MINUTES` (15 by
