@@ -25,6 +25,8 @@ grep -R -q -E 'UserController|RoleController|PermissionController' \
 test -f "$full/docs/DATABASE_MIGRATIONS.md"
 test -x "$full/scripts/aspnet-migrate"
 test -f "$full/docs/CACHING.md"
+grep -R -q 'health/live' "$minimal" --include='*.cs'
+grep -R -q 'health/ready' "$full/AspNetCoreApiStarter" --include='*.cs'
 
 dotnet restore "$minimal/catalog-api.csproj"
 dotnet build "$minimal/catalog-api.csproj" --configuration Release --no-restore

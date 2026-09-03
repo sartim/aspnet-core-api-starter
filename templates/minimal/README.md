@@ -19,6 +19,9 @@ Health check:
 curl --fail http://localhost:5070/api/v1/health
 ```
 
+Deployment probes are also available at `/health/live` and `/health/ready`.
+Both are process-only checks in the minimal profile because it has no database.
+
 Metrics are available at `/metrics`, and every response includes an
 `X-Trace-Id` correlation header. Sentry and other exporters can be added later
 without changing the application endpoints.

@@ -7,6 +7,8 @@ using System.Text;
 using AspNetCoreApiStarter.Models;
 using AspNetCoreApiStarter.Observability;
 using AspNetCoreApiStarter.Authorization;
+using AspNetCoreApiStarter.Health;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Sentry;
 using dotenv.net;
 using OpenTelemetry.Resources;
@@ -77,6 +79,8 @@ if (string.IsNullOrWhiteSpace(connectionString))
     throw new InvalidOperationException("Required configuration 'DB_URL' is missing. Set DB_URL to a PostgreSQL connection string before starting the user-service profile.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddHealthChecks()
+    .AddCheck<DatabaseHealthCheck>("database", tags: ["ready"]);
 
 var redisConnection = Environment.GetEnvironmentVariable("REDIS_CONNECTION");
 if (string.IsNullOrWhiteSpace(redisConnection))
@@ -148,7 +152,9 @@ app.UseWhen(context =>
     !context.Request.Path.StartsWithSegments("/api/v1/auth/generate-jwt") &&
     !context.Request.Path.StartsWithSegments("/api/v1/auth/refresh") &&
     !context.Request.Path.StartsWithSegments("/api/v1/health") &&
-    !context.Request.Path.StartsWithSegments("/metrics"),
+    !context.Request.Path.StartsWithSegments("/metrics") &&
+    !context.Request.Path.StartsWithSegments("/health/live") &&
+    !context.Request.Path.StartsWithSegments("/health/ready"),
 appBuilder =>
 {
     appBuilder.UseMiddleware<TokenAuthenticationMiddleware>();
@@ -339,5 +345,10 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapStarterMetrics();
+app.MapHealthChecks("/health/live", new HealthCheckOptions { Predicate = _ => false }).AllowAnonymous();
+app.MapHealthChecks("/health/ready", new HealthCheckOptions
+{
+    Predicate = check => check.Tags.Contains("ready")
+}).AllowAnonymous();
 
 app.Run();

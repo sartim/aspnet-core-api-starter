@@ -166,7 +166,7 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
 
 - [x] **P2-1:** Add optional Redis caching without making it a minimal-profile
   dependency.
-- [ ] **P2-2:** Add platform-neutral health/readiness separation for deployments
+- [x] **P2-2:** Add platform-neutral health/readiness separation for deployments
   that require a database.
 - [ ] **P2-3:** Add optional observability exporters and dashboards that remain
   disabled unless configured.
