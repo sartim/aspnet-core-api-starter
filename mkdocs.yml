@@ -49,5 +49,6 @@ nav:
   - Caching: CACHING.md
   - Observability: OBSERVABILITY.md
   - Email actions: EMAIL_ACTIONS.md
+  - Messaging: MESSAGING.md
   - Release checklist: RELEASE_CHECKLIST.md
   - Roadmap: ROADMAP.md

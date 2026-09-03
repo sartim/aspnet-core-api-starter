@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P2-5:** Add optional gRPC or messaging adapters without changing the REST baseline.
+1. **P2-6:** Publish versioned starter templates and a migration path between profile versions.
 
 ## Deployment scope
 
@@ -171,7 +171,7 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
 - [x] **P2-3:** Add optional observability exporters and dashboards that remain
   disabled unless configured.
 - [x] **P2-4:** Add optional email/password-reset and email-verification modules.
-- [ ] **P2-5:** Add optional gRPC or messaging adapters without changing the REST
+- [x] **P2-5:** Add optional gRPC or messaging adapters without changing the REST
   baseline.
 - [ ] **P2-6:** Publish versioned starter templates and a migration path between profile
   versions.

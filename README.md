@@ -71,6 +71,8 @@ See the [observability guide](docs/OBSERVABILITY.md) for optional OTLP export,
 the replaceable error reporter, and the importable Grafana dashboard.
 See the [email actions guide](docs/EMAIL_ACTIONS.md) for optional password-reset
 and email-verification flows with a provider-neutral sender boundary.
+See the [messaging guide](docs/MESSAGING.md) for optional broker adapters and
+resource-change events without adding broker dependencies.
 See the [database migration runbook](docs/DATABASE_MIGRATIONS.md) for generated
 projects and production deployment sequencing.
 
