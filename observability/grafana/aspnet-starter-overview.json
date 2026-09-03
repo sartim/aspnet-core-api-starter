@@ -1,0 +1,14 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "panels": [
+    { "type": "stat", "title": "Requests", "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" }, "targets": [{ "expr": "aspnet_starter_requests_total", "legendFormat": "requests" }], "gridPos": { "h": 4, "w": 8, "x": 0, "y": 0 } },
+    { "type": "stat", "title": "Errors", "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" }, "targets": [{ "expr": "aspnet_starter_errors_total", "legendFormat": "errors" }], "gridPos": { "h": 4, "w": 8, "x": 8, "y": 0 } },
+    { "type": "timeseries", "title": "Request duration (total milliseconds)", "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" }, "targets": [{ "expr": "rate(aspnet_starter_request_duration_milliseconds_total[5m])", "legendFormat": "duration" }], "gridPos": { "h": 8, "w": 16, "x": 0, "y": 4 } }
+  ],
+  "schemaVersion": 39,
+  "templating": { "list": [{ "name": "DS_PROMETHEUS", "label": "Prometheus", "type": "datasource", "query": "prometheus", "current": { "text": "Prometheus", "value": "" } }] },
+  "title": "ASP.NET Core API Starter overview",
+  "uid": "aspnet-starter-overview",
+  "version": 1
+}

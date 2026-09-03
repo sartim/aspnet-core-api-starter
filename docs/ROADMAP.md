@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P2-3:** Add optional observability exporters and dashboards that remain disabled unless configured.
+1. **P2-4:** Add optional email/password-reset and email-verification modules.
 
 ## Deployment scope
 
@@ -168,7 +168,7 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
   dependency.
 - [x] **P2-2:** Add platform-neutral health/readiness separation for deployments
   that require a database.
-- [ ] **P2-3:** Add optional observability exporters and dashboards that remain
+- [x] **P2-3:** Add optional observability exporters and dashboards that remain
   disabled unless configured.
 - [ ] **P2-4:** Add optional email/password-reset and email-verification modules.
 - [ ] **P2-5:** Add optional gRPC or messaging adapters without changing the REST

@@ -47,5 +47,6 @@ nav:
   - Architecture: ARCHITECTURE.md
   - Database migrations: DATABASE_MIGRATIONS.md
   - Caching: CACHING.md
+  - Observability: OBSERVABILITY.md
   - Release checklist: RELEASE_CHECKLIST.md
   - Roadmap: ROADMAP.md

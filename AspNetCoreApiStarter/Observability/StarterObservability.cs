@@ -12,6 +12,26 @@ public interface IErrorReporter
     void Capture(Exception exception, HttpContext context);
 }
 
+public sealed record StarterTelemetryOptions(string ServiceName, Uri? OtlpEndpoint)
+{
+    public static StarterTelemetryOptions FromEnvironment(IConfiguration configuration)
+    {
+        var serviceName = configuration["OTEL_SERVICE_NAME"];
+        if (string.IsNullOrWhiteSpace(serviceName))
+            serviceName = "aspnet-core-api-starter";
+
+        var endpointValue = configuration["OTEL_EXPORTER_OTLP_ENDPOINT"];
+        if (string.IsNullOrWhiteSpace(endpointValue))
+            return new StarterTelemetryOptions(serviceName, null);
+
+        if (Uri.TryCreate(endpointValue, UriKind.Absolute, out var endpoint) &&
+            (endpoint.Scheme == Uri.UriSchemeHttp || endpoint.Scheme == Uri.UriSchemeHttps))
+            return new StarterTelemetryOptions(serviceName, endpoint);
+
+        return new StarterTelemetryOptions(serviceName, null);
+    }
+}
+
 public static class StarterProblemDetails
 {
     public static string GetTraceId(HttpContext context)
