@@ -50,9 +50,11 @@ new protected resource.
 
 `ApplicationDbContext` is the EF Core boundary. Add entities and indexes in
 `OnModelCreating`, create migrations with `dotnet ef migrations add`, and apply
-them through the deployment migration step. Replace `UseNpgsql` and the context
-implementation when using another relational provider, keeping migrations and
-connection handling environment-specific.
+them through the deployment migration step. The full profile includes
+`scripts/aspnet-migrate` and the [database migration runbook](DATABASE_MIGRATIONS.md).
+Replace `UseNpgsql` and the context implementation when using another
+relational provider, keeping migrations and connection handling
+environment-specific.
 
 ## Observability and errors
 

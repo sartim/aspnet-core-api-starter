@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  echo "Usage: $0 <list|apply|script> [output-file]" >&2
+  exit 2
+}
+
+command=${1:-}
+case "$command" in
+  list|apply|script) ;;
+  *) usage ;;
+esac
+
+source_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+project="$source_root/AspNetCoreApiStarter/AspNetCoreApiStarter.csproj"
+[[ -f "$project" ]] || { echo "Project not found: $project" >&2; exit 1; }
+
+if [[ -z "${DB_URL:-}" && "$command" == "apply" ]]; then
+  echo "DB_URL must be set for '$command'." >&2
+  exit 1
+fi
+
+case "$command" in
+  list)
+    dotnet ef migrations list --project "$project" --startup-project "$project"
+    ;;
+  apply)
+    dotnet ef database update --project "$project" --startup-project "$project"
+    ;;
+  script)
+    output=${2:-"$source_root/migration.sql"}
+    dotnet ef migrations script --idempotent --project "$project" --startup-project "$project" --output "$output"
+    echo "Wrote idempotent migration script: $output"
+    ;;
+esac
