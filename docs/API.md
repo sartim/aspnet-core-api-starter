@@ -79,13 +79,32 @@ logins (5 by default), the account is locked for `AUTH_LOCKOUT_MINUTES` (15 by
 default). Failed-login responses intentionally do not reveal whether an email
 exists or whether an account is locked.
 
-Use the token for protected requests:
+Use the token for protected requests. Collection endpoints return a stable
+response envelope and support `page` (default `1`), `pageSize` (default `25`,
+maximum `100`), `q` for case-insensitive text search, and `includeDeleted` for
+soft-deletable resources:
 
 ```bash
 export TOKEN='eyJ...'
 curl --fail "$API_URL/api/v1/users" \
   -H "Authorization: Bearer $TOKEN"
 ```
+
+Example response:
+
+```json
+{
+  "items": [],
+  "page": 1,
+  "pageSize": 25,
+  "totalCount": 0,
+  "totalPages": 0
+}
+```
+
+Invalid paging values return `400 Bad Request` as `application/problem+json`.
+Single-resource lookups remain available with `?id=<resource-id>` and return
+the resource directly; update and delete routes use `/api/v1/<resource>/{id}`.
 
 ## Authorization policies
 

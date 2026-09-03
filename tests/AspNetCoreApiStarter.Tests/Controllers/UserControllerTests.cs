@@ -45,5 +45,24 @@ namespace AspNetCoreApiStarter.Tests.Controllers
             Assert.Equal("John", returnedUser.FirstName);
             Assert.NotNull(returnedUser.Password);
         }
+
+        [Fact]
+        public async Task Get_ReturnsPagedAndFilteredResponse()
+        {
+            await using var dbContext = GetInMemoryDbContext();
+            dbContext.Users.AddRange(
+                new User { FirstName = "Alice", LastName = "Smith", Email = "alice@test.com", Phone = 1, Password = "Strong-password1", IsActive = true },
+                new User { FirstName = "Bob", LastName = "Jones", Email = "bob@test.com", Phone = 2, Password = "Strong-password1", IsActive = true });
+            await dbContext.SaveChangesAsync();
+            var controller = new UserController(dbContext);
+
+            var actionResult = await controller.Get(new PageQuery { Page = 1, PageSize = 1, Q = "alice" });
+
+            var result = Assert.IsType<OkObjectResult>(actionResult.Result);
+            var page = Assert.IsType<PagedResponse<User>>(result.Value);
+            Assert.Single(page.Items);
+            Assert.Equal("alice@test.com", page.Items[0].Email);
+            Assert.Equal(1, page.TotalCount);
+        }
     }
 }
