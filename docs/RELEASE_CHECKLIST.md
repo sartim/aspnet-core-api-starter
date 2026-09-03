@@ -45,6 +45,8 @@ branch policy.
       behavior for the target environment.
 - [ ] Confirm telemetry excludes passwords, tokens, credentials, and
       unnecessary personal data.
+- [ ] If Redis is enabled, verify the managed service connection, TLS,
+      authentication, persistence, eviction policy, and fail-open behavior.
 
 ## Image and release artifacts
 

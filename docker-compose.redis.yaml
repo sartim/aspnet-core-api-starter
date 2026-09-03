@@ -1,0 +1,22 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: asp_shop_redis
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    environment:
+      REDIS_CONNECTION: redis:6379
+    depends_on:
+      redis:
+        condition: service_healthy
+
+volumes:
+  redis-data: {}

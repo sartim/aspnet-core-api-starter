@@ -46,5 +46,6 @@ nav:
   - API reference: API.md
   - Architecture: ARCHITECTURE.md
   - Database migrations: DATABASE_MIGRATIONS.md
+  - Caching: CACHING.md
   - Release checklist: RELEASE_CHECKLIST.md
   - Roadmap: ROADMAP.md

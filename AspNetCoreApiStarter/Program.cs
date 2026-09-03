@@ -78,6 +78,16 @@ if (string.IsNullOrWhiteSpace(connectionString))
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
 
+var redisConnection = Environment.GetEnvironmentVariable("REDIS_CONNECTION");
+if (string.IsNullOrWhiteSpace(redisConnection))
+{
+    builder.Services.AddDistributedMemoryCache();
+}
+else
+{
+    builder.Services.AddStackExchangeRedisCache(options => options.Configuration = redisConnection);
+}
+
 // Convert url structure to lower case
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 

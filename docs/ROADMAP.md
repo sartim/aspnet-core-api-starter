@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P2-1:** Add optional Redis caching without making it a minimal-profile dependency.
+1. **P2-2:** Add platform-neutral health/readiness separation for deployments that require a database.
 
 ## Deployment scope
 
@@ -164,7 +164,7 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
 
 ### P2 — Optional capabilities
 
-- [ ] **P2-1:** Add optional Redis caching without making it a minimal-profile
+- [x] **P2-1:** Add optional Redis caching without making it a minimal-profile
   dependency.
 - [ ] **P2-2:** Add platform-neutral health/readiness separation for deployments
   that require a database.
