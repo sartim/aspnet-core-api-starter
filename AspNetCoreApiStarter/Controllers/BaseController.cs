@@ -102,7 +102,10 @@ public class BaseController<TEntity> : ControllerBase where TEntity : class
 
     private async Task PublishChange(string operation, string resourceId)
     {
-        var publisher = HttpContext.RequestServices.GetService<IEventPublisher>();
+        var httpContext = ControllerContext.HttpContext;
+        if (httpContext is null)
+            return;
+        var publisher = httpContext.RequestServices.GetService<IEventPublisher>();
         if (publisher is null)
             return;
         try
@@ -112,7 +115,7 @@ public class BaseController<TEntity> : ControllerBase where TEntity : class
         }
         catch (Exception exception)
         {
-            HttpContext.RequestServices.GetRequiredService<ILogger<BaseController<TEntity>>>()
+            httpContext.RequestServices.GetRequiredService<ILogger<BaseController<TEntity>>>()
                 .LogWarning(exception, "Optional event publishing failed for {ResourceType} {Operation} {ResourceId}",
                     typeof(TEntity).Name, operation, resourceId);
         }
