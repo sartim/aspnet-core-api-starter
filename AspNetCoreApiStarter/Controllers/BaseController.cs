@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using System.Text.Json;
 using AspNetCoreApiStarter.Data;
 using AspNetCoreApiStarter.Models;
+using AspNetCoreApiStarter.Messaging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -65,6 +66,7 @@ public class BaseController<TEntity> : ControllerBase where TEntity : class
         _dbContext.Set<TEntity>().Add(entity);
         await _dbContext.SaveChangesAsync();
         await InvalidateCache();
+        await PublishChange("created", GetEntityId(entity));
         return CreatedAtAction(nameof(Get), new { id = GetEntityId(entity) }, entity);
     }
 
@@ -80,6 +82,7 @@ public class BaseController<TEntity> : ControllerBase where TEntity : class
         _dbContext.Entry(entity).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
         await InvalidateCache();
+        await PublishChange("updated", id);
         return NoContent();
     }
 
@@ -93,7 +96,29 @@ public class BaseController<TEntity> : ControllerBase where TEntity : class
         _dbContext.Set<TEntity>().Remove(entity);
         await _dbContext.SaveChangesAsync();
         await InvalidateCache();
+        await PublishChange("deleted", id);
         return NoContent();
+    }
+
+    private async Task PublishChange(string operation, string resourceId)
+    {
+        var httpContext = ControllerContext.HttpContext;
+        if (httpContext is null)
+            return;
+        var publisher = httpContext.RequestServices.GetService<IEventPublisher>();
+        if (publisher is null)
+            return;
+        try
+        {
+            await publisher.PublishAsync(new ResourceChangedEvent(
+                typeof(TEntity).Name, operation, resourceId, DateTime.UtcNow));
+        }
+        catch (Exception exception)
+        {
+            httpContext.RequestServices.GetRequiredService<ILogger<BaseController<TEntity>>>()
+                .LogWarning(exception, "Optional event publishing failed for {ResourceType} {Operation} {ResourceId}",
+                    typeof(TEntity).Name, operation, resourceId);
+        }
     }
 
     private async Task<TEntity?> FindEntity(string id)
