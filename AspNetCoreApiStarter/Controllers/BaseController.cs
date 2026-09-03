@@ -1,16 +1,23 @@
 using System.Linq.Expressions;
+using System.Text.Json;
 using AspNetCoreApiStarter.Data;
 using AspNetCoreApiStarter.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace AspNetCoreApiStarter.Controllers;
 
 public class BaseController<TEntity> : ControllerBase where TEntity : class
 {
     private readonly ApplicationDbContext _dbContext;
+    private readonly IDistributedCache? _cache;
 
-    public BaseController(ApplicationDbContext dbContext) => _dbContext = dbContext;
+    public BaseController(ApplicationDbContext dbContext, IDistributedCache? cache = null)
+    {
+        _dbContext = dbContext;
+        _cache = cache;
+    }
 
     [HttpGet]
     public virtual async Task<ActionResult<object>> Get([FromQuery] PageQuery query, [FromQuery] string? id = null)
@@ -19,6 +26,14 @@ public class BaseController<TEntity> : ControllerBase where TEntity : class
         {
             var entity = await FindEntity(id);
             return entity is null ? NotFound() : Ok(entity);
+        }
+
+        var cacheKey = await GetCacheKey(query);
+        if (cacheKey is not null)
+        {
+            var cached = await TryGetCached(cacheKey);
+            if (cached is not null)
+                return Ok(cached);
         }
 
         var entities = _dbContext.Set<TEntity>().AsNoTracking();
@@ -37,7 +52,10 @@ public class BaseController<TEntity> : ControllerBase where TEntity : class
             .Take(query.PageSize)
             .ToListAsync();
 
-        return Ok(new PagedResponse<TEntity>(items, query.Page, query.PageSize, totalCount, totalPages));
+        var response = new PagedResponse<TEntity>(items, query.Page, query.PageSize, totalCount, totalPages);
+        if (cacheKey is not null)
+            await TrySetCached(cacheKey, response);
+        return Ok(response);
     }
 
     [HttpPost]
@@ -46,6 +64,7 @@ public class BaseController<TEntity> : ControllerBase where TEntity : class
         ConvertDateTimesToUtc(entity);
         _dbContext.Set<TEntity>().Add(entity);
         await _dbContext.SaveChangesAsync();
+        await InvalidateCache();
         return CreatedAtAction(nameof(Get), new { id = GetEntityId(entity) }, entity);
     }
 
@@ -60,6 +79,7 @@ public class BaseController<TEntity> : ControllerBase where TEntity : class
         ConvertDateTimesToUtc(entity);
         _dbContext.Entry(entity).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
+        await InvalidateCache();
         return NoContent();
     }
 
@@ -72,6 +92,7 @@ public class BaseController<TEntity> : ControllerBase where TEntity : class
 
         _dbContext.Set<TEntity>().Remove(entity);
         await _dbContext.SaveChangesAsync();
+        await InvalidateCache();
         return NoContent();
     }
 
@@ -117,5 +138,63 @@ public class BaseController<TEntity> : ControllerBase where TEntity : class
             predicate = predicate is null ? contains : Expression.OrElse(predicate, contains);
         }
         return entities.Where(Expression.Lambda<Func<TEntity, bool>>(predicate!, parameter));
+    }
+
+    private async Task<string?> GetCacheKey(PageQuery query)
+    {
+        if (_cache is null)
+            return null;
+        try
+        {
+            var versionKey = $"aspnet-api:cache-version:{typeof(TEntity).FullName}";
+            var version = await _cache.GetStringAsync(versionKey) ?? "0";
+            return $"aspnet-api:collection:{typeof(TEntity).FullName}:{version}:{query.Page}:{query.PageSize}:{query.Q?.Trim().ToLowerInvariant()}:{query.IncludeDeleted}";
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private async Task<PagedResponse<TEntity>?> TryGetCached(string cacheKey)
+    {
+        try
+        {
+            var value = await _cache!.GetStringAsync(cacheKey);
+            return value is null ? null : JsonSerializer.Deserialize<PagedResponse<TEntity>>(value);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private async Task TrySetCached(string cacheKey, PagedResponse<TEntity> response)
+    {
+        try
+        {
+            await _cache!.SetStringAsync(cacheKey, JsonSerializer.Serialize(response), new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30)
+            });
+        }
+        catch
+        {
+            // Cache availability must never make the API unavailable.
+        }
+    }
+
+    private async Task InvalidateCache()
+    {
+        if (_cache is null)
+            return;
+        try
+        {
+            await _cache.SetStringAsync($"aspnet-api:cache-version:{typeof(TEntity).FullName}", Guid.NewGuid().ToString("N"));
+        }
+        catch
+        {
+            // Cache availability must never make a write fail.
+        }
     }
 }

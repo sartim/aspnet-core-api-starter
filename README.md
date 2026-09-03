@@ -136,6 +136,7 @@ POSTGRES_PASSWORD=shoppassword
 POSTGRES_DB=shopdb
 
 DB_URL=Host=postgres;Port=5432;Database=shopdb;Username=shopuser;Password=shoppassword
+REDIS_CONNECTION=
 ```
 
 > ⚠️ **Important**

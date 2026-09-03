@@ -56,6 +56,10 @@ Replace `UseNpgsql` and the context implementation when using another
 relational provider, keeping migrations and connection handling
 environment-specific.
 
+Optional distributed caching is registered through `IDistributedCache` in the
+full profile. It falls back to memory when `REDIS_CONNECTION` is unset and
+fails open when Redis is unavailable. See the [caching guide](CACHING.md).
+
 ## Observability and errors
 
 `AddStarterObservability` registers request metrics, the exception handler,
