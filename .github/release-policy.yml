@@ -1,0 +1,11 @@
+# Promotion policy consumed by scripts/validate-release-policy.sh.
+# GitHub Environment rules remain the authoritative approval mechanism.
+environments:
+  staging:
+    allow_prerelease: true
+    required_checks: ci,security,container
+    image_tag_suffix: staging
+  production:
+    allow_prerelease: false
+    required_checks: ci,security,container
+    image_tag_suffix: production

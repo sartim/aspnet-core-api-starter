@@ -1,0 +1,72 @@
+name: Promote release
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target GitHub Environment
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      version:
+        description: Existing release version, with or without the v prefix
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+jobs:
+  validate:
+    name: Validate promotion policy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate requested promotion
+        run: ./scripts/validate-release-policy.sh "${{ inputs.environment }}" "${{ inputs.version }}"
+
+  promote:
+    name: Promote immutable image
+    needs: validate
+    environment:
+      name: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Promote image by digest
+        id: image
+        env:
+          IMAGE: ghcr.io/${{ github.repository }}
+          REQUESTED_VERSION: ${{ inputs.version }}
+          TARGET_ENVIRONMENT: ${{ inputs.environment }}
+        run: |
+          version="${REQUESTED_VERSION#v}"
+          source="${IMAGE}:${version}"
+          target="${IMAGE}:${version}-${TARGET_ENVIRONMENT}"
+          docker pull "$source"
+          digest="$(docker image inspect "$source" --format '{{index .RepoDigests 0}}')"
+          docker tag "$source" "$target"
+          docker push "$target"
+          digest="${digest##*@}"
+          {
+            echo "environment=${TARGET_ENVIRONMENT}"
+            echo "version=${version}"
+            echo "image=${target}"
+            echo "digest=${digest}"
+          } | tee promotion-metadata.txt
+          echo "target=$target" >> "$GITHUB_OUTPUT"
+      - name: Upload promotion metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: promotion-${{ inputs.environment }}-${{ inputs.version }}
+          path: promotion-metadata.txt

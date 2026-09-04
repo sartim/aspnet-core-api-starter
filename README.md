@@ -64,6 +64,9 @@ access control, and environment-specific sampling.
 See the [project roadmap](docs/ROADMAP.md) for milestones and task priorities.
 See the [release checklist](docs/RELEASE_CHECKLIST.md) before production
 deployments.
+Existing release images can be promoted through the **Promote release** GitHub
+Actions workflow. Staging accepts SemVer prereleases; production accepts only
+stable SemVer versions and requires protected-environment approval.
 See the [architecture and extension points](docs/ARCHITECTURE.md) when adapting
 the starter to another identity provider, database, API design, or telemetry
 backend.
