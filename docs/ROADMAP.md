@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P3-3:** Add load/performance smoke tests and operational SLO guidance.
+1. **P4-1:** Add release promotion automation and environment-specific policy checks.
 
 ## Deployment scope
 
@@ -181,6 +181,11 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
 - [x] **P3-1:** Add optional background job scheduling and durable outbox
   processing.
 - [x] **P3-2:** Add contract tests and reference adapters for external integrations.
+- [x] **P3-3:** Add load/performance smoke tests and operational SLO guidance.
+
+### P4 — Release operations
+
+- [ ] **P4-1:** Add release promotion automation and environment-specific policy checks.
 
 ## Observability contract
 

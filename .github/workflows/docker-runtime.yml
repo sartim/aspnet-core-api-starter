@@ -18,6 +18,8 @@ jobs:
         run: docker compose up -d --build
       - name: Wait for API health endpoint
         run: curl --fail --retry 30 --retry-all-errors --retry-delay 3 --retry-connrefused http://localhost:5070/health/ready
+      - name: Run performance and SLO smoke test
+        run: ./scripts/performance-smoke.sh http://localhost:5070/health/live 40 1000
       - name: Verify Users and RBAC schema
         run: >-
           test "$(docker compose exec -T postgres psql -U shopuser -d shopdb
