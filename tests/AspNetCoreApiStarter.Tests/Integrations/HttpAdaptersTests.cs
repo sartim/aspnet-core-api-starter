@@ -14,7 +14,8 @@ public class HttpAdaptersTests
     {
         var handler = new RecordingHandler();
         var configuration = new ConfigurationManager { ["EMAIL_FROM"] = "noreply@example.com", ["EMAIL_PROVIDER_API_KEY"] = "secret" };
-        var sender = new HttpEmailSender(new HttpClient(handler), configuration);
+        var client = new HttpClient(handler) { BaseAddress = new Uri("https://email.example.com") };
+        var sender = new HttpEmailSender(client, configuration);
 
         await sender.SendAsync("user@example.com", "Verify", "https://app.example.com/verify?token=one-time");
 
@@ -29,7 +30,8 @@ public class HttpAdaptersTests
     public async Task HttpEventPublisher_PostsResourceChangedEvent()
     {
         var handler = new RecordingHandler();
-        var publisher = new HttpEventPublisher(new HttpClient(handler), new ConfigurationManager());
+        var client = new HttpClient(handler) { BaseAddress = new Uri("https://events.example.com") };
+        var publisher = new HttpEventPublisher(client, new ConfigurationManager());
 
         await publisher.PublishAsync(new ResourceChangedEvent("User", "created", "42", DateTime.UtcNow));
 
