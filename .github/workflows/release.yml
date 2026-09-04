@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  attestations: write
   contents: write
   packages: write
   id-token: write
@@ -81,6 +82,12 @@ jobs:
             ghcr.io/${{ github.repository }}:${{ github.sha }}
           provenance: mode=max
           sbom: true
+      - name: Attest published image provenance
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ghcr.io/${{ github.repository }}
+          subject-digest: ${{ steps.image.outputs.digest }}
+          push-to-registry: true
       - name: Record image digest
         env:
           IMAGE: ghcr.io/${{ github.repository }}

@@ -69,6 +69,8 @@ Actions workflow. Staging accepts SemVer prereleases; production accepts only
 stable SemVer versions and requires protected-environment approval.
 After promotion, the **Verify promoted release** workflow smoke-tests the image
 and a known-good rollback image against an ephemeral PostgreSQL database.
+The **Record deployment** workflow verifies the deployed digest and stores an
+auditable GitHub Deployment record with rollback details and operator notes.
 See the [architecture and extension points](docs/ARCHITECTURE.md) when adapting
 the starter to another identity provider, database, API design, or telemetry
 backend.

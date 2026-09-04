@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P5-1:** Add signed deployment attestations and an operator deployment record.
+1. **P5-2:** Add scheduled deployment verification and alerting for drift or failed rollback readiness.
 
 ## Deployment scope
 
@@ -191,8 +191,11 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
 - [x] **P4-2:** Add deployment smoke tests and automated rollback verification for
   promoted images, including liveness, readiness, metrics, and database migration
   checks against ephemeral PostgreSQL.
-- [ ] **P5-1:** Add signed deployment attestations and an operator deployment
-  record.
+- [x] **P5-1:** Add signed container provenance attestations and a protected
+  operator deployment record containing the verified image digest, rollback
+  version, environment, and notes.
+- [ ] **P5-2:** Add scheduled deployment verification and alerting for drift or
+  failed rollback readiness.
 
 ## Observability contract
 

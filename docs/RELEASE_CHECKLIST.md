@@ -15,6 +15,13 @@ prereleases, requires CI/security/container policy entries, and writes the
 promoted image digest to an artifact. GitHub Environment reviewers remain the
 final approval gate.
 
+The release workflow signs the published image provenance using GitHub artifact
+attestations. After the deployment and verification workflows succeed, run
+**Record deployment** with the deployed image digest, rollback version, and
+operator notes. It verifies the registry digest, creates a GitHub Deployment
+event, and uploads a durable deployment record artifact under the protected
+environment.
+
 After promotion, run the **Verify promoted release** workflow with the promoted
 version and a known-good rollback version. It starts an ephemeral PostgreSQL
 instance, verifies migrations plus `/health/live`, `/health/ready`, and
