@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P3-2:** Add contract tests and reference adapters for external integrations.
+1. **P3-3:** Add load/performance smoke tests and operational SLO guidance.
 
 ## Deployment scope
 
@@ -180,7 +180,7 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
 
 - [x] **P3-1:** Add optional background job scheduling and durable outbox
   processing.
-- [ ] **P3-2:** Add contract tests and reference adapters for external integrations.
+- [x] **P3-2:** Add contract tests and reference adapters for external integrations.
 
 ## Observability contract
 
