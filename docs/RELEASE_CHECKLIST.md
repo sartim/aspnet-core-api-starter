@@ -15,6 +15,12 @@ prereleases, requires CI/security/container policy entries, and writes the
 promoted image digest to an artifact. GitHub Environment reviewers remain the
 final approval gate.
 
+After promotion, run the **Verify promoted release** workflow with the promoted
+version and a known-good rollback version. It starts an ephemeral PostgreSQL
+instance, verifies migrations plus `/health/live`, `/health/ready`, and
+`/metrics` for the promoted image, then repeats the checks against the rollback
+image. The target GitHub Environment approval applies before verification.
+
 ## Prepare
 
 - [ ] Confirm the change is on the intended release branch and the working tree

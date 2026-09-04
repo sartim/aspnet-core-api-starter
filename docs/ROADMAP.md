@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P4-2:** Add deployment smoke tests and automated rollback verification for promoted images.
+1. **P5-1:** Add signed deployment attestations and an operator deployment record.
 
 ## Deployment scope
 
@@ -188,8 +188,11 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
 - [x] **P4-1:** Add explicit staging/production release promotion with SemVer and
   environment-specific policy validation, protected environment gates, and
   digest-based image promotion metadata.
-- [ ] **P4-2:** Add deployment smoke tests and automated rollback verification for
-  promoted images.
+- [x] **P4-2:** Add deployment smoke tests and automated rollback verification for
+  promoted images, including liveness, readiness, metrics, and database migration
+  checks against ephemeral PostgreSQL.
+- [ ] **P5-1:** Add signed deployment attestations and an operator deployment
+  record.
 
 ## Observability contract
 
