@@ -77,6 +77,8 @@ See [template versioning](docs/TEMPLATE_VERSIONING.md) for generated metadata
 and the migration path between starter releases.
 See [background jobs and outbox](docs/OUTBOX.md) for the opt-in durable event
 processor.
+See [integration adapters](docs/INTEGRATION_ADAPTERS.md) for contract-tested
+HTTP reference implementations.
 See the [database migration runbook](docs/DATABASE_MIGRATIONS.md) for generated
 projects and production deployment sequencing.
 
