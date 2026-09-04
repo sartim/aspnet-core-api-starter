@@ -1,0 +1,62 @@
+name: Verify promoted release
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment tag to verify
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      version:
+        description: Promoted version, with or without the v prefix
+        required: true
+        type: string
+      rollback_version:
+        description: Known-good version to verify as the rollback image
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  policy:
+    name: Validate verification policy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate requested release versions
+        run: |
+          ./scripts/validate-release-policy.sh "${{ inputs.environment }}" "${{ inputs.version }}"
+          ./scripts/validate-release-policy.sh staging "${{ inputs.rollback_version }}"
+
+  verify:
+    name: Smoke test and rollback verification
+    needs: policy
+    environment:
+      name: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify promoted and rollback images
+        env:
+          IMAGE: ghcr.io/${{ github.repository }}
+          ENVIRONMENT: ${{ inputs.environment }}
+          VERSION: ${{ inputs.version }}
+          ROLLBACK_VERSION: ${{ inputs.rollback_version }}
+        run: |
+          version="${VERSION#v}"
+          rollback_version="${ROLLBACK_VERSION#v}"
+          ./scripts/verify-release-images.sh \
+            "${IMAGE}:${version}-${ENVIRONMENT}" \
+            "${IMAGE}:${rollback_version}-${ENVIRONMENT}"
