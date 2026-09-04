@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P4-1:** Add release promotion automation and environment-specific policy checks.
+1. **P4-2:** Add deployment smoke tests and automated rollback verification for promoted images.
 
 ## Deployment scope
 
@@ -185,7 +185,11 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
 
 ### P4 — Release operations
 
-- [ ] **P4-1:** Add release promotion automation and environment-specific policy checks.
+- [x] **P4-1:** Add explicit staging/production release promotion with SemVer and
+  environment-specific policy validation, protected environment gates, and
+  digest-based image promotion metadata.
+- [ ] **P4-2:** Add deployment smoke tests and automated rollback verification for
+  promoted images.
 
 ## Observability contract
 

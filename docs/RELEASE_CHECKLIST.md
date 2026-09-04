@@ -8,6 +8,13 @@ The repository `production` GitHub Environment is configured with required
 reviewer approval, administrator bypass disabled, and a `main`-only deployment
 branch policy.
 
+To promote an existing release image, run the **Promote release** workflow from
+GitHub Actions and select `staging` or `production` plus an existing SemVer
+release. The workflow validates `.github/release-policy.yml`, blocks production
+prereleases, requires CI/security/container policy entries, and writes the
+promoted image digest to an artifact. GitHub Environment reviewers remain the
+final approval gate.
+
 ## Prepare
 
 - [ ] Confirm the change is on the intended release branch and the working tree
