@@ -35,7 +35,10 @@ public class HttpAdaptersTests
 
         await publisher.PublishAsync(new ResourceChangedEvent("User", "created", "42", DateTime.UtcNow));
 
-        var body = JsonSerializer.Deserialize<ResourceChangedEvent>(handler.Body!);
+        var body = JsonSerializer.Deserialize<ResourceChangedEvent>(handler.Body!, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
         Assert.Equal("User", body?.ResourceType);
         Assert.Equal("created", body?.Operation);
     }
