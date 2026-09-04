@@ -1,5 +1,5 @@
 using System.Net;
-using System.Net.Http.Json;
+using System.Text.Json;
 using AspNetCoreApiStarter.Email;
 using AspNetCoreApiStarter.Integrations;
 using AspNetCoreApiStarter.Messaging;
@@ -21,7 +21,7 @@ public class HttpAdaptersTests
 
         Assert.Equal(HttpMethod.Post, handler.Request?.Method);
         Assert.Equal("Bearer secret", handler.Request?.Headers.Authorization?.ToString());
-        var body = await handler.Request!.Content!.ReadFromJsonAsync<Dictionary<string, string>>();
+        var body = JsonSerializer.Deserialize<Dictionary<string, string>>(handler.Body!);
         Assert.Equal("user@example.com", body!["to"]);
         Assert.Equal("https://app.example.com/verify?token=one-time", body["actionUrl"]);
     }
@@ -35,7 +35,7 @@ public class HttpAdaptersTests
 
         await publisher.PublishAsync(new ResourceChangedEvent("User", "created", "42", DateTime.UtcNow));
 
-        var body = await handler.Request!.Content!.ReadFromJsonAsync<ResourceChangedEvent>();
+        var body = JsonSerializer.Deserialize<ResourceChangedEvent>(handler.Body!);
         Assert.Equal("User", body?.ResourceType);
         Assert.Equal("created", body?.Operation);
     }
@@ -43,11 +43,13 @@ public class HttpAdaptersTests
     private sealed class RecordingHandler : HttpMessageHandler
     {
         public HttpRequestMessage? Request { get; private set; }
+        public string? Body { get; private set; }
 
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             Request = request;
-            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.Accepted));
+            Body = request.Content is null ? null : await request.Content.ReadAsStringAsync(cancellationToken);
+            return new HttpResponseMessage(HttpStatusCode.Accepted);
         }
     }
 }
