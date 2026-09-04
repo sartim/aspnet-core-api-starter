@@ -53,5 +53,6 @@ nav:
   - Template versioning: TEMPLATE_VERSIONING.md
   - Background jobs and outbox: OUTBOX.md
   - Integration adapters: INTEGRATION_ADAPTERS.md
+  - Performance and SLOs: PERFORMANCE_SLO.md
   - Release checklist: RELEASE_CHECKLIST.md
   - Roadmap: ROADMAP.md

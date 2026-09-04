@@ -79,6 +79,8 @@ See [background jobs and outbox](docs/OUTBOX.md) for the opt-in durable event
 processor.
 See [integration adapters](docs/INTEGRATION_ADAPTERS.md) for contract-tested
 HTTP reference implementations.
+See [performance and SLO guidance](docs/PERFORMANCE_SLO.md) for the CI smoke
+test and production measurement baseline.
 See the [database migration runbook](docs/DATABASE_MIGRATIONS.md) for generated
 projects and production deployment sequencing.
 
