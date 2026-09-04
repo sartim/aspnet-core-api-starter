@@ -1,0 +1,118 @@
+name: Record deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: GitHub Environment where the deployment occurred
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      version:
+        description: Promoted release version, with or without the v prefix
+        required: true
+        type: string
+      image_digest:
+        description: sha256 digest of the deployed image
+        required: true
+        type: string
+      rollback_version:
+        description: Known-good rollback release version
+        required: true
+        type: string
+      notes:
+        description: Operator notes for this deployment
+        required: false
+        type: string
+
+permissions:
+  attestations: read
+  contents: read
+  deployments: write
+  packages: read
+
+jobs:
+  record:
+    name: Record verified deployment
+    environment:
+      name: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate release and digest
+        env:
+          ENVIRONMENT: ${{ inputs.environment }}
+          VERSION: ${{ inputs.version }}
+          IMAGE_DIGEST: ${{ inputs.image_digest }}
+          ROLLBACK_VERSION: ${{ inputs.rollback_version }}
+        run: |
+          ./scripts/validate-release-policy.sh "$ENVIRONMENT" "$VERSION"
+          ./scripts/validate-release-policy.sh staging "$ROLLBACK_VERSION"
+          [[ "$IMAGE_DIGEST" =~ ^sha256:[0-9a-f]{64}$ ]] || {
+            echo "image_digest must be a sha256 digest." >&2
+            exit 1
+          }
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify deployed image digest
+        env:
+          IMAGE: ghcr.io/${{ github.repository }}
+          ENVIRONMENT: ${{ inputs.environment }}
+          VERSION: ${{ inputs.version }}
+          EXPECTED_DIGEST: ${{ inputs.image_digest }}
+        run: |
+          version="${VERSION#v}"
+          image="${IMAGE}:${version}-${ENVIRONMENT}"
+          docker pull "$image"
+          actual="$(docker image inspect "$image" --format '{{index .RepoDigests 0}}')"
+          actual="${actual##*@}"
+          [[ "$actual" == "$EXPECTED_DIGEST" ]] || {
+            echo "Digest mismatch: expected $EXPECTED_DIGEST, got $actual" >&2
+            exit 1
+          }
+      - name: Create GitHub deployment record
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ENVIRONMENT: ${{ inputs.environment }}
+          VERSION: ${{ inputs.version }}
+          IMAGE_DIGEST: ${{ inputs.image_digest }}
+          ROLLBACK_VERSION: ${{ inputs.rollback_version }}
+          NOTES: ${{ inputs.notes }}
+        run: |
+          version="${VERSION#v}"
+          tag="v${version}"
+          description="Deployed ${version} (${IMAGE_DIGEST}); rollback=${ROLLBACK_VERSION}"
+          [[ -z "$NOTES" ]] || description="${description}. ${NOTES}"
+          payload="$(jq -n \
+            --arg ref "$tag" \
+            --arg environment "$ENVIRONMENT" \
+            --arg description "$description" \
+            '{ref: $ref, environment: $environment, description: $description, auto_merge: false, required_contexts: []}')"
+          deployment_id="$(gh api --method POST \
+            "repos/${GITHUB_REPOSITORY}/deployments" \
+            --input - <<< "$payload" --jq .id)"
+          gh api --method POST \
+            "repos/${GITHUB_REPOSITORY}/deployments/${deployment_id}/statuses" \
+            -f state=success \
+            -f environment="$ENVIRONMENT" \
+            -f description="$description" \
+            -f log_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" >/dev/null
+          {
+            echo "deployment_id=${deployment_id}"
+            echo "environment=${ENVIRONMENT}"
+            echo "version=${version}"
+            echo "image_digest=${IMAGE_DIGEST}"
+            echo "rollback_version=${ROLLBACK_VERSION}"
+            echo "notes=${NOTES}"
+          } | tee deployment-record.txt
+      - name: Upload deployment record
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-${{ inputs.environment }}-${{ inputs.version }}
+          path: deployment-record.txt
