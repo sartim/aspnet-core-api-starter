@@ -31,8 +31,31 @@ jobs:
           BASE_URL: ${{ inputs.base_url }}
           SCENARIO: ${{ inputs.scenario }}
         run: |
+          mkdir -p capacity-results
+          set +e
           docker run --rm \
             -e BASE_URL \
             -e SCENARIO \
             -v "$PWD/scripts/capacity-smoke.js:/test/capacity-smoke.js:ro" \
-            grafana/k6:0.52.0 run /test/capacity-smoke.js
+            -v "$PWD/capacity-results:/results" \
+            grafana/k6:0.52.0 run --summary-export=/results/k6-summary.json /test/capacity-smoke.js
+          result=$?
+          set -e
+          cat > capacity-results/run-metadata.json <<EOF
+          {
+            "repository": "${GITHUB_REPOSITORY}",
+            "commit": "${GITHUB_SHA}",
+            "run_id": "${GITHUB_RUN_ID}",
+            "scenario": "${SCENARIO}",
+            "base_url": "${BASE_URL}",
+            "generated_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          }
+          EOF
+          exit "$result"
+      - name: Upload capacity result history artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: capacity-${{ inputs.scenario }}-${{ github.run_id }}
+          retention-days: 365
+          path: capacity-results

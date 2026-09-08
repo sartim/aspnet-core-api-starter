@@ -21,3 +21,8 @@ At each quarterly SLO review:
 4. Review timeout, retry, queue, and fail-open behavior for overload risks.
 5. Record changes to targets, ownership, escalation, or dependency criticality
    in the release/reliability review issue.
+
+Capacity reviews should include the dependency ownership catalog, fixture
+volume, and result artifact. This makes it explicit whether a failure is caused
+by API compute, PostgreSQL data/index volume, cache behavior, or an optional
+integration.

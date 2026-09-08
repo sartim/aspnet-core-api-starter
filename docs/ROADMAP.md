@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P8-2:** Add production-like data volume fixtures and scale-test result history.
+1. **P9-1:** Add generated API client examples and contract compatibility snapshots.
 
 ## Deployment scope
 
@@ -209,8 +209,10 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
 - [x] **P8-1:** Add pinned baseline/2x/5x capacity smoke scenarios, capacity
   decision guidance, and dependency-level SLO ownership with escalation and
   failure-mode metadata.
-- [ ] **P8-2:** Add production-like data volume fixtures and scale-test result
-  history.
+- [x] **P8-2:** Add guarded production-like PostgreSQL data-volume fixtures and
+  one-year k6 scale-test result artifacts with run metadata.
+- [ ] **P9-1:** Add generated API client examples and contract compatibility
+  snapshots.
 
 ## Observability contract
 

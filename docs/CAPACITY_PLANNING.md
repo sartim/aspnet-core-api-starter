@@ -16,6 +16,23 @@ of personal data, and schedule heavier tests outside peak traffic. Record the
 image version, database tier, cache configuration, traffic assumptions, and
 results with the capacity review.
 
+For database-backed tests, seed non-production volume before the run:
+
+```bash
+CAPACITY_FIXTURE_CONFIRM=I_UNDERSTAND_NON_PRODUCTION \
+DATABASE_URL='Host=localhost;Port=5432;Database=shopdb;Username=shopuser;Password=shoppassword' \
+./scripts/seed-capacity-fixture.sh 10000 100 250
+```
+
+The fixture uses deterministic IDs and clearly marked `example.test` data, so
+reruns are idempotent. Never run it against production or a database containing
+real customer data.
+
+The workflow retains `k6-summary.json` and `run-metadata.json` for 365 days.
+Use the scenario, commit, image version, resource tier, and result artifacts as
+the scale-test history for quarterly planning; export them to long-term storage
+if the organization's retention policy requires more than one year.
+
 ## Decision points
 
 - If baseline fails, stop and fix the release or environment before scaling the
