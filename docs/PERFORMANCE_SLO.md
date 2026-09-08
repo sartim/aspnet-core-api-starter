@@ -23,3 +23,7 @@ The scheduled SLO burn-rate workflow reports availability budget consumption in
 1-hour and 6-hour windows. Use it with the environment dashboards and attach
 deployment annotations so release changes can be compared with burn-rate
 changes.
+
+Use the quarterly [reliability trend report](RELIABILITY_TRENDS.md) to review
+long-term error ratio and latency changes. Compare the report with deployment
+annotations and incident history before changing targets or exclusions.

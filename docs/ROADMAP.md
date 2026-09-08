@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P7-2:** Add long-term reliability trend reports and quarterly SLO review guidance.
+1. **P8-1:** Add capacity planning scenarios and dependency-level SLO ownership.
 
 ## Deployment scope
 
@@ -204,8 +204,10 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
   dependency-specific alert tuning for PostgreSQL, Redis, email, and messaging.
 - [x] **P7-1:** Add release-change annotations and automated multi-window SLO
   burn-rate reporting with configurable Prometheus endpoints and alert issues.
-- [ ] **P7-2:** Add long-term reliability trend reports and quarterly SLO review
-  guidance.
+- [x] **P7-2:** Add quarterly long-term reliability trend reports, period-over-
+  period error/latency comparisons, review issues, and SLO review guidance.
+- [ ] **P8-1:** Add capacity planning scenarios and dependency-level SLO
+  ownership.
 
 ## Observability contract
 
