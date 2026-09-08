@@ -22,6 +22,11 @@ operator notes. It verifies the registry digest, creates a GitHub Deployment
 event, and uploads a durable deployment record artifact under the protected
 environment.
 
+The same artifact includes `deployment-annotation.json` for placing the release
+change on a Grafana or incident timeline. Review the SLO burn-rate report after
+deployment and investigate any fast or sustained error-budget burn before
+closing the release.
+
 After promotion, run the **Verify promoted release** workflow with the promoted
 version and a known-good rollback version. It starts an ephemeral PostgreSQL
 instance, verifies migrations plus `/health/live`, `/health/ready`, and

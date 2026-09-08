@@ -18,3 +18,8 @@ traces, logs, and health probes. Use k6, Bombardier, NBomber, or a platform
 load-testing service for sustained, concurrent tests; keep credentials and
 personal data out of test payloads. Tune thresholds per environment rather than
 loosening the CI smoke test to hide regressions.
+
+The scheduled SLO burn-rate workflow reports availability budget consumption in
+1-hour and 6-hour windows. Use it with the environment dashboards and attach
+deployment annotations so release changes can be compared with burn-rate
+changes.

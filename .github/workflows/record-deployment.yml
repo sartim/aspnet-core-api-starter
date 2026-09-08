@@ -111,8 +111,21 @@ jobs:
             echo "rollback_version=${ROLLBACK_VERSION}"
             echo "notes=${NOTES}"
           } | tee deployment-record.txt
+          jq -n \
+            --arg generated_at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --arg deployment_id "$deployment_id" \
+            --arg environment "$ENVIRONMENT" \
+            --arg version "$version" \
+            --arg image "ghcr.io/${GITHUB_REPOSITORY}:${version}-${ENVIRONMENT}" \
+            --arg digest "$IMAGE_DIGEST" \
+            --arg rollback_version "$ROLLBACK_VERSION" \
+            --arg notes "$NOTES" \
+            '{schema_version: 1, event: "deployment", generated_at: $generated_at, deployment_id: $deployment_id, environment: $environment, version: $version, image: $image, image_digest: $digest, rollback_version: $rollback_version, notes: $notes}' \
+            > deployment-annotation.json
       - name: Upload deployment record
         uses: actions/upload-artifact@v4
         with:
           name: deployment-${{ inputs.environment }}-${{ inputs.version }}
-          path: deployment-record.txt
+          path: |
+            deployment-record.txt
+            deployment-annotation.json

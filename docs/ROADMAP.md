@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P7-1:** Add release-change annotations and automated SLO burn-rate reporting.
+1. **P7-2:** Add long-term reliability trend reports and quarterly SLO review guidance.
 
 ## Deployment scope
 
@@ -202,8 +202,10 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
   rollback.
 - [x] **P6-2:** Add scheduled and manual synthetic endpoint checks plus
   dependency-specific alert tuning for PostgreSQL, Redis, email, and messaging.
-- [ ] **P7-1:** Add release-change annotations and automated SLO burn-rate
-  reporting.
+- [x] **P7-1:** Add release-change annotations and automated multi-window SLO
+  burn-rate reporting with configurable Prometheus endpoints and alert issues.
+- [ ] **P7-2:** Add long-term reliability trend reports and quarterly SLO review
+  guidance.
 
 ## Observability contract
 

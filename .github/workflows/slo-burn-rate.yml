@@ -1,0 +1,84 @@
+name: SLO burn-rate report
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to report
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - staging
+          - production
+      prometheus_url:
+        description: Optional Prometheus URL override
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  report:
+    name: Report ${{ matrix.environment }} SLO burn rate
+    if: github.event_name == 'schedule' || inputs.environment == 'all' || inputs.environment == matrix.environment
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: [staging, production]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Resolve Prometheus endpoint
+        id: endpoint
+        env:
+          OVERRIDE_URL: ${{ inputs.prometheus_url }}
+          CONFIGURED_URL: ${{ matrix.environment == 'staging' && vars.STAGING_PROMETHEUS_URL || vars.PRODUCTION_PROMETHEUS_URL }}
+        run: |
+          url="${OVERRIDE_URL:-$CONFIGURED_URL}"
+          if [[ -z "$url" ]]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "No Prometheus URL configured for ${{ matrix.environment }}; report skipped."
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+            echo "url=$url" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Generate SLO burn-rate report
+        if: steps.endpoint.outputs.configured == 'true'
+        env:
+          PROMETHEUS_BEARER_TOKEN: ${{ secrets.PROMETHEUS_BEARER_TOKEN }}
+          ENVIRONMENT: ${{ matrix.environment }}
+        run: ./scripts/report-slo-burn-rate.sh "${{ steps.endpoint.outputs.url }}" "$ENVIRONMENT" slo-burn-rate.json
+      - name: Upload SLO report
+        if: steps.endpoint.outputs.configured == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: slo-burn-rate-${{ matrix.environment }}
+          path: slo-burn-rate.json
+      - name: Fail on unsafe burn rate
+        if: steps.endpoint.outputs.configured == 'true'
+        run: |
+          if jq -e '.status != "ok"' slo-burn-rate.json >/dev/null; then
+            echo "SLO burn rate is unsafe for ${{ matrix.environment }}."
+            exit 1
+          fi
+      - name: Open deduplicated SLO issue
+        if: steps.endpoint.outputs.configured == 'true' && failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ENVIRONMENT: ${{ matrix.environment }}
+        run: |
+          title="[slo-burn-rate] ${ENVIRONMENT} availability budget burn is unsafe"
+          existing="$(gh issue list --state open --limit 100 --json title | jq --arg title "$title" '[.[] | select(.title == $title)] | length')"
+          if [[ "$existing" == "0" ]]; then
+            gh issue create \
+              --title "$title" \
+              --body "SLO burn-rate reporting failed or exceeded the configured availability budget for ${ENVIRONMENT}. Check run ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}, download the SLO report artifact, and follow the incident runbook."
+          else
+            echo "An open ${ENVIRONMENT} SLO burn-rate issue already exists."
+          fi
