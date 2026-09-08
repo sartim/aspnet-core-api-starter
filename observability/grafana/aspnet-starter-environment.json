@@ -1,0 +1,58 @@
+{
+  "annotations": { "list": [] },
+  "editable": false,
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Request rate",
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "targets": [{ "expr": "sum(rate(aspnet_starter_requests_total{environment=~\"$environment\",service=~\"$service\"}[5m]))", "legendFormat": "requests/s" }],
+      "gridPos": { "h": 4, "w": 8, "x": 0, "y": 0 }
+    },
+    {
+      "type": "stat",
+      "title": "Error rate",
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "targets": [{ "expr": "sum(rate(aspnet_starter_errors_total{environment=~\"$environment\",service=~\"$service\"}[5m])) / clamp_min(sum(rate(aspnet_starter_requests_total{environment=~\"$environment\",service=~\"$service\"}[5m])), 1)", "legendFormat": "5m error ratio" }],
+      "fieldConfig": { "defaults": { "unit": "percentunit", "thresholds": { "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 0.01 }, { "color": "red", "value": 0.05 }] } } },
+      "gridPos": { "h": 4, "w": 8, "x": 8, "y": 0 }
+    },
+    {
+      "type": "stat",
+      "title": "Average request latency",
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "targets": [{ "expr": "sum(rate(aspnet_starter_request_duration_milliseconds_total{environment=~\"$environment\",service=~\"$service\"}[5m])) / clamp_min(sum(rate(aspnet_starter_requests_total{environment=~\"$environment\",service=~\"$service\"}[5m])), 1)", "legendFormat": "milliseconds" }],
+      "fieldConfig": { "defaults": { "unit": "ms", "thresholds": { "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 500 }, { "color": "red", "value": 1000 }] } } },
+      "gridPos": { "h": 4, "w": 8, "x": 16, "y": 0 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Traffic and errors",
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "targets": [
+        { "expr": "sum(rate(aspnet_starter_requests_total{environment=~\"$environment\",service=~\"$service\"}[5m]))", "legendFormat": "requests/s" },
+        { "expr": "sum(rate(aspnet_starter_errors_total{environment=~\"$environment\",service=~\"$service\"}[5m]))", "legendFormat": "errors/s" }
+      ],
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Readiness probe",
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "targets": [{ "expr": "min(probe_success{environment=~\"$environment\",service=~\"$service\",probe=\"readiness\"})", "legendFormat": "ready (1=yes)" }],
+      "fieldConfig": { "defaults": { "min": 0, "max": 1, "thresholds": { "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] } } },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 }
+    }
+  ],
+  "schemaVersion": 39,
+  "templating": {
+    "list": [
+      { "name": "DS_PROMETHEUS", "label": "Prometheus", "type": "datasource", "query": "prometheus", "current": { "text": "Prometheus", "value": "" } },
+      { "name": "environment", "label": "Environment", "type": "custom", "query": "staging,production", "current": { "text": "production", "value": "production" } },
+      { "name": "service", "label": "Service", "type": "query", "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" }, "query": "label_values(aspnet_starter_requests_total, service)", "includeAll": true, "allValue": ".*", "current": { "text": "All", "value": "$__all" } }
+    ]
+  },
+  "title": "ASP.NET Core API Starter - environment operations",
+  "uid": "aspnet-starter-environment",
+  "version": 1
+}

@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P6-1:** Add environment-specific dashboards and incident response runbooks.
+1. **P6-2:** Add synthetic endpoint checks and dependency-specific alert tuning.
 
 ## Deployment scope
 
@@ -197,8 +197,11 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
 - [x] **P5-2:** Add scheduled deployment verification and alerting for drift or
   failed rollback readiness, including registry digest, rollback image, and
   artifact-attestation checks.
-- [ ] **P6-1:** Add environment-specific dashboards and incident response
-  runbooks.
+- [x] **P6-1:** Add environment-specific dashboards, Prometheus alert rules,
+  and incident response runbooks for errors, latency, readiness, drift, and
+  rollback.
+- [ ] **P6-2:** Add synthetic endpoint checks and dependency-specific alert
+  tuning.
 
 ## Observability contract
 

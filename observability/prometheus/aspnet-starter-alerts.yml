@@ -1,0 +1,47 @@
+groups:
+  - name: aspnet-starter-availability
+    rules:
+      - alert: AspNetStarterHighErrorRate
+        expr: |
+          sum by (environment, service) (rate(aspnet_starter_errors_total[5m]))
+          /
+          clamp_min(sum by (environment, service) (rate(aspnet_starter_requests_total[5m])), 1)
+          > 0.01
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High API error rate in {{ $labels.environment }}"
+          runbook: "docs/INCIDENT_RESPONSE.md#high-error-rate"
+      - alert: AspNetStarterCriticalErrorRate
+        expr: |
+          sum by (environment, service) (rate(aspnet_starter_errors_total[5m]))
+          /
+          clamp_min(sum by (environment, service) (rate(aspnet_starter_requests_total[5m])), 1)
+          > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical API error rate in {{ $labels.environment }}"
+          runbook: "docs/INCIDENT_RESPONSE.md#high-error-rate"
+      - alert: AspNetStarterHighAverageLatency
+        expr: |
+          sum by (environment, service) (rate(aspnet_starter_request_duration_milliseconds_total[5m]))
+          /
+          clamp_min(sum by (environment, service) (rate(aspnet_starter_requests_total[5m])), 1)
+          > 500
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High average API latency in {{ $labels.environment }}"
+          runbook: "docs/INCIDENT_RESPONSE.md#high-latency"
+      - alert: AspNetStarterReadinessFailed
+        expr: min by (environment, service) (probe_success{probe="readiness"}) == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "API readiness is failing in {{ $labels.environment }}"
+          runbook: "docs/INCIDENT_RESPONSE.md#readiness-failure"

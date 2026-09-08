@@ -73,6 +73,9 @@ The **Record deployment** workflow verifies the deployed digest and stores an
 auditable GitHub Deployment record with rollback details and operator notes.
 The daily **Deployment drift monitor** checks that record against GHCR and opens
 an issue when the deployed digest, rollback image, or attestation is invalid.
+Environment dashboards, alert rules, and incident response guidance are
+available in the [observability](docs/OBSERVABILITY.md) and [incident response
+runbook](docs/INCIDENT_RESPONSE.md).
 See the [architecture and extension points](docs/ARCHITECTURE.md) when adapting
 the starter to another identity provider, database, API design, or telemetry
 backend.
