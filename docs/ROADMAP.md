@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P8-1:** Add capacity planning scenarios and dependency-level SLO ownership.
+1. **P8-2:** Add production-like data volume fixtures and scale-test result history.
 
 ## Deployment scope
 
@@ -206,8 +206,11 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
   burn-rate reporting with configurable Prometheus endpoints and alert issues.
 - [x] **P7-2:** Add quarterly long-term reliability trend reports, period-over-
   period error/latency comparisons, review issues, and SLO review guidance.
-- [ ] **P8-1:** Add capacity planning scenarios and dependency-level SLO
-  ownership.
+- [x] **P8-1:** Add pinned baseline/2x/5x capacity smoke scenarios, capacity
+  decision guidance, and dependency-level SLO ownership with escalation and
+  failure-mode metadata.
+- [ ] **P8-2:** Add production-like data volume fixtures and scale-test result
+  history.
 
 ## Observability contract
 

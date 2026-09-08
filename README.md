@@ -82,6 +82,8 @@ Release annotations and automated availability budget reporting are documented
 in [SLO burn-rate reporting](docs/SLO_BURN_RATE.md).
 Quarterly reliability trends and SLO review steps are documented in
 [reliability trends](docs/RELIABILITY_TRENDS.md).
+Capacity scenarios and dependency SLO ownership are documented in [capacity
+planning](docs/CAPACITY_PLANNING.md) and [dependency SLO ownership](docs/DEPENDENCY_SLO_OWNERSHIP.md).
 See the [architecture and extension points](docs/ARCHITECTURE.md) when adapting
 the starter to another identity provider, database, API design, or telemetry
 backend.

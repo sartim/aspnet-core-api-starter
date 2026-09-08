@@ -1,0 +1,39 @@
+version: 1
+default_slo_review_cadence: quarterly
+dependencies:
+  - name: postgres
+    profile: user-service
+    required: true
+    owner: data-platform
+    escalation: platform-on-call
+    availability_target: 99.95%
+    latency_p95_ms: 250
+    alert: AspNetStarterPostgresProbeFailed
+    failure_mode: readiness-fails-and-traffic-stops
+  - name: redis
+    profile: user-service
+    required: false
+    owner: platform-cache
+    escalation: platform-on-call
+    availability_target: 99.9%
+    latency_p95_ms: 100
+    alert: AspNetStarterRedisProbeFailed
+    failure_mode: fail-open-to-memory-cache
+  - name: email
+    profile: user-service
+    required: false
+    owner: integrations
+    escalation: integrations-on-call
+    availability_target: 99.5%
+    latency_p95_ms: 2000
+    alert: AspNetStarterEmailProviderProbeFailed
+    failure_mode: queue-and-retry
+  - name: messaging
+    profile: user-service
+    required: false
+    owner: integrations
+    escalation: integrations-on-call
+    availability_target: 99.5%
+    latency_p95_ms: 1000
+    alert: AspNetStarterMessagingProbeFailed
+    failure_mode: outbox-retry

@@ -56,6 +56,8 @@ nav:
   - Background jobs and outbox: OUTBOX.md
   - Integration adapters: INTEGRATION_ADAPTERS.md
   - Performance and SLOs: PERFORMANCE_SLO.md
+  - Capacity planning: CAPACITY_PLANNING.md
+  - Dependency SLO ownership: DEPENDENCY_SLO_OWNERSHIP.md
   - SLO burn-rate reporting: SLO_BURN_RATE.md
   - Reliability trends: RELIABILITY_TRENDS.md
   - Release checklist: RELEASE_CHECKLIST.md
