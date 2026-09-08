@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P5-2:** Add scheduled deployment verification and alerting for drift or failed rollback readiness.
+1. **P6-1:** Add environment-specific dashboards and incident response runbooks.
 
 ## Deployment scope
 
@@ -194,8 +194,11 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
 - [x] **P5-1:** Add signed container provenance attestations and a protected
   operator deployment record containing the verified image digest, rollback
   version, environment, and notes.
-- [ ] **P5-2:** Add scheduled deployment verification and alerting for drift or
-  failed rollback readiness.
+- [x] **P5-2:** Add scheduled deployment verification and alerting for drift or
+  failed rollback readiness, including registry digest, rollback image, and
+  artifact-attestation checks.
+- [ ] **P6-1:** Add environment-specific dashboards and incident response
+  runbooks.
 
 ## Observability contract
 
