@@ -1,7 +1,8 @@
 # API clients and contract compatibility
 
-The full profile exposes a development-only Swagger document at
-`/swagger/v1/swagger.json`. The checked-in
+The full profile exposes a controlled Swagger document at
+`/swagger/v1/swagger.json` when running in Development or when
+`SWAGGER_ENABLED=true` is explicitly configured. The checked-in
 `docs/openapi-contract.json` is a route/method compatibility snapshot. CI
 starts the Compose API and compares its generated Swagger routes with that
 snapshot, so an endpoint addition, removal, or method change is reviewed as a
@@ -31,6 +32,6 @@ The repository includes minimal [C#](https://github.com/sartim/aspnet-core-api-s
 login, bearer-token, and paginated-users flow. They are examples rather than
 runtime dependencies of generated projects.
 
-Swagger is disabled in production by default. Export the document only in a
-controlled development or contract-test environment; never expose it publicly
-without the adopting team's access policy.
+Swagger is disabled in production by default. Enable it only in a controlled
+development or contract-test environment; never expose it publicly without the
+adopting team's access policy.

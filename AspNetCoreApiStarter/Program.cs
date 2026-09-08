@@ -154,7 +154,9 @@ app.UseExceptionHandler();
 app.UseStarterObservability();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+var swaggerEnabled = app.Environment.IsDevelopment() ||
+    bool.TryParse(Environment.GetEnvironmentVariable("SWAGGER_ENABLED"), out var configuredSwagger) && configuredSwagger;
+if (swaggerEnabled)
 {
     app.UseSwagger();
     app.UseSwaggerUI();

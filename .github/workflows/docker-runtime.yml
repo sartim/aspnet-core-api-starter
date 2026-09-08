@@ -15,6 +15,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Start services and run migrations
+        env:
+          SWAGGER_ENABLED: "true"
         run: docker compose up -d --build
       - name: Wait for API health endpoint
         run: curl --fail --retry 30 --retry-all-errors --retry-delay 3 --retry-connrefused http://localhost:5070/health/ready
