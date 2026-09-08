@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P10-2:** Add release provenance and consumer upgrade verification for SDK packages.
+1. **P10-3:** Add a scheduled SDK compatibility matrix across supported runtime versions.
 
 ## Deployment scope
 
@@ -224,8 +224,10 @@ Status: **Planned**
 
 - [x] **P10-1:** Add consumer SDK smoke tests and documented NuGet/npm-compatible
   registry publication options for generated clients.
-- [ ] **P10-2:** Add release provenance and consumer upgrade verification for SDK
-  packages.
+- [x] **P10-2:** Add release checksums/provenance and consumer verification for
+  the exact generated SDK archives.
+- [ ] **P10-3:** Add a scheduled SDK compatibility matrix across supported
+  runtime versions.
 
 ## Observability contract
 
