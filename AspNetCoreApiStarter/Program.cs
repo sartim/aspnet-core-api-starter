@@ -168,6 +168,7 @@ app.UseWhen(context =>
     !context.Request.Path.StartsWithSegments("/api/v1/auth/refresh") &&
     !context.Request.Path.StartsWithSegments("/api/v1/health") &&
     !context.Request.Path.StartsWithSegments("/metrics") &&
+    !context.Request.Path.StartsWithSegments("/swagger") &&
     !context.Request.Path.StartsWithSegments("/health/live") &&
     !context.Request.Path.StartsWithSegments("/health/ready"),
 appBuilder =>
