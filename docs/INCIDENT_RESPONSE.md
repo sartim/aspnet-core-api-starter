@@ -13,7 +13,9 @@ system that can consume the existing metrics, logs, traces, and health probes.
 3. Capture a trace ID from a problem-details response or structured log. Do not
    copy tokens, passwords, request bodies, or personal data into the incident.
 4. Check the **Deployment drift monitor** and **Verify promoted release** runs.
-5. Declare an incident for sustained critical errors, failed readiness, or
+5. Check the **Synthetic API monitoring** run and its environment-specific
+   issue, if present.
+6. Declare an incident for sustained critical errors, failed readiness, or
    suspected data loss; assign an incident lead and a communications owner.
 
 ## High error rate

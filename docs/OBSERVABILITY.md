@@ -40,6 +40,12 @@ and `service` labels. The dashboard separates traffic, error ratio, average
 latency, and readiness by environment. The companion alert rules are in
 `observability/prometheus/aspnet-starter-alerts.yml`.
 
+The hourly [synthetic monitoring workflow](SYNTHETIC_MONITORING.md) checks the
+public health, metrics, and compatibility endpoints. Configure its repository
+variables per environment and import the optional dependency alert rules from
+`observability/prometheus/aspnet-starter-dependency-alerts.yml` only for
+dependencies that are enabled.
+
 Use the [incident response runbook](INCIDENT_RESPONSE.md) for triage and
 rollback sequencing. Keep dashboard labels low-cardinality and never add user
 identifiers or secrets.

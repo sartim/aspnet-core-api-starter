@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P6-2:** Add synthetic endpoint checks and dependency-specific alert tuning.
+1. **P7-1:** Add release-change annotations and automated SLO burn-rate reporting.
 
 ## Deployment scope
 
@@ -200,8 +200,10 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
 - [x] **P6-1:** Add environment-specific dashboards, Prometheus alert rules,
   and incident response runbooks for errors, latency, readiness, drift, and
   rollback.
-- [ ] **P6-2:** Add synthetic endpoint checks and dependency-specific alert
-  tuning.
+- [x] **P6-2:** Add scheduled and manual synthetic endpoint checks plus
+  dependency-specific alert tuning for PostgreSQL, Redis, email, and messaging.
+- [ ] **P7-1:** Add release-change annotations and automated SLO burn-rate
+  reporting.
 
 ## Observability contract
 
