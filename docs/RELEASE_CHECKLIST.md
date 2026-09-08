@@ -86,6 +86,8 @@ image. The target GitHub Environment approval applies before verification.
       health endpoint check.
 - [ ] Confirm the GitHub Release contains the correct `vX.Y.Z` tag and notes.
 - [ ] Confirm the image metadata artifact is attached to the GitHub Release.
+- [ ] Confirm the generated C# and TypeScript client packages, contract
+      baseline, and client metadata are attached to the GitHub Release.
 
 ## Compatibility and deployment
 

@@ -22,6 +22,9 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
       - name: Install versioning tool
         run: dotnet tool install --tool-path "$RUNNER_TEMP/nbgv" --version 3.10.70 nbgv
       - name: Resolve version
@@ -29,6 +32,12 @@ jobs:
         run: echo "version=$($RUNNER_TEMP/nbgv/nbgv get-version -v SemVer2)" >> "$GITHUB_OUTPUT"
       - name: Restore and test
         run: dotnet test AspNetCoreApiStarter.sln --configuration Release
+      - name: Start API for client generation
+        env:
+          SWAGGER_ENABLED: "true"
+        run: |
+          docker compose up -d --build
+          curl --fail --retry 30 --retry-all-errors --retry-delay 3 --retry-connrefused http://localhost:5070/health/ready
       - name: Package versioned API client artifacts
         id: clients
         env:
@@ -40,9 +49,16 @@ jobs:
           cp docs/openapi-compatibility-baseline.json "$artifact_dir/openapi-compatibility-baseline-${RELEASE_VERSION}.json"
           cp -R examples/clients "$artifact_dir/examples/"
           tar -czf "api-client-examples-${RELEASE_VERSION}.tar.gz" -C "$artifact_dir" examples
+          ./scripts/package-generated-clients.sh \
+            http://localhost:5070/swagger/v1/swagger.json \
+            "$RELEASE_VERSION" \
+            "$artifact_dir"
           echo "contract=$artifact_dir/openapi-contract-${RELEASE_VERSION}.json" >> "$GITHUB_OUTPUT"
           echo "baseline=$artifact_dir/openapi-compatibility-baseline-${RELEASE_VERSION}.json" >> "$GITHUB_OUTPUT"
           echo "examples=$GITHUB_WORKSPACE/api-client-examples-${RELEASE_VERSION}.tar.gz" >> "$GITHUB_OUTPUT"
+          echo "csharp=$artifact_dir/aspnet-core-api-client-csharp-${RELEASE_VERSION}.tar.gz" >> "$GITHUB_OUTPUT"
+          echo "typescript=$artifact_dir/aspnet-core-api-client-typescript-${RELEASE_VERSION}.tar.gz" >> "$GITHUB_OUTPUT"
+          echo "manifest=$artifact_dir/aspnet-core-api-client-${RELEASE_VERSION}.json" >> "$GITHUB_OUTPUT"
       - name: Tag and publish GitHub Release
         id: publish
         env:
@@ -65,6 +81,9 @@ jobs:
             "${{ steps.clients.outputs.contract }}" \
             "${{ steps.clients.outputs.baseline }}" \
             "${{ steps.clients.outputs.examples }}" \
+            "${{ steps.clients.outputs.csharp }}" \
+            "${{ steps.clients.outputs.typescript }}" \
+            "${{ steps.clients.outputs.manifest }}" \
             --clobber
     outputs:
       tag: ${{ steps.publish.outputs.tag }}

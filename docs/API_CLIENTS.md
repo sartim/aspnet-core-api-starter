@@ -47,9 +47,17 @@ Tagged releases attach versioned client artifacts:
 - `openapi-compatibility-baseline-VERSION.json` — the reviewed compatibility
   baseline.
 - `api-client-examples-VERSION.tar.gz` — the C# and TypeScript examples.
+- `aspnet-core-api-client-csharp-VERSION.tar.gz` — the generated C# client
+  package.
+- `aspnet-core-api-client-typescript-VERSION.tar.gz` — the generated TypeScript
+  client package.
+- `aspnet-core-api-client-VERSION.json` — generator and artifact metadata.
 
 The release version is supplied by Nerdbank.GitVersioning, so the artifacts
 use the same SemVer-derived version as the Git tag and container image.
+Generated packages are built from the live Swagger document after the release
+runtime smoke test. See the [compatibility exception process](COMPATIBILITY_EXCEPTIONS.md)
+before intentionally changing the baseline.
 
 Swagger is disabled in production by default. Enable it only in a controlled
 development or contract-test environment; never expose it publicly without the
