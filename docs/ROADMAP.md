@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P9-1:** Add generated API client examples and contract compatibility snapshots.
+1. **P9-2:** Add backward-compatible schema diff checks and versioned client release artifacts.
 
 ## Deployment scope
 
@@ -211,8 +211,10 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
   failure-mode metadata.
 - [x] **P8-2:** Add guarded production-like PostgreSQL data-volume fixtures and
   one-year k6 scale-test result artifacts with run metadata.
-- [ ] **P9-1:** Add generated API client examples and contract compatibility
-  snapshots.
+- [x] **P9-1:** Add generated-client commands, C# and TypeScript examples, and
+  a CI-checked OpenAPI route/method compatibility snapshot.
+- [ ] **P9-2:** Add backward-compatible schema diff checks and versioned client
+  release artifacts.
 
 ## Observability contract
 

@@ -89,6 +89,8 @@ run summaries for comparison over time.
 See the [architecture and extension points](docs/ARCHITECTURE.md) when adapting
 the starter to another identity provider, database, API design, or telemetry
 backend.
+See [API clients and contracts](docs/API_CLIENTS.md) for generated-client
+commands, C#/TypeScript examples, and the OpenAPI compatibility snapshot.
 See the [observability guide](docs/OBSERVABILITY.md) for optional OTLP export,
 the replaceable error reporter, and the importable Grafana dashboard.
 See the [email actions guide](docs/EMAIL_ACTIONS.md) for optional password-reset

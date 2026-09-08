@@ -154,7 +154,9 @@ app.UseExceptionHandler();
 app.UseStarterObservability();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+var swaggerEnabled = app.Environment.IsDevelopment() ||
+    bool.TryParse(Environment.GetEnvironmentVariable("SWAGGER_ENABLED"), out var configuredSwagger) && configuredSwagger;
+if (swaggerEnabled)
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -168,6 +170,7 @@ app.UseWhen(context =>
     !context.Request.Path.StartsWithSegments("/api/v1/auth/refresh") &&
     !context.Request.Path.StartsWithSegments("/api/v1/health") &&
     !context.Request.Path.StartsWithSegments("/metrics") &&
+    !context.Request.Path.StartsWithSegments("/swagger") &&
     !context.Request.Path.StartsWithSegments("/health/live") &&
     !context.Request.Path.StartsWithSegments("/health/ready"),
 appBuilder =>

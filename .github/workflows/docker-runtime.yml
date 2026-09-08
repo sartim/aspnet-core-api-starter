@@ -15,9 +15,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Start services and run migrations
+        env:
+          SWAGGER_ENABLED: "true"
         run: docker compose up -d --build
       - name: Wait for API health endpoint
         run: curl --fail --retry 30 --retry-all-errors --retry-delay 3 --retry-connrefused http://localhost:5070/health/ready
+      - name: Check OpenAPI route contract
+        run: ./scripts/check-api-contract.sh http://localhost:5070/swagger/v1/swagger.json docs/openapi-contract.json
       - name: Run performance and SLO smoke test
         run: ./scripts/performance-smoke.sh http://localhost:5070/health/live 40 1000
       - name: Verify Users and RBAC schema

@@ -51,6 +51,8 @@ services:
         required: false
     ports:
       - "5070:5070"
+    environment:
+      SWAGGER_ENABLED: ${SWAGGER_ENABLED:-false}
     depends_on:
       postgres:
         condition: service_healthy
