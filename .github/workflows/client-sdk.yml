@@ -1,0 +1,36 @@
+name: Client SDK smoke tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  generated-clients:
+    name: Generate and build C# and TypeScript clients
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Start API for SDK smoke test
+        env:
+          SWAGGER_ENABLED: "true"
+        run: |
+          docker compose up -d --build
+          curl --fail --retry 30 --retry-all-errors --retry-delay 3 --retry-connrefused http://localhost:5070/health/ready
+      - name: Generate and build clients
+        run: ./scripts/smoke-test-generated-clients.sh http://localhost:5070/swagger/v1/swagger.json

@@ -59,6 +59,33 @@ Generated packages are built from the live Swagger document after the release
 runtime smoke test. See the [compatibility exception process](COMPATIBILITY_EXCEPTIONS.md)
 before intentionally changing the baseline.
 
+## SDK smoke tests and registry publication
+
+Pull requests and pushes to `main` run the **Client SDK smoke tests** workflow.
+It generates both clients from the live Swagger document, builds the generated
+C# project, installs the generated TypeScript dependencies, and runs its build.
+This catches generator-breaking contract changes before a release is tagged.
+
+The default distribution mechanism is the versioned GitHub Release assets. A
+team that operates a package registry can publish from the generated outputs:
+
+```bash
+# C# / NuGet-compatible registry, after unpacking the C# client archive
+dotnet pack path/to/AspNetCoreApiClient.csproj --configuration Release \
+  --output ./packages
+dotnet nuget push ./packages/*.nupkg \
+  --source "$NUGET_SOURCE" --api-key "$NUGET_API_KEY"
+
+# TypeScript / npm-compatible registry, after unpacking the TypeScript archive
+npm publish ./path/to/typescript-client --access restricted \
+  --registry "$NPM_REGISTRY"
+```
+
+Keep registry credentials in the consuming repository or protected deployment
+environment. Do not add credentials to this starter or make registry
+publication a prerequisite for the GitHub Release; adopters may use NuGet,
+npm, GitHub Packages, or an internal registry with the same SemVer version.
+
 Swagger is disabled in production by default. Enable it only in a controlled
 development or contract-test environment; never expose it publicly without the
 adopting team's access policy.
