@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P9-3:** Add generated-client package publishing and a documented compatibility exception process.
+1. **P10-1:** Add consumer SDK smoke tests and registry publication options for generated clients.
 
 ## Deployment scope
 
@@ -215,8 +215,15 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
   a CI-checked OpenAPI route/method compatibility snapshot.
 - [x] **P9-2:** Add backward-compatible OpenAPI route/schema checks and versioned
   client contract/example artifacts to tagged releases.
-- [ ] **P9-3:** Add generated-client package publishing and a documented
-  compatibility exception process.
+- [x] **P9-3:** Add generated C# and TypeScript client package publishing and a
+  documented compatibility exception process.
+
+### P10 — Client ecosystem
+
+Status: **Planned**
+
+- [ ] **P10-1:** Add consumer SDK smoke tests and registry publication options
+  for generated clients.
 
 ## Observability contract
 
