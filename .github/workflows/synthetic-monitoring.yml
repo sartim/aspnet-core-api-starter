@@ -1,0 +1,72 @@
+name: Synthetic API monitoring
+
+on:
+  schedule:
+    - cron: "47 * * * *"
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to check
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - staging
+          - production
+      base_url:
+        description: Optional override URL; otherwise repository variables are used
+        required: false
+        type: string
+      profile:
+        description: API profile exposed at the target URL
+        required: true
+        default: full
+        type: choice
+        options:
+          - full
+          - minimal
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    name: Check ${{ matrix.environment }} endpoints
+    if: github.event_name == 'schedule' || inputs.environment == 'all' || inputs.environment == matrix.environment
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: [staging, production]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run synthetic endpoint checks
+        id: synthetic
+        env:
+          BASE_URL_OVERRIDE: ${{ inputs.base_url }}
+          CONFIGURED_BASE_URL: ${{ matrix.environment == 'staging' && vars.STAGING_API_BASE_URL || vars.PRODUCTION_API_BASE_URL }}
+          PROFILE: ${{ inputs.profile || vars.SYNTHETIC_PROFILE || 'full' }}
+        run: |
+          base_url="${BASE_URL_OVERRIDE:-$CONFIGURED_BASE_URL}"
+          [[ -n "$base_url" ]] || {
+            echo "No URL configured. Set ${{ matrix.environment == 'staging' && 'STAGING_API_BASE_URL' || 'PRODUCTION_API_BASE_URL' }} or provide base_url." >&2
+            exit 1
+          }
+          ./scripts/synthetic-api-check.sh "$base_url" "$PROFILE"
+      - name: Open deduplicated synthetic-monitoring issue
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ENVIRONMENT: ${{ matrix.environment }}
+        run: |
+          title="[synthetic-monitoring] ${ENVIRONMENT} endpoint check failed"
+          existing="$(gh issue list --state open --limit 100 --json title | jq --arg title "$title" '[.[] | select(.title == $title)] | length')"
+          if [[ "$existing" == "0" ]]; then
+            gh issue create \
+              --title "$title" \
+              --body "Synthetic endpoint monitoring failed for ${ENVIRONMENT}. Check run ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}; inspect health, metrics, logs, traces, and the incident runbook."
+          else
+            echo "An open ${ENVIRONMENT} synthetic-monitoring issue already exists."
+          fi

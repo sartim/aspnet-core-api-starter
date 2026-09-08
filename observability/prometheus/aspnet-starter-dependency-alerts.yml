@@ -1,0 +1,39 @@
+# Optional rules for deployments that expose dependency probes through a
+# Prometheus/blackbox exporter. Label probes with environment, service, and
+# dependency to keep alerts actionable without coupling the starter to a probe
+# vendor.
+groups:
+  - name: aspnet-starter-dependencies
+    rules:
+      - alert: AspNetStarterPostgresProbeFailed
+        expr: min by (environment, service, dependency) (probe_success{dependency="postgres"}) == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "PostgreSQL probe failed in {{ $labels.environment }}"
+          runbook: "docs/INCIDENT_RESPONSE.md#readiness-failure"
+      - alert: AspNetStarterRedisProbeFailed
+        expr: min by (environment, service, dependency) (probe_success{dependency="redis"}) == 0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Redis probe failed in {{ $labels.environment }}"
+          runbook: "docs/INCIDENT_RESPONSE.md#high-error-rate"
+      - alert: AspNetStarterEmailProviderProbeFailed
+        expr: min by (environment, service, dependency) (probe_success{dependency="email"}) == 0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Email provider probe failed in {{ $labels.environment }}"
+          runbook: "docs/INCIDENT_RESPONSE.md#high-error-rate"
+      - alert: AspNetStarterMessagingProbeFailed
+        expr: min by (environment, service, dependency) (probe_success{dependency="messaging"}) == 0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Messaging provider probe failed in {{ $labels.environment }}"
+          runbook: "docs/INCIDENT_RESPONSE.md#high-error-rate"

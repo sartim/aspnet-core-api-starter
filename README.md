@@ -76,6 +76,8 @@ an issue when the deployed digest, rollback image, or attestation is invalid.
 Environment dashboards, alert rules, and incident response guidance are
 available in the [observability](docs/OBSERVABILITY.md) and [incident response
 runbook](docs/INCIDENT_RESPONSE.md).
+Hourly synthetic endpoint monitoring and dependency-specific alert examples are
+documented in [synthetic monitoring](docs/SYNTHETIC_MONITORING.md).
 See the [architecture and extension points](docs/ARCHITECTURE.md) when adapting
 the starter to another identity provider, database, API design, or telemetry
 backend.

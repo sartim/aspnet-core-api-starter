@@ -49,6 +49,7 @@ nav:
   - Caching: CACHING.md
   - Observability: OBSERVABILITY.md
   - Incident response: INCIDENT_RESPONSE.md
+  - Synthetic monitoring: SYNTHETIC_MONITORING.md
   - Email actions: EMAIL_ACTIONS.md
   - Messaging: MESSAGING.md
   - Template versioning: TEMPLATE_VERSIONING.md
