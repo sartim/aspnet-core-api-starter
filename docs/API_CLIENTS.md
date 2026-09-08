@@ -32,6 +32,25 @@ The repository includes minimal [C#](https://github.com/sartim/aspnet-core-api-s
 login, bearer-token, and paginated-users flow. They are examples rather than
 runtime dependencies of generated projects.
 
+## Compatibility and release artifacts
+
+Pull requests compare the generated OpenAPI document with
+`docs/openapi-compatibility-baseline.json`. Existing routes, methods, response
+status codes, parameters, request content types, component schemas, required
+properties, and enum values cannot be removed or narrowed without an explicit
+baseline update and review. New endpoints and optional response fields are
+backward-compatible additions.
+
+Tagged releases attach versioned client artifacts:
+
+- `openapi-contract-VERSION.json` — the route/method contract snapshot.
+- `openapi-compatibility-baseline-VERSION.json` — the reviewed compatibility
+  baseline.
+- `api-client-examples-VERSION.tar.gz` — the C# and TypeScript examples.
+
+The release version is supplied by Nerdbank.GitVersioning, so the artifacts
+use the same SemVer-derived version as the Git tag and container image.
+
 Swagger is disabled in production by default. Enable it only in a controlled
 development or contract-test environment; never expose it publicly without the
 adopting team's access policy.
