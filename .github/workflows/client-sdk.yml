@@ -34,3 +34,5 @@ jobs:
           curl --fail --retry 30 --retry-all-errors --retry-delay 3 --retry-connrefused http://localhost:5070/health/ready
       - name: Generate and build clients
         run: ./scripts/smoke-test-generated-clients.sh http://localhost:5070/swagger/v1/swagger.json
+      - name: Verify archived client packages as consumers
+        run: ./scripts/verify-generated-client-packages.sh http://localhost:5070/swagger/v1/swagger.json

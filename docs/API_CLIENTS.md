@@ -52,6 +52,10 @@ Tagged releases attach versioned client artifacts:
 - `aspnet-core-api-client-typescript-VERSION.tar.gz` — the generated TypeScript
   client package.
 - `aspnet-core-api-client-VERSION.json` — generator and artifact metadata.
+- `aspnet-core-api-client-VERSION.sha256` — checksums for the generated client
+  archives.
+- `aspnet-core-api-client-VERSION.provenance.json` — SLSA-style build metadata
+  linking the packages to the source commit and generator version.
 
 The release version is supplied by Nerdbank.GitVersioning, so the artifacts
 use the same SemVer-derived version as the Git tag and container image.
@@ -85,6 +89,11 @@ Keep registry credentials in the consuming repository or protected deployment
 environment. Do not add credentials to this starter or make registry
 publication a prerequisite for the GitHub Release; adopters may use NuGet,
 npm, GitHub Packages, or an internal registry with the same SemVer version.
+
+The release workflow also emits GitHub artifact attestations for the generated
+archives. Consumers can verify the checksums with `sha256sum --check` and use
+GitHub's attestation verification for the release repository before unpacking
+an SDK.
 
 Swagger is disabled in production by default. Enable it only in a controlled
 development or contract-test environment; never expose it publicly without the
