@@ -1,0 +1,92 @@
+name: Reliability trend report
+
+on:
+  schedule:
+    - cron: "17 6 1 1,4,7,10 *"
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to report
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - staging
+          - production
+      prometheus_url:
+        description: Optional Prometheus URL override
+        required: false
+        type: string
+      period_days:
+        description: Report period in days
+        required: true
+        default: "90"
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  report:
+    name: Report ${{ matrix.environment }} reliability trend
+    if: github.event_name == 'schedule' || inputs.environment == 'all' || inputs.environment == matrix.environment
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: [staging, production]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Resolve Prometheus endpoint
+        id: endpoint
+        env:
+          OVERRIDE_URL: ${{ inputs.prometheus_url }}
+          CONFIGURED_URL: ${{ matrix.environment == 'staging' && vars.STAGING_PROMETHEUS_URL || vars.PRODUCTION_PROMETHEUS_URL }}
+        run: |
+          url="${OVERRIDE_URL:-$CONFIGURED_URL}"
+          if [[ -z "$url" ]]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "No Prometheus URL configured for ${{ matrix.environment }}; report skipped."
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+            echo "url=$url" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Generate reliability trend report
+        if: steps.endpoint.outputs.configured == 'true'
+        env:
+          PROMETHEUS_BEARER_TOKEN: ${{ secrets.PROMETHEUS_BEARER_TOKEN }}
+          ENVIRONMENT: ${{ matrix.environment }}
+          PERIOD_DAYS: ${{ inputs.period_days || '90' }}
+        run: ./scripts/report-reliability-trend.sh "${{ steps.endpoint.outputs.url }}" "$ENVIRONMENT" "$PERIOD_DAYS"
+      - name: Upload reliability trend report
+        if: steps.endpoint.outputs.configured == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: reliability-trend-${{ matrix.environment }}
+          path: |
+            reliability-trend.json
+            reliability-trend.md
+      - name: Fail when review is required
+        if: steps.endpoint.outputs.configured == 'true'
+        run: |
+          if jq -e '.status != "ok"' reliability-trend.json >/dev/null; then
+            echo "Reliability trend requires review for ${{ matrix.environment }}."
+            exit 1
+          fi
+      - name: Open deduplicated review issue
+        if: steps.endpoint.outputs.configured == 'true' && failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ENVIRONMENT: ${{ matrix.environment }}
+        run: |
+          title="[reliability-trend] ${ENVIRONMENT} quarterly SLO review required"
+          existing="$(gh issue list --state open --limit 100 --json title | jq --arg title "$title" '[.[] | select(.title == $title)] | length')"
+          if [[ "$existing" == "0" ]]; then
+            gh issue create \
+              --title "$title" \
+              --body "Reliability trend reporting requires review for ${ENVIRONMENT}. Check run ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}, download the trend artifacts, and follow the quarterly SLO review guidance."
+          else
+            echo "An open ${ENVIRONMENT} reliability-trend issue already exists."
+          fi

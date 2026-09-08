@@ -80,6 +80,8 @@ Hourly synthetic endpoint monitoring and dependency-specific alert examples are
 documented in [synthetic monitoring](docs/SYNTHETIC_MONITORING.md).
 Release annotations and automated availability budget reporting are documented
 in [SLO burn-rate reporting](docs/SLO_BURN_RATE.md).
+Quarterly reliability trends and SLO review steps are documented in
+[reliability trends](docs/RELIABILITY_TRENDS.md).
 See the [architecture and extension points](docs/ARCHITECTURE.md) when adapting
 the starter to another identity provider, database, API design, or telemetry
 backend.

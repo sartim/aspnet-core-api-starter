@@ -23,3 +23,6 @@ Every successful **Record deployment** run also uploads
 environment, version, image digest, rollback version, and timestamp. Import
 this JSON into Grafana annotations or an incident system to place release
 changes on the same timeline as SLO burn.
+
+For longer-term comparisons, use the [quarterly reliability trend
+report](RELIABILITY_TRENDS.md).

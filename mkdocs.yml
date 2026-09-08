@@ -57,6 +57,7 @@ nav:
   - Integration adapters: INTEGRATION_ADAPTERS.md
   - Performance and SLOs: PERFORMANCE_SLO.md
   - SLO burn-rate reporting: SLO_BURN_RATE.md
+  - Reliability trends: RELIABILITY_TRENDS.md
   - Release checklist: RELEASE_CHECKLIST.md
   - Deployment operations: DEPLOYMENT_OPERATIONS.md
   - Roadmap: ROADMAP.md
