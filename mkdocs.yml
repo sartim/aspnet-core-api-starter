@@ -48,6 +48,7 @@ nav:
   - Database migrations: DATABASE_MIGRATIONS.md
   - Caching: CACHING.md
   - Observability: OBSERVABILITY.md
+  - Incident response: INCIDENT_RESPONSE.md
   - Email actions: EMAIL_ACTIONS.md
   - Messaging: MESSAGING.md
   - Template versioning: TEMPLATE_VERSIONING.md

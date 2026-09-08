@@ -33,5 +33,16 @@ starter dashboard for Prometheus-compatible scraping of `/metrics`. It is an
 optional artifact: no Grafana or Prometheus service is added to the default
 Compose stack. Import it only when those services are part of the deployment.
 
+For environment operations, import
+`observability/grafana/aspnet-starter-environment.json` and configure the
+Prometheus scrape/relabeling to add `environment` (`staging` or `production`)
+and `service` labels. The dashboard separates traffic, error ratio, average
+latency, and readiness by environment. The companion alert rules are in
+`observability/prometheus/aspnet-starter-alerts.yml`.
+
+Use the [incident response runbook](INCIDENT_RESPONSE.md) for triage and
+rollback sequencing. Keep dashboard labels low-cardinality and never add user
+identifiers or secrets.
+
 Do not add user IDs, email addresses, tokens, request bodies, or credentials to
 logs, trace attributes, or metric labels.
