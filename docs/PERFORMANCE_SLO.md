@@ -27,3 +27,7 @@ changes.
 Use the quarterly [reliability trend report](RELIABILITY_TRENDS.md) to review
 long-term error ratio and latency changes. Compare the report with deployment
 annotations and incident history before changing targets or exclusions.
+
+For repeatable capacity comparisons, use the [capacity planning
+scenarios](CAPACITY_PLANNING.md). Dependency targets and accountable teams are
+tracked in [dependency SLO ownership](DEPENDENCY_SLO_OWNERSHIP.md).

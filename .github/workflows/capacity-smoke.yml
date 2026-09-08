@@ -1,0 +1,38 @@
+name: Capacity smoke test
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Reachable API base URL for the target environment
+        required: true
+        type: string
+      scenario:
+        description: Load profile to run
+        required: true
+        default: baseline
+        type: choice
+        options:
+          - baseline
+          - 2x
+          - 5x
+
+permissions:
+  contents: read
+
+jobs:
+  capacity:
+    name: Run ${{ inputs.scenario }} capacity scenario
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run pinned k6 scenario
+        env:
+          BASE_URL: ${{ inputs.base_url }}
+          SCENARIO: ${{ inputs.scenario }}
+        run: |
+          docker run --rm \
+            -e BASE_URL \
+            -e SCENARIO \
+            -v "$PWD/scripts/capacity-smoke.js:/test/capacity-smoke.js:ro" \
+            grafana/k6:0.52.0 run /test/capacity-smoke.js
