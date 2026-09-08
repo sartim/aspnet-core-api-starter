@@ -46,6 +46,11 @@ variables per environment and import the optional dependency alert rules from
 `observability/prometheus/aspnet-starter-dependency-alerts.yml` only for
 dependencies that are enabled.
 
+Import `observability/prometheus/aspnet-starter-slo-rules.yml` for recording
+rules and multi-window availability burn alerts. See the [SLO burn-rate
+guide](SLO_BURN_RATE.md) for Prometheus variables, authentication, thresholds,
+and release annotation ingestion.
+
 Use the [incident response runbook](INCIDENT_RESPONSE.md) for triage and
 rollback sequencing. Keep dashboard labels low-cardinality and never add user
 identifiers or secrets.
