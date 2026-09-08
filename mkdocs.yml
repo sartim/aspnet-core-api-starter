@@ -55,4 +55,5 @@ nav:
   - Integration adapters: INTEGRATION_ADAPTERS.md
   - Performance and SLOs: PERFORMANCE_SLO.md
   - Release checklist: RELEASE_CHECKLIST.md
+  - Deployment operations: DEPLOYMENT_OPERATIONS.md
   - Roadmap: ROADMAP.md
