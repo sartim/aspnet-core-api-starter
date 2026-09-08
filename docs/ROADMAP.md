@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P10-1:** Add consumer SDK smoke tests and registry publication options for generated clients.
+1. **P10-2:** Add release provenance and consumer upgrade verification for SDK packages.
 
 ## Deployment scope
 
@@ -222,8 +222,10 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
 
 Status: **Planned**
 
-- [ ] **P10-1:** Add consumer SDK smoke tests and registry publication options
-  for generated clients.
+- [x] **P10-1:** Add consumer SDK smoke tests and documented NuGet/npm-compatible
+  registry publication options for generated clients.
+- [ ] **P10-2:** Add release provenance and consumer upgrade verification for SDK
+  packages.
 
 ## Observability contract
 
