@@ -29,6 +29,20 @@ jobs:
         run: echo "version=$($RUNNER_TEMP/nbgv/nbgv get-version -v SemVer2)" >> "$GITHUB_OUTPUT"
       - name: Restore and test
         run: dotnet test AspNetCoreApiStarter.sln --configuration Release
+      - name: Package versioned API client artifacts
+        id: clients
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          artifact_dir="$RUNNER_TEMP/api-client-artifacts"
+          mkdir -p "$artifact_dir/examples"
+          cp docs/openapi-contract.json "$artifact_dir/openapi-contract-${RELEASE_VERSION}.json"
+          cp docs/openapi-compatibility-baseline.json "$artifact_dir/openapi-compatibility-baseline-${RELEASE_VERSION}.json"
+          cp -R examples/clients "$artifact_dir/examples/"
+          tar -czf "api-client-examples-${RELEASE_VERSION}.tar.gz" -C "$artifact_dir" examples
+          echo "contract=$artifact_dir/openapi-contract-${RELEASE_VERSION}.json" >> "$GITHUB_OUTPUT"
+          echo "baseline=$artifact_dir/openapi-compatibility-baseline-${RELEASE_VERSION}.json" >> "$GITHUB_OUTPUT"
+          echo "examples=$GITHUB_WORKSPACE/api-client-examples-${RELEASE_VERSION}.tar.gz" >> "$GITHUB_OUTPUT"
       - name: Tag and publish GitHub Release
         id: publish
         env:
@@ -47,6 +61,11 @@ jobs:
           git tag --annotate "$tag" --message "Release $tag"
           git push origin "$tag"
           gh release create "$tag" --generate-notes --title "$tag"
+          gh release upload "$tag" \
+            "${{ steps.clients.outputs.contract }}" \
+            "${{ steps.clients.outputs.baseline }}" \
+            "${{ steps.clients.outputs.examples }}" \
+            --clobber
     outputs:
       tag: ${{ steps.publish.outputs.tag }}
       version: ${{ steps.publish.outputs.version }}

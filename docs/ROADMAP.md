@@ -61,7 +61,7 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P9-2:** Add backward-compatible schema diff checks and versioned client release artifacts.
+1. **P9-3:** Add generated-client package publishing and a documented compatibility exception process.
 
 ## Deployment scope
 
@@ -213,8 +213,10 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
   one-year k6 scale-test result artifacts with run metadata.
 - [x] **P9-1:** Add generated-client commands, C# and TypeScript examples, and
   a CI-checked OpenAPI route/method compatibility snapshot.
-- [ ] **P9-2:** Add backward-compatible schema diff checks and versioned client
-  release artifacts.
+- [x] **P9-2:** Add backward-compatible OpenAPI route/schema checks and versioned
+  client contract/example artifacts to tagged releases.
+- [ ] **P9-3:** Add generated-client package publishing and a documented
+  compatibility exception process.
 
 ## Observability contract
 
