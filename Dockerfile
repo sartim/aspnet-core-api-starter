@@ -1,5 +1,5 @@
-﻿# Build stage
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# Build stage
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /source
 
 # Copy csproj and restore the application only. Tests are restored by CI,
