@@ -16,6 +16,12 @@ RUN dotnet build -c Release -o /app
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 
+# Apply Debian security updates to packages inherited from the runtime base
+# image before shipping the application layer.
+RUN apt-get update \
+    && apt-get upgrade --yes \
+    && rm -rf /var/lib/apt/lists/*
+
 # Copy published app from build stage
 COPY --from=build /app ./
 
