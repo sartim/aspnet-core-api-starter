@@ -1,9 +1,13 @@
+using AspNetCoreApiStarter.Data;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace AspNetCoreApiStarter.Migrations;
 
+[DbContext(typeof(ApplicationDbContext))]
+[Migration("20260903200000_AddOutboxMessages")]
 public partial class AddOutboxMessages : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)

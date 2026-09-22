@@ -121,7 +121,7 @@ their environment.
 
 ## Requirements
 
-* .NET SDK **8.0+**
+* .NET SDK **10.0+**
 * PostgreSQL **14+**
 * Docker & Docker Compose (optional, for containerized setup)
 

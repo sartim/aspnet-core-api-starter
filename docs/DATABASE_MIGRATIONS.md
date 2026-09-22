@@ -11,7 +11,7 @@ From the generated project directory, install the EF CLI once and inspect the
 current migration history:
 
 ```bash
-dotnet tool install --global dotnet-ef --version 8.0.10
+dotnet tool install --global dotnet-ef --version 10.0.12
 dotnet ef migrations list \
   --project AspNetCoreApiStarter/AspNetCoreApiStarter.csproj \
   --startup-project AspNetCoreApiStarter/AspNetCoreApiStarter.csproj
@@ -54,6 +54,15 @@ executes `dotnet ef database update`, and only then starts the API. This is the
 supported local and smoke-test deployment baseline. It is safe to rerun after
 the database volume is preserved because EF tracks applied migrations in
 `__EFMigrationsHistory`.
+
+The .NET 10 baseline includes the `DotNet10Upgrade` migration. It aligns the
+historical EF snapshot with the current model and removes the obsolete
+single-column email-action index. Normal Compose startup only applies
+checked-in migrations; it never generates migrations.
+
+All manually authored migrations carry explicit IDs so EF discovers them in
+the same order on a clean database. Keep that attribute synchronized with the
+timestamp prefix whenever adding a hand-written migration.
 
 ## Production deployment
 
