@@ -1,0 +1,50 @@
+name: SDK compatibility matrix
+
+on:
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  generated-clients:
+    name: .NET ${{ matrix.dotnet }} / Node ${{ matrix.node }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dotnet: 8.0.x
+            node: 22.x
+          - dotnet: 8.0.x
+            node: 24.x
+          - dotnet: 10.0.x
+            node: 22.x
+          - dotnet: 10.0.x
+            node: 24.x
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ matrix.dotnet }}
+      - name: Start API for SDK compatibility test
+        env:
+          SWAGGER_ENABLED: "true"
+        run: |
+          docker compose up -d --build
+          curl --fail --retry 30 --retry-all-errors --retry-delay 3 --retry-connrefused http://localhost:5070/health/ready
+      - name: Generate and build SDKs
+        run: ./scripts/smoke-test-generated-clients.sh http://localhost:5070/swagger/v1/swagger.json
+      - name: Verify packaged SDKs as consumers
+        run: ./scripts/verify-generated-client-packages.sh http://localhost:5070/swagger/v1/swagger.json
