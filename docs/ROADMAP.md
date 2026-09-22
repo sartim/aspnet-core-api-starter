@@ -61,7 +61,8 @@ priority incomplete task first.
 
 ## What’s next
 
-1. **P10-3:** Add a scheduled SDK compatibility matrix across supported runtime versions.
+1. No remaining implementation blockers. Continue scheduled dependency,
+   security, and SDK compatibility maintenance.
 
 ## Deployment scope
 
@@ -226,8 +227,8 @@ Status: **Planned**
   registry publication options for generated clients.
 - [x] **P10-2:** Add release checksums/provenance and consumer verification for
   the exact generated SDK archives.
-- [ ] **P10-3:** Add a scheduled SDK compatibility matrix across supported
-  runtime versions.
+- [x] **P10-3:** Add a scheduled SDK compatibility matrix across supported .NET
+  and Node.js runtime versions.
 
 ## Observability contract
 

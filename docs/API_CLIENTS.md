@@ -70,6 +70,21 @@ It generates both clients from the live Swagger document, builds the generated
 C# project, installs the generated TypeScript dependencies, and runs its build.
 This catches generator-breaking contract changes before a release is tagged.
 
+Every Monday, the **SDK compatibility matrix** workflow repeats the generation
+and archived-package consumer checks across the supported toolchains:
+
+| .NET SDK | Node.js |
+| --- | --- |
+| 8.x (starter baseline) | 22.x |
+| 8.x (starter baseline) | 24.x |
+| 10.x (current LTS consumer toolchain) | 22.x |
+| 10.x (current LTS consumer toolchain) | 24.x |
+
+The matrix is also available through `workflow_dispatch`. A failed scheduled
+job is treated as a compatibility-maintenance signal: update the affected
+runtime/toolchain or explicitly revise this support table before changing the
+generated client contract.
+
 The default distribution mechanism is the versioned GitHub Release assets. A
 team that operates a package registry can publish from the generated outputs:
 
