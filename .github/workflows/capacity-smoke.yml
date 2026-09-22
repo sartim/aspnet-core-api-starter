@@ -25,7 +25,7 @@ jobs:
     name: Run ${{ inputs.scenario }} capacity scenario
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Run pinned k6 scenario
         env:
           BASE_URL: ${{ inputs.base_url }}
@@ -54,7 +54,7 @@ jobs:
           exit "$result"
       - name: Upload capacity result history artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: capacity-${{ inputs.scenario }}-${{ github.run_id }}
           retention-days: 365
