@@ -18,7 +18,7 @@ services:
       retries: 5
 
   migrate:
-    image: mcr.microsoft.com/dotnet/sdk:8.0
+    image: mcr.microsoft.com/dotnet/sdk:10.0
     container_name: asp_shop_migrate
     working_dir: /source/AspNetCoreApiStarter
     env_file:
@@ -34,7 +34,7 @@ services:
       - sh
       - -c
       - |
-        dotnet tool install --global dotnet-ef --version 8.0.10 &&
+        dotnet tool install --global dotnet-ef --version 10.0.12 &&
         export PATH="$PATH:/root/.dotnet/tools" &&
         dotnet restore &&
         dotnet ef migrations list &&

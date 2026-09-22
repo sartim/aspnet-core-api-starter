@@ -11,7 +11,7 @@ From the generated project directory, install the EF CLI once and inspect the
 current migration history:
 
 ```bash
-dotnet tool install --global dotnet-ef --version 8.0.10
+dotnet tool install --global dotnet-ef --version 10.0.12
 dotnet ef migrations list \
   --project AspNetCoreApiStarter/AspNetCoreApiStarter.csproj \
   --startup-project AspNetCoreApiStarter/AspNetCoreApiStarter.csproj

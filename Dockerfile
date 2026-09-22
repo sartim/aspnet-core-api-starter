@@ -1,5 +1,5 @@
 ﻿# Build stage
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /source
 
 # Copy csproj and restore the application only. Tests are restored by CI,
@@ -13,11 +13,10 @@ WORKDIR /source/AspNetCoreApiStarter
 RUN dotnet build -c Release -o /app
 
 # Runtime stage
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
 
-# Apply Debian security updates to packages inherited from the runtime base
-# image before shipping the application layer.
+# Apply base-image security updates before shipping the application layer.
 RUN apt-get update \
     && apt-get upgrade --yes \
     && rm -rf /var/lib/apt/lists/*

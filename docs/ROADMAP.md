@@ -62,7 +62,8 @@ priority incomplete task first.
 ## What’s next
 
 1. No remaining implementation blockers. Continue scheduled dependency,
-   security, and SDK compatibility maintenance.
+   security, and SDK compatibility maintenance. The next framework baseline
+   is the .NET 10 LTS migration tracked in P11 below.
 
 ## Deployment scope
 
@@ -76,7 +77,7 @@ deployment target.
 
 Status: **Next**
 
-- [x] **P0-1:** Restore and build both profiles in a clean .NET 8 CI
+- [x] **P0-1:** Restore and build both profiles in a clean .NET 10 CI
   environment.
 - [x] **P0-2:** Add generator smoke tests that verify both generated projects
   build and that the minimal profile contains no user-service source or
@@ -229,6 +230,14 @@ Status: **Planned**
   the exact generated SDK archives.
 - [x] **P10-3:** Add a scheduled SDK compatibility matrix across supported .NET
   and Node.js runtime versions.
+
+### P11 — Framework baseline
+
+Status: **In progress**
+
+- [ ] **P11-1:** Upgrade the starter, generated minimal profile, Docker images,
+  EF tooling, CI/CD workflows, and Microsoft package family to .NET 10 LTS;
+  retain .NET 8 in the SDK compatibility matrix for existing consumers.
 
 ## Observability contract
 

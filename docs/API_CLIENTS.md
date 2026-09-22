@@ -75,10 +75,14 @@ and archived-package consumer checks across the supported toolchains:
 
 | .NET SDK | Node.js |
 | --- | --- |
-| 8.x (starter baseline) | 22.x |
-| 8.x (starter baseline) | 24.x |
-| 10.x (current LTS consumer toolchain) | 22.x |
-| 10.x (current LTS consumer toolchain) | 24.x |
+| 8.x (legacy consumer toolchain) | 22.x |
+| 8.x (legacy consumer toolchain) | 24.x |
+| 10.x (starter and current LTS toolchain) | 22.x |
+| 10.x (starter and current LTS toolchain) | 24.x |
+
+The generated clients remain language/runtime artifacts and are checked against
+both toolchain generations, while newly generated starter projects target
+.NET 10 LTS.
 
 The matrix is also available through `workflow_dispatch`. A failed scheduled
 job is treated as a compatibility-maintenance signal: update the affected
