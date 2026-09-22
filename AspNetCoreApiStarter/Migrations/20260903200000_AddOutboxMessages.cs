@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AspNetCoreApiStarter.Migrations;
 
+[Migration("20260903200000_AddOutboxMessages")]
 public partial class AddOutboxMessages : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)

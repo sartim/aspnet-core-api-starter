@@ -60,6 +60,10 @@ historical EF snapshot with the current model and removes the obsolete
 single-column email-action index. Normal Compose startup only applies
 checked-in migrations; it never generates migrations.
 
+All manually authored migrations carry explicit IDs so EF discovers them in
+the same order on a clean database. Keep that attribute synchronized with the
+timestamp prefix whenever adding a hand-written migration.
+
 ## Production deployment
 
 Apply schema changes as an explicit deployment step, before starting an image

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AspNetCoreApiStarter.Migrations;
 
+[Migration("20260903170000_AddEmailActions")]
 public partial class AddEmailActions : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)

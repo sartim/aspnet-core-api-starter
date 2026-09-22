@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AspNetCoreApiStarter.Migrations;
 
+[Migration("20260903090000_AddAuthenticationSecurityControls")]
 public partial class AddAuthenticationSecurityControls : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)
