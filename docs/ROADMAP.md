@@ -62,8 +62,7 @@ priority incomplete task first.
 ## What’s next
 
 1. No remaining implementation blockers. Continue scheduled dependency,
-   security, and SDK compatibility maintenance. The next framework baseline
-   is the .NET 10 LTS migration tracked in P11 below.
+   security, and SDK compatibility maintenance.
 
 ## Deployment scope
 
@@ -233,9 +232,9 @@ Status: **Planned**
 
 ### P11 — Framework baseline
 
-Status: **In progress**
+Status: **Complete**
 
-- [ ] **P11-1:** Upgrade the starter, generated minimal profile, Docker images,
+- [x] **P11-1:** Upgrade the starter, generated minimal profile, Docker images,
   EF tooling, CI/CD workflows, and Microsoft package family to .NET 10 LTS;
   retain .NET 8 in the SDK compatibility matrix for existing consumers.
 
