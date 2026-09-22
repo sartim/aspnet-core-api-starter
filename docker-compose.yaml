@@ -37,7 +37,6 @@ services:
         dotnet tool install --global dotnet-ef --version 10.0.12 &&
         export PATH="$PATH:/root/.dotnet/tools" &&
         dotnet restore &&
-        dotnet ef migrations add DotNet10Upgrade --output-dir Migrations &&
         dotnet ef migrations list &&
         dotnet ef database update
   

@@ -55,6 +55,11 @@ supported local and smoke-test deployment baseline. It is safe to rerun after
 the database volume is preserved because EF tracks applied migrations in
 `__EFMigrationsHistory`.
 
+The .NET 10 baseline includes the `DotNet10Upgrade` migration. It aligns the
+historical EF snapshot with the current model and removes the obsolete
+single-column email-action index. Normal Compose startup only applies
+checked-in migrations; it never generates migrations.
+
 ## Production deployment
 
 Apply schema changes as an explicit deployment step, before starting an image
