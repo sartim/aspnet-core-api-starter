@@ -7,6 +7,12 @@ using Sentry;
 
 namespace AspNetCoreApiStarter.Observability;
 
+internal static class LogValueSanitizer
+{
+    public static string Sanitize(string? value)
+        => value?.ReplaceLineEndings(" ") ?? string.Empty;
+}
+
 public interface IErrorReporter
 {
     void Capture(Exception exception, HttpContext context);
@@ -59,7 +65,8 @@ public sealed class LoggingErrorReporter(ILogger<LoggingErrorReporter> logger) :
     public void Capture(Exception exception, HttpContext context)
     {
         logger.LogError(exception, "Unhandled request exception for {Method} {Path}",
-            context.Request.Method, context.Request.Path);
+            LogValueSanitizer.Sanitize(context.Request.Method),
+            LogValueSanitizer.Sanitize(context.Request.Path.Value));
     }
 }
 
@@ -123,7 +130,8 @@ public sealed class StarterExceptionHandler(
         errorReporter.Capture(exception, httpContext);
         var traceId = StarterProblemDetails.GetTraceId(httpContext);
         logger.LogError(exception, "Unhandled request exception for {Method} {Path} with trace ID {TraceId}",
-            httpContext.Request.Method, httpContext.Request.Path, traceId);
+            LogValueSanitizer.Sanitize(httpContext.Request.Method),
+            LogValueSanitizer.Sanitize(httpContext.Request.Path.Value), traceId);
 
         if (httpContext.Response.HasStarted)
             return false;
@@ -165,7 +173,8 @@ public sealed class StarterObservabilityMiddleware(
             var duration = Stopwatch.GetElapsedTime(started);
             metrics.RecordRequest(duration, failed);
             logger.LogInformation("HTTP {Method} {Path} completed with {StatusCode} in {DurationMs}ms with trace ID {TraceId}",
-                context.Request.Method, context.Request.Path, context.Response.StatusCode,
+                LogValueSanitizer.Sanitize(context.Request.Method),
+                LogValueSanitizer.Sanitize(context.Request.Path.Value), context.Response.StatusCode,
                 duration.TotalMilliseconds, traceId);
         }
     }
