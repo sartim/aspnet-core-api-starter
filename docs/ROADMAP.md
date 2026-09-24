@@ -74,7 +74,7 @@ deployment target.
 
 ### P0 — Release blockers
 
-Status: **Next**
+Status: **Complete**
 
 - [x] **P0-1:** Restore and build both profiles in a clean .NET 10 CI
   environment.
@@ -109,7 +109,7 @@ Status: **Next**
 
 ### P1 — Next iteration
 
-Status: **Planned**
+Status: **Complete**
 
 - [x] **P1-1:** Add a checked-in `.env.example` at the repository root and ensure
   the generated user-service profile receives a safe copy.
@@ -144,19 +144,15 @@ Status: **Planned**
 
 ## Versioning decision
 
-The preferred first candidates are:
+The project uses [Nerdbank.GitVersioning](https://github.com/dotnet/Nerdbank.GitVersioning)
+with the root `version.json` as the version source. It supplies the SemVer
+version to assemblies and release artifacts; the release workflow creates the
+matching `vX.Y.Z` tag after the main-branch release job succeeds and publishes
+the corresponding GitHub Release and container image. Release publishing runs
+only from `main` or through an explicit workflow dispatch.
 
-- **[Nerdbank.GitVersioning](https://github.com/dotnet/Nerdbank.GitVersioning):**
-  a .NET/MSBuild-integrated option driven by `version.json`, producing
-  SemVer-compatible versions and commit-based build metadata.
-- **[MinVer](https://github.com/adamralph/minver):** a smaller tag-first option
-  that derives the assembly and package versions directly from Git tags.
-
-Evaluate both against the desired workflow, then standardize on one. The
-selected tool must provide the version consistently to assemblies, Docker
-image tags, release artifacts, and GitHub Releases. Tag creation and release
-publishing should remain explicit CI/CD steps, with no release triggered from
-an unreviewed pull request.
+The `version.json` public release references limit stable public versions to
+`main` and `vX.Y.Z` tags. Pull requests do not publish releases.
 
 The Dependabot configuration should follow [GitHub's Dependabot
 documentation](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file),
@@ -221,7 +217,7 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
 
 ### P10 — Client ecosystem
 
-Status: **Planned**
+Status: **Complete**
 
 - [x] **P10-1:** Add consumer SDK smoke tests and documented NuGet/npm-compatible
   registry publication options for generated clients.
