@@ -88,7 +88,8 @@ Status: **Complete**
 - [x] **P0-5:** Add the complete pull-request CI pipeline: restore, build,
   test, `dotnet format --verify-no-changes`, analyzers, and coverage output.
 - [x] **P0-6:** Add security gates for NuGet vulnerabilities, dependency review,
-  CodeQL, secret scanning, and container-image scanning.
+  CodeQL, secret scanning, container-image scanning, and GitHub Dependabot
+  security alerts.
 - [x] **P0-7:** Add `.github/dependabot.yml` for NuGet, GitHub Actions, and
   Docker updates, with grouped non-breaking updates and a controlled update
   cadence. GitHub requires this configuration under `.github` for automated
