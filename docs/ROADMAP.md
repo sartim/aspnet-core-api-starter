@@ -53,6 +53,8 @@ milestone is completed or the starter profiles change.
   authentication, persistence, observability, and startup configuration.
 - [x] Added a release checklist covering migrations, secrets, Docker images,
   semantic versioning, compatibility, deployment, and rollback.
+- [x] Corrected environment selection in scheduled operations workflows so
+  matrix-specific checks run at the step level and the workflows validate.
 
 ## Active priorities
 

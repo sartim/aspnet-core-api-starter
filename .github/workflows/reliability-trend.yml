@@ -31,7 +31,6 @@ permissions:
 jobs:
   report:
     name: Report ${{ matrix.environment }} reliability trend
-    if: github.event_name == 'schedule' || inputs.environment == 'all' || inputs.environment == matrix.environment
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -41,6 +40,9 @@ jobs:
       - uses: actions/checkout@v7
       - name: Resolve Prometheus endpoint
         id: endpoint
+        if: >-
+          github.event_name == 'schedule' || inputs.environment == 'all' ||
+          inputs.environment == matrix.environment
         env:
           OVERRIDE_URL: ${{ inputs.prometheus_url }}
           CONFIGURED_URL: ${{ matrix.environment == 'staging' && vars.STAGING_PROMETHEUS_URL || vars.PRODUCTION_PROMETHEUS_URL }}
