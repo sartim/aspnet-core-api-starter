@@ -25,7 +25,6 @@ permissions:
 jobs:
   verify:
     name: Verify ${{ matrix.environment }} deployment
-    if: github.event_name == 'schedule' || inputs.environment == 'all' || inputs.environment == matrix.environment
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -34,19 +33,27 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Log in to GitHub Container Registry
+        if: >-
+          github.event_name == 'schedule' || inputs.environment == 'all' ||
+          inputs.environment == matrix.environment
         uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Check deployment drift and rollback readiness
+        if: >-
+          github.event_name == 'schedule' || inputs.environment == 'all' ||
+          inputs.environment == matrix.environment
         env:
           GH_TOKEN: ${{ github.token }}
           REPOSITORY: ${{ github.repository }}
           ENVIRONMENT: ${{ matrix.environment }}
         run: ./scripts/check-deployment-drift.sh "$REPOSITORY" "$ENVIRONMENT"
       - name: Open deduplicated drift alert
-        if: failure()
+        if: >-
+          (github.event_name == 'schedule' || inputs.environment == 'all' ||
+          inputs.environment == matrix.environment) && failure()
         env:
           GH_TOKEN: ${{ github.token }}
           ENVIRONMENT: ${{ matrix.environment }}
