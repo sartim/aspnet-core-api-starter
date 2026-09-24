@@ -1,6 +1,12 @@
 using System.Diagnostics;
 using System.Text;
 
+internal static class LogValueSanitizer
+{
+    public static string Sanitize(string? value)
+        => value?.ReplaceLineEndings(" ") ?? string.Empty;
+}
+
 public sealed class StarterMetrics
 {
     private long _requests;
@@ -49,7 +55,9 @@ public sealed class ObservabilityMiddleware(RequestDelegate next, StarterMetrics
             var duration = Stopwatch.GetElapsedTime(started);
             metrics.RecordRequest(duration, failed);
             logger.LogInformation("HTTP {Method} {Path} completed with {StatusCode} in {DurationMs}ms",
-                context.Request.Method, context.Request.Path, context.Response.StatusCode, duration.TotalMilliseconds);
+                LogValueSanitizer.Sanitize(context.Request.Method),
+                LogValueSanitizer.Sanitize(context.Request.Path.Value),
+                context.Response.StatusCode, duration.TotalMilliseconds);
         }
     }
 }
