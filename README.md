@@ -76,8 +76,10 @@ an issue when the deployed digest, rollback image, or attestation is invalid.
 Environment dashboards, alert rules, and incident response guidance are
 available in the [observability](docs/OBSERVABILITY.md) and [incident response
 runbook](docs/INCIDENT_RESPONSE.md).
-Hourly synthetic endpoint monitoring and dependency-specific alert examples are
-documented in [synthetic monitoring](docs/SYNTHETIC_MONITORING.md).
+Optional dependency-specific Prometheus alert examples are documented in
+[observability](docs/OBSERVABILITY.md). Configure external endpoint monitoring
+in the deployment's own operations environment after deploying a generated
+project.
 Release annotations and automated availability budget reporting are documented
 in [SLO burn-rate reporting](docs/SLO_BURN_RATE.md).
 Quarterly reliability trends and SLO review steps are documented in

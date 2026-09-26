@@ -40,11 +40,12 @@ and `service` labels. The dashboard separates traffic, error ratio, average
 latency, and readiness by environment. The companion alert rules are in
 `observability/prometheus/aspnet-starter-alerts.yml`.
 
-The hourly [synthetic monitoring workflow](SYNTHETIC_MONITORING.md) checks the
-public health, metrics, and compatibility endpoints. Configure its repository
-variables per environment and import the optional dependency alert rules from
-`observability/prometheus/aspnet-starter-dependency-alerts.yml` only for
-dependencies that are enabled.
+The starter repository does not run external uptime checks because it does not
+own a deployed API instance. After deploying a generated project, configure
+endpoint monitoring in the deployment's operations environment using the
+platform or APM of choice. The optional dependency alert examples are in
+`observability/prometheus/aspnet-starter-dependency-alerts.yml`; import only
+rules for dependencies that are enabled.
 
 Import `observability/prometheus/aspnet-starter-slo-rules.yml` for recording
 rules and multi-window availability burn alerts. See the [SLO burn-rate
