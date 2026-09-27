@@ -200,8 +200,9 @@ CodeQL](https://docs.github.com/en/code-security/code-scanning/codeql/codeql-cod
 - [x] **P6-1:** Add environment-specific dashboards, Prometheus alert rules,
   and incident response runbooks for errors, latency, readiness, drift, and
   rollback.
-- [x] **P6-2:** Add scheduled and manual synthetic endpoint checks plus
-  dependency-specific alert tuning for PostgreSQL, Redis, email, and messaging.
+- [x] **P6-2:** Add optional dependency-specific alert examples for PostgreSQL,
+  Redis, email, and messaging. External endpoint monitoring is deployment-owner
+  configured; the starter repository does not run checks against undeployed APIs.
 - [x] **P7-1:** Add release-change annotations and automated multi-window SLO
   burn-rate reporting with configurable Prometheus endpoints and alert issues.
 - [x] **P7-2:** Add quarterly long-term reliability trend reports, period-over-
