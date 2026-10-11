@@ -25,6 +25,10 @@ milestone is completed or the starter profiles change.
 - [x] Added generator smoke tests for both profiles and wired them into CI.
 - [x] Verified hosted .NET restore, formatting, build, profile smoke tests,
   package vulnerability checks, and coverage test execution in CI.
+- [x] Completed the October 2026 NuGet maintenance sweep: updated Sentry,
+  Swashbuckle, Coverlet, Moq, and the xUnit Visual Studio runner; verified the
+  .NET 10 solution tests pass and no vulnerable or outdated direct packages
+  remain.
 - [x] Added a root `.env.example`, optional Compose environment override, and
   a CI validation step for the Docker Compose configuration.
 - [x] Added dedicated secret-history and container-image security workflows;
