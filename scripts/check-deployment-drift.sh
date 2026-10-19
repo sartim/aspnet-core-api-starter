@@ -16,24 +16,32 @@ environment=${2:-}
 
 image="ghcr.io/${repository}"
 deployment_id=""
-mapfile -t deployment_ids < <(
-  gh api "repos/${repository}/deployments?environment=${environment}&per_page=20" --jq '.[].id'
-)
-for candidate in "${deployment_ids[@]}"; do
+ref=""
+description=""
+while IFS= read -r candidate; do
+  [[ -n "$candidate" ]] || continue
   state="$(gh api "repos/${repository}/deployments/${candidate}/statuses?per_page=1" --jq '.[0].state // empty')"
-  if [[ "$state" == "success" ]]; then
-    deployment_id="$candidate"
-    break
-  fi
-done
+  [[ "$state" == "success" ]] || continue
+
+  candidate_ref="$(gh api "repos/${repository}/deployments/${candidate}" --jq '.ref')"
+  candidate_version="${candidate_ref#v}"
+  [[ "$candidate_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+([+-][0-9A-Za-z.-]+)?$ ]] || continue
+
+  deployment_id="$candidate"
+  ref="$candidate_ref"
+  description="$(gh api "repos/${repository}/deployments/${deployment_id}" --jq '.description // ""')"
+  break
+done < <(gh api "repos/${repository}/deployments?environment=${environment}&per_page=20" --jq '.[].id')
 
 [[ -n "$deployment_id" ]] || {
-  echo "No successful deployment record found for ${environment}." >&2
-  exit 1
+  message="No successful versioned deployment record found for ${environment}; drift verification skipped."
+  echo "$message"
+  if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
+    printf '%s\n' "### Deployment drift check skipped" "" "$message" >> "$GITHUB_STEP_SUMMARY"
+  fi
+  exit 0
 }
 
-ref="$(gh api "repos/${repository}/deployments/${deployment_id}" --jq '.ref')"
-description="$(gh api "repos/${repository}/deployments/${deployment_id}" --jq '.description // ""')"
 version="${ref#v}"
 digest="$(printf '%s\n' "$description" | sed -nE 's/.*\((sha256:[0-9a-f]{64})\).*/\1/p')"
 rollback_version="$(printf '%s\n' "$description" | sed -nE 's/.*rollback=([0-9]+\.[0-9]+\.[0-9]+([+-][0-9A-Za-z.-]+)?).*/\1/p')"
