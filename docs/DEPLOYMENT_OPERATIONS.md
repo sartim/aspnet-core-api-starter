@@ -2,7 +2,8 @@
 
 The **Deployment drift monitor** workflow runs daily and can also be started
 manually for staging, production, or both environments. It uses the latest
-successful GitHub Deployment record to verify that:
+successful versioned deployment record created by **Record deployment** to
+verify that:
 
 - the recorded image digest still matches the environment-tagged image in GHCR;
 - the recorded rollback image is still available; and
@@ -13,3 +14,7 @@ issue per environment. Close the issue after correcting the deployment or
 recording a new verified deployment. The workflow requires `issues: write` and
 package read access but does not require production environment approval because
 it is read-only verification.
+
+Until an environment has a successful versioned deployment record, the drift
+check skips that environment. Ordinary GitHub Environment records for workflow
+runs on `main` are not treated as deployed releases.
