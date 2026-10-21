@@ -71,8 +71,6 @@ After promotion, the **Verify promoted release** workflow smoke-tests the image
 and a known-good rollback image against an ephemeral PostgreSQL database.
 The **Record deployment** workflow verifies the deployed digest and stores an
 auditable GitHub Deployment record with rollback details and operator notes.
-The daily **Deployment drift monitor** checks that record against GHCR and opens
-an issue when the deployed digest, rollback image, or attestation is invalid.
 Environment dashboards, alert rules, and incident response guidance are
 available in the [observability](docs/OBSERVABILITY.md) and [incident response
 runbook](docs/INCIDENT_RESPONSE.md).

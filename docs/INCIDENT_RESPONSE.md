@@ -12,7 +12,7 @@ system that can consume the existing metrics, logs, traces, and health probes.
    readiness, and the latest deployment record.
 3. Capture a trace ID from a problem-details response or structured log. Do not
    copy tokens, passwords, request bodies, or personal data into the incident.
-4. Check the **Deployment drift monitor** and **Verify promoted release** runs.
+4. Check the **Verify promoted release** run and the latest deployment record.
 5. Declare an incident for sustained critical errors, failed readiness, or
    suspected data loss; assign an incident lead and a communications owner.
 
@@ -48,17 +48,9 @@ connection saturation, migrations, and recent infrastructure changes. Keep the
 service out of rotation until readiness is stable. If liveness also fails,
 inspect container logs and restart policy before considering rollback.
 
-## Drift or rollback-readiness failure
-
-Treat a digest mismatch, missing rollback image, or invalid attestation as a
-release-control incident. Do not deploy an unverified tag. Preserve the monitor
-run URL, latest GitHub Deployment record, image digest, and rollback version;
-then correct the registry/deployment record or promote the known-good image
-through the protected workflow.
-
 ## Closeout
 
 Record the timeline, impact, triggering change, dashboard evidence, trace IDs
 with sensitive data removed, mitigation, and follow-up tasks. Close the
-deduplicated `[deployment-drift]` issue only after the scheduled monitor passes
-and the deployment record reflects the verified image.
+related alert or issue only after the mitigation is verified and the deployment
+record reflects the verified release.

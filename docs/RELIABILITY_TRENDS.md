@@ -19,7 +19,7 @@ Prometheus configuration skips an environment; configure the same
    burn-rate artifacts with the previous quarter.
 2. Overlay `deployment-annotation.json` events and identify releases or
    dependency changes near material trend shifts.
-3. Review incidents, deployment-drift issues, and rollback readiness during the
+3. Review incidents, deployment records, and rollback readiness during the
    period.
 4. Confirm SLO scope, exclusions, alert thresholds, and data quality. Do not
    raise the target solely to silence alerts.
